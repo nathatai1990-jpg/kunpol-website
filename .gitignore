@@ -1,0 +1,4 @@
+temporary screenshots/
+index-backup-*.html
+.DS_Store
+node_modules/

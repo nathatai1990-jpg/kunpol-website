@@ -1,0 +1,4521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KUNPOL Group — Diversified Holding Company</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy-950: #060D1F;
+      --navy-900: #0A1428;
+      --navy-800: #0C1A38;
+      --navy-700: #112248;
+      --navy-600: #1A3268;
+      --gold:      #c79d42;
+      --gold-light:#d4aa52;
+      --white:     #FFFFFF;
+      --off-white: #F2EFE8;
+      --gray-100:  #E4E0D8;
+      --gray-300:  #A8A4A0;
+      --gray-500:  #686460;
+      --font-display: 'Plus Jakarta Sans', sans-serif;
+      --font-body:    'DM Sans', -apple-system, sans-serif;
+    }
+
+    html { overflow-x: hidden; } /* scroll-behavior handled by Lenis */
+    body {
+      font-family: var(--font-body);
+      background: #ffffff;
+      min-height: 100vh;
+      color: var(--white);
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='M2 1l10 6-5 1.5L5 13z' fill='white' stroke='rgba(0,0,0,0.5)' stroke-width='1'/%3E%3C/svg%3E") 2 1, auto;
+    }
+
+    /* ── HERO-ONLY FIXED ELEMENTS (hidden — replaced by full navbar) ── */
+    #hero-logo-fixed, #hero-hamburger { display: none !important; }
+
+    /* Full-screen menu overlay */
+    #menu-overlay {
+      position: fixed; inset: 0; z-index: 2000;
+      background: rgba(6,13,31,0.97);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.38s cubic-bezier(0.4,0,0.2,1);
+    }
+    #menu-overlay.open { opacity: 1; pointer-events: all; }
+    #menu-close {
+      position: absolute; top: 24px; right: 32px;
+      width: 48px; height: 48px; border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: white;
+      transition: background 0.2s;
+    }
+    #menu-close:hover { background: rgba(255,255,255,0.16); }
+    #menu-close svg { width: 18px; height: 18px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; }
+    .menu-links {
+      list-style: none;
+      display: flex; flex-direction: column; align-items: center; gap: 28px;
+    }
+    .menu-links a {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 400;
+      color: rgba(255,255,255,0.8); text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: color 0.2s;
+    }
+    .menu-links a:hover { color: var(--gold); }
+
+    /* ── NAVBAR ─── */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      padding: 0 80px;
+      height: 68px;
+      background: rgba(6,13,31,0.10);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      transition:
+        top 0.30s cubic-bezier(0.4,0,0.2,1),
+        left 0.30s cubic-bezier(0.4,0,0.2,1),
+        right 0.30s cubic-bezier(0.4,0,0.2,1),
+        height 0.30s cubic-bezier(0.4,0,0.2,1),
+        border-radius 0.30s cubic-bezier(0.4,0,0.2,1),
+        background 0.30s cubic-bezier(0.4,0,0.2,1),
+        padding 0.30s cubic-bezier(0.4,0,0.2,1),
+        box-shadow 0.30s cubic-bezier(0.4,0,0.2,1),
+        border-color 0.30s cubic-bezier(0.4,0,0.2,1);
+    }
+    /* Scrolled state — floating rounded pill, width ≈ timeline bar */
+    #navbar.nav-scrolled {
+      opacity: 1;
+      top: 14px;
+      left: calc(50% - 400px);
+      right: calc(50% - 400px);
+      height: 52px;
+      border-radius: 100px;
+      background: rgba(6,13,31,0.37);
+      backdrop-filter: blur(28px) saturate(160%);
+      -webkit-backdrop-filter: blur(28px) saturate(160%);
+      border: none;
+      box-shadow:
+        0 26px 18px -8px rgba(0,0,0,0.18),    /* main: wider horizontal bleed, top still hidden behind pill */
+        0 10px  6px -3px rgba(0,0,0,0.09);    /* contact shadow, also extended to sides */
+      padding: 0 28px;
+    }
+    /* Scale down logo inside pill */
+    #navbar.nav-scrolled .nav-logo-wrap { margin-right: -6px; }
+    #navbar.nav-scrolled .nav-logo-svg { width: 40px; height: 40px; }
+    #navbar.nav-scrolled .nav-logo-divider { height: 20px; }
+    #navbar.nav-scrolled .nav-wordmark { margin-left: 10px; }
+    #navbar.nav-scrolled .nav-wordmark-top { font-size: 10px; letter-spacing: 0.20em; }
+    #navbar.nav-scrolled .nav-wordmark-sub { font-size: 7px; }
+    #navbar.nav-scrolled .nav-links { gap: 22px; }
+    #navbar.nav-scrolled .nav-links a { font-size: 12px; }
+    #navbar.nav-scrolled .nav-lang { font-size: 10.5px; }
+    #navbar.nav-scrolled .nav-cta { font-size: 11px; padding: 7px 16px; background: #3465B0; box-shadow: 0 2px 14px rgba(52,101,176,0.50), 0 1px 4px rgba(0,0,0,0.18); }
+    /* Left: logo mark + divider + wordmark */
+    .nav-logo {
+      display: flex; align-items: center; gap: 0;
+      text-decoration: none; flex-shrink: 0;
+    }
+    /* Logo wrapper — 3D perspective tilt in default state */
+    .nav-logo-wrap {
+      position: relative;
+      display: inline-flex;
+      flex-shrink: 0;
+      margin-right: -10px;
+      transform: perspective(320px) rotateY(-8deg) rotateX(3deg);
+      transform-style: preserve-3d;
+      transition: margin-right 0.30s cubic-bezier(0.4,0,0.2,1),
+                  transform 0.40s cubic-bezier(0.4,0,0.2,1);
+    }
+    /* Pill: remove 3D tilt, flat clean logo */
+    #navbar.nav-scrolled .nav-logo-wrap {
+      transform: none;
+    }
+    /* Blue base — extrusion shadows simulate thickness/depth */
+    .nav-logo-svg {
+      width: 64px; height: 64px; flex-shrink: 0; object-fit: contain;
+      filter:
+        brightness(0) saturate(100%) invert(16%) sepia(60%) saturate(700%) hue-rotate(200deg) brightness(0.95)
+        drop-shadow(1px 2px 0px rgba(0,8,32,1))
+        drop-shadow(2px 3px 0px rgba(0,8,32,0.75))
+        drop-shadow(3px 5px 2px rgba(0,8,32,0.35));
+      transition: filter 0.30s cubic-bezier(0.4,0,0.2,1),
+                  width 0.30s cubic-bezier(0.4,0,0.2,1),
+                  height 0.30s cubic-bezier(0.4,0,0.2,1);
+    }
+    /* Pill: original flat blue, no extrusion */
+    #navbar.nav-scrolled .nav-logo-svg {
+      filter: brightness(0) saturate(100%) invert(16%) sepia(60%) saturate(700%) hue-rotate(200deg) brightness(0.95);
+    }
+    /* White overlay — lit face of the 3D logo, gradient left→right */
+    .nav-logo-white {
+      position: absolute; inset: 0;
+      width: 64px; height: 64px; object-fit: contain;
+      filter: brightness(0) invert(1);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 20%, black 55%, black 100%);
+      mask-image:         linear-gradient(to right, transparent 0%, transparent 20%, black 55%, black 100%);
+      pointer-events: none;
+      transition: width 0.30s cubic-bezier(0.4,0,0.2,1),
+                  height 0.30s cubic-bezier(0.4,0,0.2,1),
+                  opacity 0.40s cubic-bezier(0.4,0,0.2,1);
+    }
+    /* Pill: no white overlay */
+    #navbar.nav-scrolled .nav-logo-white { opacity: 0; }
+    .nav-logo-divider {
+      width: 1px; height: 28px;
+      background: rgba(255,255,255,0.22);
+      flex-shrink: 0;
+      transition: height 0.30s cubic-bezier(0.4,0,0.2,1);
+    }
+    .nav-wordmark {
+      display: flex; flex-direction: column; line-height: 1;
+      gap: 2px; margin-left: 14px;
+      transition: margin-left 0.30s cubic-bezier(0.4,0,0.2,1);
+    }
+    .nav-wordmark-top {
+      font-family: var(--font-body);
+      font-size: 11.5px; font-weight: 600;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: rgba(255,255,255,0.92);
+      transition: font-size 0.30s cubic-bezier(0.4,0,0.2,1), letter-spacing 0.30s cubic-bezier(0.4,0,0.2,1);
+    }
+    .nav-wordmark-sub {
+      font-family: var(--font-body);
+      font-size: 8px; font-weight: 400;
+      letter-spacing: 0.35em; text-transform: uppercase;
+      color: rgba(255,255,255,0.48);
+      transition: font-size 0.30s cubic-bezier(0.4,0,0.2,1);
+    }
+    /* Centre: nav links */
+    .nav-center {
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-links {
+      display: flex; align-items: center;
+      gap: 36px; list-style: none;
+      transition: gap 0.30s cubic-bezier(0.4,0,0.2,1);
+    }
+    .nav-links a {
+      font-family: var(--font-body);
+      color: rgba(255,255,255,0.62); text-decoration: none;
+      font-size: 13.5px; font-weight: 400;
+      letter-spacing: 0.02em;
+      position: relative;
+      transition: color 0.22s ease, font-size 0.30s cubic-bezier(0.4,0,0.2,1);
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 1px; background: #6A9FD4;
+      transition: width 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    .nav-links a:hover { color: rgba(255,255,255,0.95); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* ── Sectors dropdown ── */
+    .nav-has-drop { position: relative; }
+    .nav-has-drop > a { display: inline-flex; align-items: center; gap: 5px; }
+    .nav-drop-chevron {
+      width: 9px; height: 9px; flex-shrink: 0;
+      stroke: rgba(255,255,255,0.45); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+      transition: transform 0.25s ease, stroke 0.2s;
+    }
+    .nav-has-drop:hover .nav-drop-chevron { transform: rotate(180deg); stroke: rgba(255,255,255,0.80); }
+    .nav-dropdown {
+      position: absolute; top: calc(100% + 18px); left: 50%;
+      transform: translateX(-50%) translateY(-8px);
+      background: rgba(6,13,31,0.88);
+      backdrop-filter: blur(32px) saturate(160%);
+      -webkit-backdrop-filter: blur(32px) saturate(160%);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 16px; padding: 8px;
+      min-width: 210px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.34,1.2,0.64,1);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.50), 0 4px 16px rgba(0,0,0,0.30);
+      z-index: 200;
+    }
+    .nav-has-drop:hover .nav-dropdown {
+      opacity: 1; pointer-events: all;
+      transform: translateX(-50%) translateY(0);
+    }
+    .nav-dropdown::before {
+      content: ''; position: absolute; top: -18px; left: 0; right: 0; height: 18px;
+    }
+    .nav-drop-item {
+      display: flex; align-items: center; gap: 11px;
+      padding: 9px 13px; border-radius: 9px;
+      text-decoration: none;
+      transition: background 0.15s ease;
+    }
+    .nav-drop-item:hover { background: rgba(255,255,255,0.08); }
+    .nav-drop-num {
+      font-family: var(--font-body); font-size: 10px; font-weight: 600;
+      color: rgba(255,255,255,0.30); letter-spacing: 0.06em;
+      min-width: 18px; flex-shrink: 0;
+    }
+    .nav-drop-name {
+      font-family: var(--font-body); font-size: 13px; font-weight: 400;
+      color: rgba(255,255,255,0.68);
+      transition: color 0.15s ease;
+    }
+    .nav-drop-item:hover .nav-drop-name { color: rgba(255,255,255,0.95); }
+    .nav-drop-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 4px 8px; }
+    .nav-links .nav-dropdown a::after { display: none !important; content: none !important; width: 0 !important; }
+    /* Right: lang toggle + Contact */
+    .nav-right { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
+    /* Language toggle */
+    .nav-lang {
+      display: flex; align-items: center; gap: 6px;
+      font-family: var(--font-body); font-size: 11.5px;
+      color: rgba(255,255,255,0.52);
+      cursor: pointer; border: none; background: none; padding: 0;
+      transition: color 0.2s ease, font-size 0.30s cubic-bezier(0.4,0,0.2,1);
+    }
+    .nav-lang:hover { color: rgba(255,255,255,0.85); }
+    .nav-lang svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .nav-lang-sep { color: rgba(255,255,255,0.22); }
+    /* Contact Us — brand navy, stands out */
+    .nav-cta {
+      font-family: var(--font-body);
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 9px 24px;
+      border-radius: 6px;
+      background: #3465B0;
+      color: #ffffff;
+      text-decoration: none;
+      white-space: nowrap;
+      overflow: hidden;
+      position: relative;
+      transition: background 0.2s ease, transform 0.18s ease, box-shadow 0.2s ease,
+                  font-size 0.30s cubic-bezier(0.4,0,0.2,1), padding 0.30s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 0 2px 14px rgba(26,50,104,0.45), 0 1px 4px rgba(0,0,0,0.22);
+    }
+    .nav-cta::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -120%; width: 65%; height: 100%;
+      background: linear-gradient(105deg,
+        transparent 0%,
+        rgba(255,255,255,0.13) 50%,
+        transparent 100%);
+      animation: nav-shimmer 3.2s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes nav-shimmer {
+      0%     { left: -120%; }
+      45%, 100% { left: 160%; }
+    }
+    .nav-cta:hover {
+      background: #22428A;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px rgba(26,50,104,0.55), 0 2px 8px rgba(0,0,0,0.22);
+    }
+    .nav-cta:active { transform: translateY(0); box-shadow: 0 1px 6px rgba(26,50,104,0.30); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { display: block; width: 22px; height: 1.5px; background: rgba(255,255,255,0.85); transition: transform 0.3s, opacity 0.3s; }
+
+    @media (max-width: 900px) {
+      #navbar { padding: 0 24px; grid-template-columns: auto 1fr auto; }
+      .nav-center { display: none; }
+      .hamburger { display: flex; z-index: 1001; }
+      .nav-lang { display: none; }
+      .nav-cta { display: none; }
+    }
+
+    /* ── NEW HERO — SECTOR SHOWCASE ─────────────── */
+    #hero-new {
+      position: relative;
+      height: 128vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    /* Stacked slide layers — pure opacity crossfade, no scaling */
+    .hn-bg-track {
+      position: absolute; inset: 0;
+      z-index: 0;
+    }
+    .hn-bg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      will-change: opacity;
+      pointer-events: none;
+    }
+    .hn-bg.hn-bg-active {
+      opacity: 1;
+      transition: opacity 1.6s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .hn-bg.hn-bg-leaving {
+      opacity: 0;
+      transition: opacity 1.5s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .hn-overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background:
+        linear-gradient(to right,
+          rgba(0,0,0,0.78) 0%,
+          rgba(0,0,0,0.55) 35%,
+          rgba(0,0,0,0.18) 60%,
+          rgba(0,0,0,0.04) 100%);
+    }
+    /* Accent colour bloom — updates instantly when --sector-rgb changes,
+       masked by the 1.6s image crossfade so the jump is never visible */
+    .hn-accent-overlay {
+      position: absolute; inset: 0; z-index: 2;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 88% 82% at 0% 100%,
+          rgba(var(--sector-rgb), 0.88) 0%,
+          rgba(var(--sector-rgb), 0.52) 36%,
+          transparent 68%),
+        radial-gradient(ellipse 58% 52% at 100% 5%,
+          rgba(var(--sector-rgb), 0.36) 0%,
+          transparent 55%);
+    }
+    /* White fade — visible hint at rest, grows on scroll via JS */
+    .hn-white-fade {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 46%; z-index: 4; pointer-events: none;
+      opacity: 0.9;
+      transition: opacity 0.06s linear;
+      background: linear-gradient(to bottom,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.12) 14%,
+        rgba(255,255,255,0.38) 32%,
+        rgba(255,255,255,0.68) 52%,
+        rgba(255,255,255,0.92) 70%,
+        #ffffff 84%,
+        #ffffff 100%
+      );
+    }
+    .hn-content {
+      position: absolute; z-index: 3;
+      left: 0; right: 0;
+      top: 0; height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: flex-start; justify-content: center;
+      text-align: left;
+      /* Left aligns with timeline bar start: (100% - 80%) / 2 = 10% */
+      padding: 0 96px 100px 10%;
+    }
+    .hn-content-inner {
+      display: flex; flex-direction: column; align-items: flex-start;
+      max-width: 580px;
+    }
+    .hn-eyebrow {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 22px;
+    }
+    .hn-eyebrow-line { display: block; width: 24px; height: 1px; background: rgba(201,168,76,0.55); }
+    .hn-eyebrow-label {
+      font-family: var(--font-body);
+      font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+      color: rgba(201,168,76,0.85);
+    }
+
+    /* ── SECTOR BADGE ────────────────────────────── */
+    .hn-badge {
+      display: inline-flex; align-items: center; gap: 9px;
+      padding: 6px 16px 6px 10px;
+      border-radius: 100px;
+      background: rgba(0,0,0,0.20);
+      border: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      margin-bottom: 10px;
+      cursor: none;
+      transform: translateX(0);
+      transition: transform 0.38s cubic-bezier(0.25,0,0,1),
+                  background 0.38s ease;
+    }
+    .hn-badge:hover {
+      transform: translateX(13px);
+      background: rgba(0,0,0,0.28);
+    }
+    .hn-badge-icon {
+      width: 14px; height: 14px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transform: translateX(0);
+      transition: transform 0.38s cubic-bezier(0.25,0,0,1);
+    }
+    .hn-badge:hover .hn-badge-icon {
+      transform: translateX(4px);
+    }
+    .hn-badge-icon svg {
+      width: 13px; height: 13px;
+      stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round;
+      fill: none;
+      filter: drop-shadow(0 0 3px currentColor);
+      transition: filter 0.36s ease;
+    }
+    .hn-badge:hover .hn-badge-icon svg {
+      filter: drop-shadow(0 0 7px currentColor) drop-shadow(0 0 14px currentColor) drop-shadow(0 0 22px currentColor);
+    }
+    .hn-badge-text {
+      font-family: var(--font-body);
+      font-size: 10px; font-weight: 500;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: rgba(255,255,255,0.82);
+      transform: translateX(0);
+      transition: transform 0.38s cubic-bezier(0.25,0,0,1);
+    }
+    .hn-badge:hover .hn-badge-text {
+      transform: translateX(2px);
+    }
+    .hn-badge-char {
+      display: inline-block;
+      text-shadow: none;
+    }
+    .hn-badge:hover .hn-badge-char {
+      text-shadow: 0 0 8px rgba(var(--badge-glow-rgb), 1),
+                   0 0 20px rgba(var(--badge-glow-rgb), 0.72),
+                   0 0 40px rgba(var(--badge-glow-rgb), 0.32);
+    }
+
+    /* Ghost sector number — right side, vertically centered at scroll button y */
+    .hn-sector-num {
+      position: absolute;
+      top: 33vh;
+      transform: translateY(-50%);
+      right: 13%;
+      z-index: 2;
+      font-family: var(--font-display);
+      font-size: clamp(72px, 9vw, 110px);
+      font-weight: 700;
+      line-height: 1;
+      color: rgba(255,255,255,0.23);
+      text-shadow: 0 2px 16px rgba(180,180,180,0.22), 0 4px 32px rgba(150,150,150,0.12);
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -0.05em;
+      transition: color 0.5s ease;
+    }
+
+    .hn-title {
+      font-family: var(--font-display);
+      font-size: clamp(52px, 6.8vw, 100px);
+      font-weight: 700; letter-spacing: -0.035em;
+      color: #ffffff; line-height: 0.96;
+      margin-bottom: 20px;
+    }
+    .hn-subtitle {
+      font-family: var(--font-body);
+      font-style: normal;
+      font-size: 16px; font-weight: 500; color: rgba(255,255,255,0.70);
+      line-height: 1.75; max-width: 320px;
+      margin-bottom: 28px;
+    }
+    .hn-ctas { display: flex; flex-direction: row; align-items: center; gap: 32px; margin-left: 3px; }
+    .hn-btn {
+      display: inline-flex; align-items: center; gap: 0;
+      padding: 4px 4px 4px 16px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.50);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.20), 0 1px 4px rgba(0,0,0,0.10);
+      text-decoration: none; cursor: pointer;
+      transition: transform 0.22s cubic-bezier(0.34,1.2,0.64,1), box-shadow 0.22s ease;
+    }
+    .hn-btn-label {
+      font-family: var(--font-body);
+      font-size: 15px; font-weight: 600; letter-spacing: 0.03em;
+      color: rgba(6,13,31,0.82);
+      padding-right: 13px; white-space: nowrap;
+    }
+    .hn-btn-icon {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(6,13,31,0.88);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.22s cubic-bezier(0.34,1.2,0.64,1);
+    }
+    .hn-btn-icon svg { width: 11px; height: 11px; }
+    .hn-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 32px rgba(0,0,0,0.26), 0 3px 8px rgba(0,0,0,0.12);
+    }
+    .hn-btn:hover .hn-btn-icon { transform: translateX(3px); }
+    .hn-btn:active { transform: translateY(0px); box-shadow: 0 2px 8px rgba(0,0,0,0.16);
+      background: rgba(255,255,255,0.04);
+    }
+    /* Scroll-down button — right side of hero, circle */
+    /* right: 10% (timeline right edge) + 80%/12 (half last bar width) − 46px (half button width) */
+    .hn-scroll-btn {
+      position: absolute; z-index: 5;
+      right: calc(10% + 6.667% - 46px); top: calc(100vh - 168px); transform: translateY(-50%);
+      cursor: pointer; text-decoration: none;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+    }
+    .hn-scroll-btn:hover { opacity: 1; }
+    .hn-scroll-btn.hn-scrolled-away { opacity: 0; pointer-events: none; }
+
+    /* Wrapper — circle size, allows arrow to overflow below */
+    .hn-scroll-wrap {
+      position: relative;
+      width: 92px; height: 92px;
+    }
+
+    /* White circle backdrop for scroll arrow */
+    .hn-scroll-disk {
+      position: absolute; inset: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.80);
+      box-shadow: 0 4px 22px rgba(0,0,0,0.20), 0 1px 6px rgba(0,0,0,0.12);
+      transition: background 0.35s ease, box-shadow 0.35s ease;
+    }
+    .hn-scroll-btn:hover .hn-scroll-disk {
+      background: rgba(255,255,255,0.99);
+      box-shadow: 0 6px 28px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10);
+    }
+    .hn-scroll-btn:active .hn-scroll-disk {
+      background: rgba(255,255,255,0.70);
+      box-shadow: 0 1px 6px rgba(0,0,0,0.12);
+    }
+
+    /* Orbiting text SVG — sits just outside circle edge */
+    .hn-orbit-svg {
+      position: absolute;
+      top: -14px; left: -14px;
+      width: 120px; height: 120px;
+      animation: hn-orbit-spin 14s linear infinite;
+      pointer-events: none;
+      transition: animation-duration 0.4s ease;
+    }
+    .hn-scroll-btn:hover .hn-orbit-svg {
+      animation-duration: 6s;
+    }
+    @keyframes hn-orbit-spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* Single unified arrow SVG — no separate divs, no gap */
+    .hn-scroll-arrow-svg {
+      position: absolute;
+      left: 50%; top: 14px;
+      transform: translateX(-50%);
+      display: block;
+      overflow: visible;
+      pointer-events: none;
+      animation: hn-arrow-bob 2.2s ease-in-out infinite;
+    }
+    @keyframes hn-arrow-bob {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(5px); }
+    }
+
+    /* Click: arrow pulses down */
+    .hn-scroll-btn.hn-clicking .hn-scroll-arrow-svg {
+      animation: hn-arrow-click 0.55s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+    @keyframes hn-arrow-click {
+      0%   { transform: translateX(-50%) translateY(0); }
+      40%  { transform: translateX(-50%) translateY(14px); }
+      70%  { transform: translateX(-50%) translateY(-4px); }
+      100% { transform: translateX(-50%) translateY(0); }
+    }
+
+    /* Sector timeline bar — pinned just below content block (viewport bottom) */
+    .hn-tabs {
+      position: absolute; z-index: 3;
+      left: 50%; transform: translateX(-50%);
+      width: 80%;
+      top: calc(100vh - 96px);
+      padding: 20px 0 28px;
+      background: transparent;
+    }
+    .hn-timeline {
+      display: flex; align-items: flex-start;
+      gap: 7px;
+    }
+    .hn-tab {
+      flex: 1; cursor: pointer;
+      display: flex; flex-direction: column;
+      align-items: center;
+      gap: 0;
+      position: relative;
+      padding-right: 0;
+    }
+    /* The progress bar segment — short, separated bar per sector */
+    .hn-tab-bar {
+      width: 100%; height: 2.5px;
+      background: rgba(255,255,255,0.28);
+      position: relative; overflow: hidden;
+      margin-bottom: 10px;
+      border-radius: 2px;
+    }
+    .hn-tab-bar-fill {
+      position: absolute; top: 0; left: 0;
+      height: 100%; width: 0%;
+      background: rgba(255,255,255,0.90);
+      border-radius: 2px;
+    }
+    .hn-tab.hn-played .hn-tab-bar { background: rgba(255,255,255,0.90); }
+    .hn-tab-label {
+      display: flex; flex-direction: column; align-items: center; gap: 0;
+    }
+    .hn-tab-num { display: none; }
+    .hn-tab-name {
+      font-family: var(--font-body);
+      font-size: 11px; font-weight: 500;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.04em;
+      text-align: center;
+      transition: color 0.3s ease, text-shadow 0.4s ease;
+      text-shadow: none;
+    }
+    .hn-tab.hn-active .hn-tab-name {
+      color: rgba(255,255,255,0.95); font-weight: 600;
+      text-shadow: 0 1px 8px rgba(0,0,0,0.45), 0 0 20px rgba(0,0,0,0.20);
+    }
+    .hn-tab.hn-played .hn-tab-name { color: rgba(255,255,255,0.58); }
+    .hn-tab:hover .hn-tab-name { color: rgba(255,255,255,0.82); }
+
+    /* Scroll circle — frosted blur, works on both dark and light backgrounds */
+    .hn-cursor {
+      position: fixed; z-index: 9999;
+      pointer-events: none;
+      width: 76px; height: 76px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.18);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 0.5px solid rgba(255,255,255,0.10);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.75);
+      transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.34,1.4,0.64,1);
+    }
+    .hn-cursor.hn-cursor-visible {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .hn-cursor.hn-cursor-hidden {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.75);
+    }
+    .hn-cursor-label {
+      font-family: var(--font-body);
+      font-size: 13px; letter-spacing: 0.04em;
+      color: rgba(255,255,255,0.92);
+      font-weight: 500;
+    }
+
+    /* ── HERO — EDITORIAL CARD CAROUSEL ─────────── */
+    #hero {
+      padding-bottom: 80px;
+      position: relative;
+    }
+
+    /* Section header */
+    .hero-header {
+      text-align: center;
+      padding-top: 80px;
+      padding-bottom: 20px;
+    }
+    .hero-eyebrow {
+      display: flex; align-items: center; justify-content: center;
+      gap: 14px; margin-top: 14px;
+    }
+    .hero-eyebrow-line {
+      display: block; width: 28px; height: 1px; background: rgba(201,168,76,0.5);
+    }
+    .hero-eyebrow-text {
+      font-family: var(--font-body);
+      font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+      color: rgba(201,168,76,0.7);
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: 32px; font-weight: 500;
+      letter-spacing: -0.025em;
+      color: #ffffff; line-height: 1.08;
+      margin-bottom: 6px;
+    }
+    .hero-subtitle {
+      font-family: var(--font-body);
+      font-size: 13px; letter-spacing: 0.06em;
+      color: rgba(255,255,255,0.45);
+    }
+
+    /* Carousel container — clip-path clips L/R only, shadow spreads freely top/bottom */
+    .hero-carousel {
+      overflow: visible;
+      clip-path: inset(-16px 0 -80px 0);
+    }
+
+    /* Cards track — transform-driven, no native scroll */
+    .hero-cards-track {
+      display: flex;
+      gap: 20px;
+      padding-left: 48px;
+      will-change: transform;
+    }
+
+    /* Individual card */
+    .hero-card {
+      flex-shrink: 0;
+      width: calc((100vw - 96px - 40px) / 3.4);
+      height: 490px;
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      text-decoration: none;
+      transform: translateY(0);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15), inset 0 0 0 0px rgba(201,168,76,0);
+      transition: transform 0.45s cubic-bezier(0.16,1,0.3,1),
+                  box-shadow 0.45s cubic-bezier(0.16,1,0.3,1);
+    }
+    .hero-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.28), 0 6px 16px rgba(0,0,0,0.14),
+                  inset 0 0 0 2px rgba(201,168,76,0.45);
+    }
+
+    /* Card gradient backgrounds */
+    .hp-energy   { background: radial-gradient(ellipse at 30% 60%, #a0521a 0%, #2a0e00 100%); }
+    .hp-agri     { background: radial-gradient(ellipse at 50% 50%, #1e4d1e 0%, #060f06 100%); }
+    .hp-commerce { background: radial-gradient(ellipse at 60% 40%, #4a3500 0%, #100c00 100%); }
+    .hp-construct{ background: radial-gradient(ellipse at 40% 70%, #0f2444 0%, #060b18 100%); }
+    .hp-services { background: radial-gradient(ellipse at 50% 50%, #0c3347 0%, #040f17 100%); }
+    .hp-concrete { background: radial-gradient(ellipse at 60% 60%, #252538 0%, #080810 100%); }
+
+    .hero-card-bg { position: absolute; inset: 0; }
+
+    /* Bottom gradient overlay */
+    .hero-card-overlay {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 65%;
+      background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, transparent 100%);
+      z-index: 1;
+    }
+
+    /* Sector number — top left */
+    .hero-card-num {
+      position: absolute; top: 20px; left: 24px; z-index: 3;
+      font-family: var(--font-body); font-size: 11px;
+      color: #c9a84c; letter-spacing: 0.2em; text-transform: uppercase;
+    }
+
+    /* Card centered content */
+    .hero-card-content {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 28px 20px; z-index: 2;
+      text-align: center;
+    }
+
+    /* Icon with circular backdrop */
+    .hero-card-icon {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 14px; flex-shrink: 0;
+    }
+    .hero-card-icon svg {
+      width: 22px; height: 22px; display: block;
+      stroke: rgba(255,255,255,0.88); fill: none; stroke-width: 1.5;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    .hero-card-name {
+      font-family: var(--font-display);
+      font-size: 1.05rem; font-weight: 500; color: white;
+      letter-spacing: -0.01em; line-height: 1.2;
+      margin-bottom: 6px; display: block;
+      transition: font-size 0.55s cubic-bezier(0.16,1,0.3,1);
+    }
+    .hero-card:hover .hero-card-name { font-size: 1.22rem; }
+    .hero-card-desc {
+      font-family: var(--font-body);
+      font-size: 11.5px; color: rgba(255,255,255,0.55); line-height: 1.5;
+    }
+
+    /* Subs: in flex flow but collapsed when not hovered */
+    .hero-card-subs {
+      list-style: none; overflow: hidden;
+      max-height: 0; opacity: 0; margin-top: 0;
+      transition: max-height 0.6s cubic-bezier(0.16,1,0.3,1),
+                  opacity 0.55s ease 0.2s,
+                  margin-top 0.55s ease;
+    }
+    .hero-card:hover .hero-card-subs {
+      max-height: 220px; opacity: 1; margin-top: 10px;
+    }
+    .hero-card-subs li {
+      font-family: var(--font-body);
+      font-size: 11px; color: rgba(255,255,255,0.7); line-height: 1.85;
+    }
+    .hero-card-subs li::before {
+      content: '·'; margin-right: 5px; color: rgba(255,255,255,0.4);
+    }
+
+
+    /* Section-end gold divider */
+
+    /* Old gradient class names kept for backward compat (unused by hero now) */
+    .acc-bg-energy {
+      background:
+        radial-gradient(ellipse at 35% 65%, rgba(200,95,15,0.55) 0%, transparent 55%),
+        radial-gradient(ellipse at 75% 25%, rgba(160,70,10,0.3) 0%, transparent 45%),
+        linear-gradient(160deg, #0a0703 0%, #231205 45%, #160d04 100%);
+    }
+    .acc-bg-agri {
+      background:
+        radial-gradient(ellipse at 40% 62%, rgba(35,100,22,0.6) 0%, transparent 55%),
+        radial-gradient(ellipse at 70% 28%, rgba(55,120,32,0.3) 0%, transparent 45%),
+        linear-gradient(160deg, #040905 0%, #0b1f08 45%, #071407 100%);
+    }
+    .acc-bg-commerce {
+      background:
+        radial-gradient(ellipse at 60% 55%, rgba(55,75,195,0.42) 0%, transparent 55%),
+        radial-gradient(ellipse at 25% 70%, rgba(90,45,165,0.3) 0%, transparent 45%),
+        radial-gradient(ellipse at 80% 18%, rgba(195,140,40,0.18) 0%, transparent 35%),
+        linear-gradient(160deg, #04050f 0%, #090f28 45%, #050818 100%);
+    }
+    .acc-bg-construct {
+      background:
+        radial-gradient(ellipse at 45% 45%, rgba(110,120,130,0.38) 0%, transparent 55%),
+        radial-gradient(ellipse at 75% 75%, rgba(80,90,100,0.25) 0%, transparent 45%),
+        linear-gradient(160deg, #090a0b 0%, #181c1f 45%, #0e1114 100%);
+    }
+    .acc-bg-services {
+      background:
+        radial-gradient(ellipse at 45% 55%, rgba(18,95,115,0.52) 0%, transparent 55%),
+        radial-gradient(ellipse at 75% 28%, rgba(25,75,100,0.32) 0%, transparent 45%),
+        linear-gradient(160deg, #040a0d 0%, #071c25 45%, #051018 100%);
+    }
+    .acc-bg-concrete {
+      background:
+        radial-gradient(ellipse at 50% 50%, rgba(75,78,82,0.38) 0%, transparent 60%),
+        radial-gradient(ellipse at 20% 28%, rgba(90,93,97,0.22) 0%, transparent 40%),
+        linear-gradient(160deg, #070707 0%, #141416 45%, #0a0a0b 100%);
+    }
+
+    /* ── SHARED LAYOUT ───────────────────────────── */
+    .container { max-width: 1180px; margin: 0 auto; padding: 0 52px; }
+    @media (max-width: 768px) { .container { padding: 0 24px; } }
+
+    .section-eyebrow {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+    }
+    .section-eyebrow::before {
+      content: ''; display: block; width: 10px; height: 10px;
+      border-radius: 50%; background: #5bb5f5; flex-shrink: 0;
+      box-shadow: 0 0 0 3px rgba(91,181,245,0.18), 0 0 12px rgba(91,181,245,0.50), 0 0 24px rgba(91,181,245,0.22);
+    }
+    .eyebrow-text {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.22em; text-transform: uppercase; color: #1e3a5a;
+    }
+    #contact .eyebrow-text { color: #1e3a5a; }
+    #contact .section-eyebrow::before { background: #5bb5f5; box-shadow: 0 0 0 3px rgba(91,181,245,0.18), 0 0 12px rgba(91,181,245,0.50), 0 0 24px rgba(91,181,245,0.22); }
+
+
+    /* ── ABOUT (light section) ───────────────────── */
+    #about { background: transparent; color: var(--white); padding: 72px 0 56px; }
+
+    .about-headline {
+      font-family: var(--font-display);
+      font-size: clamp(30px, 4vw, 56px);
+      font-weight: 500; line-height: 1.08;
+      letter-spacing: -0.025em; color: #ffffff;
+      max-width: 620px; margin-bottom: 64px;
+    }
+    .about-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; margin-bottom: 80px; }
+    @media (max-width: 768px) { .about-cols { grid-template-columns: 1fr; gap: 36px; } }
+
+    .about-body { font-size: 15px; line-height: 1.82; color: rgba(255,255,255,0.65); }
+    .about-body p + p { margin-top: 18px; }
+
+    .stats-row {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 0; background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 2px;
+      width: 100%; margin: 56px auto 0;
+    }
+    @media (max-width: 768px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
+    .stat-cell {
+      padding: 40px 32px 36px;
+      text-align: center;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      position: relative;
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-icon {
+      width: 32px; height: 32px; margin: 0 auto 20px;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(199,157,66,0.7);
+    }
+    .stat-icon svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+    .stat-num {
+      font-family: var(--font-display); font-size: 52px;
+      font-weight: 300; letter-spacing: -0.04em; line-height: 1;
+      color: #ffffff; margin-bottom: 12px;
+    }
+    .stat-lbl {
+      font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.4); font-weight: 500;
+      font-family: var(--font-body);
+    }
+
+    /* ── GROUP STRUCTURE ─────────────────────────── */
+    #structure { padding: 72px 0; background: transparent; }
+
+    .structure-headline {
+      font-family: var(--font-display); font-size: clamp(36px,5vw,70px);
+      font-weight: 500; letter-spacing: -0.025em;
+      color: var(--white); margin-bottom: 14px;
+    }
+    .structure-sub {
+      font-size: 15px; color: rgba(255,255,255,0.42);
+      max-width: 440px; line-height: 1.75; margin-bottom: 80px;
+    }
+
+    /* Org tree */
+    .org-wrap { display: flex; flex-direction: column; align-items: center; }
+    .org-root {
+      background: var(--gold); color: var(--navy-950);
+      padding: 18px 52px; text-align: center;
+      font-family: var(--font-display); font-size: 17px; font-weight: 600;
+      letter-spacing: 0.02em; min-width: 280px;
+    }
+    .org-vline { width: 1px; height: 48px; background: rgba(196,163,90,0.38); }
+    .org-hbar {
+      width: 100%; height: 1px; background: rgba(196,163,90,0.3);
+      margin-bottom: 0;
+    }
+    .org-cards {
+      display: grid; grid-template-columns: repeat(6,1fr);
+      gap: 16px; width: 100%; padding-top: 48px;
+      position: relative;
+    }
+    .org-cards::before {
+      content: ''; position: absolute;
+      top: 0; left: calc(100%/12); right: calc(100%/12);
+      height: 1px; background: rgba(196,163,90,0.3);
+    }
+    @media (max-width: 1100px) { .org-cards { grid-template-columns: repeat(3,1fr); } }
+    @media (max-width: 640px)  { .org-cards { grid-template-columns: repeat(2,1fr); } }
+
+    .org-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(196,163,90,0.18);
+      padding: 26px 18px 22px;
+      position: relative;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .org-card::before {
+      content: ''; position: absolute;
+      top: -48px; left: 50%; width: 1px; height: 48px;
+      background: rgba(196,163,90,0.28);
+    }
+    .org-card:hover { background: rgba(196,163,90,0.06); border-color: rgba(196,163,90,0.38); }
+    .org-card-num { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 7px; }
+    .org-card-name { font-family: var(--font-display); font-size: 18px; font-weight: 500; color: var(--white); margin-bottom: 14px; }
+    .org-card-line { height: 1px; background: rgba(196,163,90,0.18); margin-bottom: 12px; }
+    .org-card-cos { list-style: none; }
+    .org-card-cos li {
+      font-size: 11.5px; color: rgba(255,255,255,0.4);
+      line-height: 1.75; padding-left: 12px; position: relative;
+    }
+    .org-card-cos li::before {
+      content: '—'; position: absolute; left: 0;
+      color: rgba(196,163,90,0.38); font-size: 9px; top: 3px;
+    }
+    .org-card-cos li.note { font-style: italic; color: rgba(196,163,90,0.38); font-size: 11px; }
+
+    /* ── LEADERSHIP ──────────────────────────────── */
+    #leadership { background: transparent; padding: 72px 0 120px; }
+    #leadership .section-eyebrow::before { background: #9a7730; }
+    #leadership .eyebrow-text { color: #9a7730; font-family: 'DM Sans', sans-serif; }
+    .leadership-head {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: clamp(30px, 4vw, 56px);
+      font-weight: 600; letter-spacing: -0.03em;
+      color: #0f2444; margin-bottom: 72px;
+    }
+
+    /* ── Part 1: Three-zone editorial ── */
+    .ld-part1 {
+      display: grid;
+      grid-template-columns: 350px 400px 1fr;
+      column-gap: 28px;
+      align-items: start;
+      margin-bottom: 96px;
+    }
+
+    /* Left zone */
+    .ld-left { padding-top: 8px; }
+    .ld-family-name {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: clamp(24px, 2.8vw, 38px);
+      font-weight: 300; font-style: normal;
+      color: #0f2444; line-height: 1.22;
+      letter-spacing: -0.01em; margin-bottom: 24px;
+    }
+    .ld-heritage {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13.5px; font-weight: 300;
+      color: #2a3550; line-height: 1.85;
+    }
+
+    /* Center zone: stacked photos */
+    .ld-center {
+      position: relative;
+      z-index: 2;
+      transform: translateX(-40px);
+    }
+    /* Thin vertical gold accent — barely visible */
+    .ld-vline {
+      position: absolute;
+      left: 0; top: 0; bottom: 0; width: 1px;
+      background: linear-gradient(to bottom, transparent 0%, rgba(201,168,76,0.2) 20%, rgba(201,168,76,0.2) 80%, transparent 100%);
+      pointer-events: none;
+    }
+
+    /* Photo composition container */
+    .ld-photos {
+      position: relative;
+      height: 370px;
+      margin-left: 16px;
+    }
+
+    /* Chairman — primary, larger, top-left */
+    .ld-chair-wrap {
+      position: absolute;
+      top: 0; left: 0; width: 216px;
+      z-index: 2; cursor: default;
+    }
+    .ld-chair-frame {
+      position: absolute; inset: 0;
+      background: rgba(6,13,31,0.28);
+      transform: translate(-11px, 11px);
+      z-index: 0; pointer-events: none;
+    }
+    .ld-chair-img {
+      position: relative; z-index: 1;
+      width: 100%; aspect-ratio: 3/4;
+      overflow: hidden; border-radius: 0;
+      background: rgba(15,36,68,0.62);
+      transition: box-shadow 0.42s cubic-bezier(0.4,0,0.2,1);
+    }
+    .ld-chair-wrap:hover .ld-chair-img {
+      box-shadow: 0 22px 52px rgba(0,0,0,0.22), 0 8px 18px rgba(0,0,0,0.14);
+    }
+    .ld-chair-img img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform 0.65s cubic-bezier(0.4,0,0.2,1);
+    }
+    .ld-chair-wrap:hover .ld-chair-img img { transform: scale(1.038); }
+
+    /* CEO — secondary, smaller, overlapping bottom-right */
+    .ld-ceo-wrap {
+      position: absolute;
+      top: 108px; left: 178px; width: 162px;
+      z-index: 3; cursor: default;
+    }
+    .ld-ceo-frame {
+      position: absolute; inset: 0;
+      background: rgba(6,13,31,0.28);
+      transform: translate(10px, 10px);
+      z-index: 0; pointer-events: none;
+    }
+    .ld-ceo-img {
+      position: relative; z-index: 1;
+      width: 100%; aspect-ratio: 3/4;
+      overflow: hidden; border-radius: 0;
+      background: rgba(15,36,68,0.62);
+      transition: box-shadow 0.42s cubic-bezier(0.4,0,0.2,1);
+    }
+    .ld-ceo-wrap:hover .ld-ceo-img {
+      box-shadow: 0 22px 52px rgba(0,0,0,0.22), 0 8px 18px rgba(0,0,0,0.14);
+    }
+    .ld-ceo-img img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform 0.65s cubic-bezier(0.4,0,0.2,1);
+    }
+    .ld-ceo-wrap:hover .ld-ceo-img img { transform: scale(1.038); }
+
+    /* Shared placeholder label */
+    .ld-ph {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 5px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.22); text-align: center; line-height: 1.9;
+    }
+
+    /* Right zone */
+    .ld-right { padding-top: 10px; margin-left: -37px; }
+    .ld-right-desc {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 300;
+      color: #2a3550;
+      line-height: 1.85; margin-bottom: 16px; max-width: 200px;
+    }
+    .ld-rule { width: 40px; height: 1px; background: #c9a84c; margin-bottom: 32px; }
+
+    /* Principals */
+    .ld-principal { margin-bottom: 22px; }
+    .ld-principal:last-child { margin-bottom: 0; }
+    .ld-p-name {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px; font-weight: 500;
+      color: #0f2444; line-height: 1.3;
+      display: block; margin-bottom: 4px;
+    }
+    .ld-p-title {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: #a8873a; font-weight: 600; display: block; margin-bottom: 5px;
+    }
+
+    /* ── Part 2: Board of Directors ── */
+    .ld-part2 {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      column-gap: 72px;
+      align-items: start;
+    }
+
+    /* Left column */
+    .ld-part2-left { padding-top: 6px; }
+    .ld-board-eyebrow {
+      font-family: var(--font-body);
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: #1e3a5a; margin-bottom: 18px;
+      display: inline-flex; align-items: center; gap: 10px;
+    }
+    .ld-board-eyebrow::before {
+      content: ''; display: block; width: 10px; height: 10px;
+      border-radius: 50%; background: #5bb5f5; flex-shrink: 0;
+      box-shadow: 0 0 0 3px rgba(91,181,245,0.18), 0 0 12px rgba(91,181,245,0.50), 0 0 24px rgba(91,181,245,0.22);
+    }
+    .ld-board-desc {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13.5px; font-weight: 300;
+      color: #2a3550; line-height: 1.85;
+      margin-bottom: 28px;
+    }
+    .ld-board-rule { width: 40px; height: 1px; background: #c9a84c; }
+
+    /* Right column — photo */
+    .ld-part2-right { position: relative; }
+    .ld-photo-wrap {
+      position: relative;
+      padding-top: 16px; padding-left: 16px;
+      margin-bottom: 20px;
+    }
+    .ld-photo-bg-navy {
+      position: absolute;
+      top: 0; left: 0; right: 16px; bottom: 16px;
+      background: rgba(15,36,68,0.10);
+      pointer-events: none; z-index: 0;
+    }
+    .ld-photo-bg-gold {
+      position: absolute;
+      top: 30px; left: 30px; right: -10px; bottom: -10px;
+      border: 1.5px solid rgba(201,168,76,0.28);
+      background: transparent;
+      pointer-events: none; z-index: 0;
+    }
+    .ld-photo-box {
+      position: relative; z-index: 1;
+      width: 100%; aspect-ratio: 16/7;
+      overflow: hidden;
+      background: rgba(15,36,68,0.52);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ld-photo-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .ld-photo-ph {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+    }
+
+    /* Members credited below photo */
+    .ld-members-row {
+      display: flex;
+      padding-left: 16px;
+    }
+    .ld-member { flex: 1; padding-right: 12px; }
+    .ld-member + .ld-member {
+      border-left: 1px solid rgba(201,168,76,0.2);
+      padding-left: 14px; padding-right: 0;
+    }
+    .ld-member-name {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 12px; font-weight: 400;
+      color: #0f2444; line-height: 1.3; margin-bottom: 3px;
+    }
+    .ld-member-role {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 9px; font-weight: 400;
+      color: #4a5570; letter-spacing: 0.03em;
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .ld-part1 { grid-template-columns: 260px 1fr 240px; column-gap: 36px; }
+      .ld-chair-wrap { width: 192px; }
+      .ld-ceo-wrap { width: 148px; left: 160px; }
+      .ld-photos { height: 340px; }
+      .ld-part2 { grid-template-columns: 1fr 1.5fr; column-gap: 48px; }
+    }
+    @media (max-width: 880px) {
+      .ld-part1 { grid-template-columns: 1fr; row-gap: 48px; }
+      .ld-center { transform: none; }
+      .ld-photos { height: 320px; }
+      .ld-chair-wrap { width: 180px; }
+      .ld-ceo-wrap { width: 138px; left: 148px; top: 90px; }
+      .ld-part2 { grid-template-columns: 1fr; row-gap: 40px; }
+    }
+    @media (max-width: 560px) {
+      .ld-photos { height: 280px; }
+      .ld-chair-wrap { width: 152px; }
+      .ld-ceo-wrap { width: 120px; left: 126px; top: 80px; }
+      .ld-members-row { flex-wrap: wrap; gap: 14px; }
+      .ld-member { flex: 0 0 calc(50% - 7px); }
+    }
+
+    /* ── TRACK RECORD ────────────────────────────── */
+    #works { padding: 72px 0; background: transparent; }
+    .works-head {
+      font-family: var(--font-display); font-size: clamp(30px,4vw,56px);
+      font-weight: 500; letter-spacing: -0.025em; color: var(--white); margin-bottom: 12px;
+    }
+    .works-sub { font-size: 15px; color: rgba(255,255,255,0.55); max-width: 420px; line-height: 1.75; margin-bottom: 64px; }
+    .works-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; }
+    @media (max-width: 900px) { .works-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 600px) { .works-grid { grid-template-columns: 1fr; } }
+    .work-cell {
+      position: relative; aspect-ratio: 4/3; overflow: hidden;
+      background: rgba(6,13,31,0.45); cursor: pointer;
+    }
+    .work-cell img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.65s cubic-bezier(0.4,0,0.2,1);
+      filter: brightness(0.75) saturate(0.75);
+    }
+    .work-cell:hover img { transform: scale(1.08); }
+    .work-ov {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(6,13,31,0.88) 0%, rgba(6,13,31,0.15) 55%, transparent 100%);
+      display: flex; align-items: flex-end; padding: 28px;
+    }
+    .work-text { transform: translateY(6px); transition: transform 0.38s cubic-bezier(0.4,0,0.2,1); }
+    .work-cell:hover .work-text { transform: translateY(0); }
+    .work-tag { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 5px; }
+    .work-name { font-family: var(--font-display); font-size: 17px; font-weight: 500; color: var(--white); line-height: 1.3; }
+
+    /* ── CONTACT ─────────────────────────────────── */
+    #contact { padding: 96px 0; background: #ffffff; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    @media (max-width: 768px) { .contact-grid { grid-template-columns: 1fr; gap: 52px; } }
+
+    .contact-head {
+      font-family: var(--font-display); font-size: clamp(24px, 3vw, 44px);
+      font-weight: 500; letter-spacing: -0.02em; line-height: 1.15;
+      color: #1a1a2e; margin-bottom: 20px;
+    }
+    .contact-desc { font-size: 15px; color: rgba(26,26,46,0.58); line-height: 1.82; margin-bottom: 48px; }
+    .contact-items { display: flex; flex-direction: column; gap: 22px; }
+    .ci { display: flex; gap: 14px; align-items: flex-start; }
+    .ci-icon {
+      width: 36px; height: 36px; flex-shrink: 0;
+      background: rgba(26,50,104,0.07); border: 1px solid rgba(26,50,104,0.18);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ci-icon svg { width: 15px; height: 15px; stroke: #1A3268; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .ci-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(26,26,46,0.45); font-weight: 500; margin-bottom: 3px; }
+    .ci-val { font-size: 13.5px; color: rgba(26,26,46,0.78); }
+
+    .cf { display: flex; flex-direction: column; gap: 18px; padding-bottom: 16px; }
+    .cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .fg { display: flex; flex-direction: column; gap: 7px; }
+    .fg label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(26,26,46,0.5); font-weight: 500; }
+    .fg input, .fg textarea, .fg select {
+      background: rgba(255,255,255,0.5); border: 1px solid rgba(26,26,46,0.15);
+      color: #1a1a2e; padding: 13px 16px;
+      font-family: var(--font-body); font-size: 14px; outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      -webkit-appearance: none; width: 100%;
+    }
+    .fg input:focus, .fg textarea:focus, .fg select:focus {
+      border-color: rgba(26,50,104,0.40); background: rgba(255,255,255,0.72);
+    }
+    .fg input::placeholder, .fg textarea::placeholder { color: rgba(26,26,46,0.3); }
+    .fg textarea { resize: vertical; min-height: 110px; }
+    .fg select option { background: #f0ede6; color: #1a1a2e; }
+    .btn-send {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: #3465B0; color: #ffffff;
+      border: none; padding: 15px 38px;
+      font-family: var(--font-body); font-size: 12px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      cursor: pointer; transition: background 0.2s, transform 0.15s;
+      align-self: flex-start;
+    }
+    .btn-send:hover { background: #2a57a0; }
+    .btn-send:active { transform: scale(0.98); }
+    .btn-send svg { width: 15px; height: 15px; stroke: #ffffff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ── FOOTER ──────────────────────────────────── */
+    footer {
+      background: #111820;
+      padding: 0;
+      border: none;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 32px; margin-bottom: 20px;
+    }
+    @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 600px) { .footer-grid { grid-template-columns: 1fr; } }
+    .footer-logo-svg {
+      width: 130px; height: 100px;
+      display: block;
+      margin-bottom: 6px;
+      object-fit: contain;
+      object-position: top center;
+    }
+    .footer-tagline { font-size: 12px; color: rgba(26,26,46,0.45); line-height: 1.6; max-width: 220px; }
+    .footer-col-head { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 10px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .footer-links a { font-size: 12px; color: rgba(26,26,46,0.5); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: #1a1a2e; }
+    .footer-bar {
+      border-top: 1px solid rgba(26,26,46,0.1); padding-top: 14px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 8px;
+    }
+    .footer-copy { font-size: 11px; color: rgba(26,26,46,0.35); }
+
+    /* ── REVEAL ANIMATIONS ───────────────────────── */
+    [data-reveal] {
+      opacity: 0; transform: translateY(22px);
+      transition: opacity 0.72s cubic-bezier(0.4,0,0.2,1),
+                  transform 0.72s cubic-bezier(0.4,0,0.2,1);
+    }
+    [data-reveal].in { opacity: 1; transform: translateY(0); }
+    [data-reveal][data-d="1"] { transition-delay: 0.1s; }
+    [data-reveal][data-d="2"] { transition-delay: 0.2s; }
+    [data-reveal][data-d="3"] { transition-delay: 0.3s; }
+    [data-reveal][data-d="4"] { transition-delay: 0.4s; }
+    [data-reveal][data-d="5"] { transition-delay: 0.5s; }
+    [data-reveal][data-d="6"] { transition-delay: 0.6s; }
+
+    /* ── PRELOADER ───────────────────────────────── */
+    #preloader {
+      position: fixed; inset: 0; z-index: 9999;
+      /* Environmental lighting: bottom brand-blue glow, faint top cool, center spotlight */
+      background:
+        radial-gradient(ellipse 90% 42% at 50% 100%, rgba(22,56,128,0.20) 0%, transparent 70%),
+        radial-gradient(ellipse 65% 28% at 50% 0%, rgba(155,185,212,0.03) 0%, transparent 65%),
+        radial-gradient(circle 260px at 50% 43%, rgba(255,255,255,0.02) 0%, transparent 70%),
+        #0B1622;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    #pl-center {
+      display: flex; flex-direction: column; align-items: center;
+      position: relative; z-index: 5;
+      transform: translateY(-30px);
+    }
+    /* Mark wrapper — ghost + fill SVG layers */
+    #pl-mark-wrap {
+      position: relative;
+      width: 420px; height: 420px;
+    }
+    /* Ambient glow disc behind the mark */
+    #pl-mark-glow {
+      position: absolute;
+      width: 440px; height: 440px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.052) 0%, transparent 65%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -48%);
+      opacity: 0;
+      pointer-events: none;
+    }
+    /* Ghost — white border ring extracted from logo alpha, interior transparent */
+    #pl-ghost-svg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: contain;
+      filter: url(#pl-outline-filter);
+      opacity: 0;
+      pointer-events: none;
+    }
+    /* Fill — solid white, revealed bottom→top via gradient mask */
+    #pl-fill-svg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+      filter: brightness(0) invert(1) drop-shadow(0 8px 28px rgba(0,0,0,0.35));
+      -webkit-mask-image: linear-gradient(to top, black 60%, rgba(0,0,0,0.5) 78%, transparent 95%);
+      mask-image: linear-gradient(to top, black 60%, rgba(0,0,0,0.5) 78%, transparent 95%);
+      -webkit-mask-size: 100% 300%;
+      mask-size: 100% 300%;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-position: 0 -50%;
+      mask-position: 0 -50%;
+    }
+    /* Wordmark */
+    #pl-wordmark {
+      position: absolute;
+      top: calc(50% + 122px);
+      left: 0; right: 0;
+      display: flex; flex-direction: column; align-items: center;
+      opacity: 0;
+    }
+    #pl-brand-name {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 17px; font-weight: 300;
+      letter-spacing: 0.58em;
+      color: rgba(255,255,255,0.90);
+      text-transform: uppercase;
+      margin-right: -0.58em;
+    }
+    #pl-brand-sub {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 10px; font-weight: 300;
+      letter-spacing: 0.50em;
+      color: rgba(255,255,255,0.30);
+      text-transform: uppercase;
+      margin-top: 6px;
+      margin-right: -0.50em;
+      opacity: 0;
+    }
+    #pl-rule { display: none; }
+    #pl-counter {
+      position: absolute; bottom: 2.2rem; right: 2.6rem; z-index: 5;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 11px; letter-spacing: 0.14em;
+      color: rgba(255,255,255,0.22);
+      pointer-events: none;
+      opacity: 0;
+    }
+    #pl-bar {
+      position: absolute; bottom: 0; left: 0;
+      width: 100%; height: 1px;
+      background: rgba(255,255,255,0.05);
+      z-index: 5;
+    }
+    #pl-bar-fill {
+      height: 100%; width: 0%;
+      background: rgba(255,255,255,0.18);
+    }
+
+  /* ══════════════════════════════════════════
+     MAIN CONTENT — Institutional Redesign
+  ══════════════════════════════════════════ */
+
+  /* Section base */
+  .sec { padding: 96px 0; position: relative; }
+  .sec-white  { background: #ffffff; }
+  .sec-alt    { background: #f5f6f8; }
+  .sec-wrap   { max-width: 1100px; margin: 0 auto; padding: 0 64px; }
+
+  /* Eyebrow */
+  .sec-eyebrow {
+    font-family: var(--font-body);
+    font-size: 11px; font-weight: 600; letter-spacing: 0.22em;
+    text-transform: uppercase; color: #1e3a5a;
+    margin-bottom: 18px;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .sec-eyebrow::before {
+    content: '';
+    display: block; width: 10px; height: 10px;
+    border-radius: 50%; background: #5bb5f5; flex-shrink: 0;
+    box-shadow: 0 0 0 3px rgba(91,181,245,0.18), 0 0 12px rgba(91,181,245,0.50), 0 0 24px rgba(91,181,245,0.22);
+  }
+
+  /* Headings */
+  .sec-h1 {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3vw, 42px);
+    font-weight: 500; color: #1c2b3a;
+    letter-spacing: -0.025em; line-height: 1.18;
+    margin-bottom: 20px;
+  }
+  .sec-h2 {
+    font-family: var(--font-display);
+    font-size: clamp(18px, 2vw, 26px);
+    font-weight: 500; color: #1c2b3a;
+    letter-spacing: -0.02em; line-height: 1.3;
+  }
+
+  /* Body text */
+  .sec-body {
+    font-family: var(--font-body);
+    font-size: 14.5px; color: #526070;
+    line-height: 1.8; max-width: 540px;
+    margin-bottom: 14px;
+  }
+
+  /* Section divider header (eyebrow + heading in grid) */
+  .sec-hdr {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 40px; align-items: end;
+    margin-bottom: 52px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid #e2e6eb;
+  }
+
+  /* ──────────────────────────────────────────────
+     1. GROUP OVERVIEW — staggered cards layout
+  ────────────────────────────────────────────── */
+  #about {
+    background:
+      radial-gradient(ellipse 26% 24% at 14% 16%, rgba(147,204,255,0.17) 0%, rgba(186,224,255,0.04) 62%, transparent 100%),
+      radial-gradient(ellipse 84% 55% at 68% 50%, rgba(147,204,255,0.30) 0%, rgba(186,224,255,0.08) 52%, transparent 70%),
+      #ffffff;
+    padding: 70px 0 90px;
+    position: relative;
+  }
+  /* Grain texture overlay */
+  #about::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='400' height='400' filter='url(%23n)' opacity='0.38'/></svg>");
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 0;
+  }
+  #about .sec-wrap { max-width: 1280px; padding: 0 80px; position: relative; z-index: 1; }
+
+  .ov-layout {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 80px;
+    align-items: flex-start;
+  }
+
+  /* Eyebrow — glowing sky-blue dot + label */
+  .ov-eyebrow {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 22px;
+  }
+  .ov-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #5bb5f5;
+    flex-shrink: 0;
+    box-shadow:
+      0 0 0 3px rgba(91,181,245,0.18),
+      0 0 12px rgba(91,181,245,0.50),
+      0 0 24px rgba(91,181,245,0.22);
+  }
+  .ov-eyebrow-text {
+    font-family: var(--font-body);
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: #1e3a5a;
+  }
+
+  /* Headline */
+  .ov-headline {
+    font-family: var(--font-display);
+    font-size: clamp(30px, 3.2vw, 50px);
+    font-weight: 600; color: #1a3454;
+    letter-spacing: -0.02em; line-height: 1.10;
+    margin-bottom: 26px;
+  }
+
+  /* Body */
+  .ov-body {
+    font-family: var(--font-body);
+    font-size: 14px; color: #3a3a3a;
+    line-height: 1.84; max-width: 360px;
+    margin-bottom: 60px;
+  }
+
+  /* Divider line */
+  .ov-divider {
+    border: none;
+    border-top: 2px solid rgba(20,20,20,0.18);
+    max-width: 360px;
+    width: 100%;
+    margin: 0;
+  }
+
+  /* Cards container */
+  .ov-cards {
+    display: flex;
+    align-items: flex-start;
+    gap: 32px;
+    padding-top: 140px;
+    padding-bottom: 96px;
+    position: relative;
+  }
+  /* Left card — pulled toward text column, staggered lower */
+  .ov-card-col-left {
+    flex-shrink: 0;
+    margin-top: 88px;
+    margin-left: -48px;
+  }
+  /* Right column — offset right for spacious staggered composition */
+  .ov-card-col-right {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    flex-shrink: 0;
+    margin-left: 5px;
+  }
+
+  /* Base card */
+  .ov-card {
+    background: rgba(12, 22, 46, 0.91);
+    border-left: 5px solid rgba(58, 108, 218, 0.65);
+    border-radius: 18px;
+    padding: 30px 28px 46px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /* Layered shadow: tight contact + soft ambient float */
+    box-shadow:
+      0 1px 3px  rgba(6, 16, 40, 0.28),
+      0 6px 16px rgba(6, 16, 40, 0.22),
+      0 18px 40px rgba(6, 16, 40, 0.16),
+      0 36px 72px rgba(6, 16, 40, 0.10),
+      5px 0 18px rgba(6, 16, 40, 0.18);
+    transition:
+      transform 0.08s linear,
+      box-shadow 0.44s cubic-bezier(0.22,1,0.36,1),
+      background 0.44s cubic-bezier(0.22,1,0.36,1),
+      border-color 0.44s cubic-bezier(0.22,1,0.36,1);
+  }
+  .ov-card:hover {
+    transform: translateY(-10px) scale(1.025);
+    background: rgba(16, 28, 56, 0.95);
+    border-left-color: rgba(80, 128, 235, 0.88);
+    box-shadow:
+      0 2px 6px  rgba(6, 16, 40, 0.30),
+      0 10px 24px rgba(6, 16, 40, 0.24),
+      0 26px 56px rgba(6, 16, 40, 0.18),
+      0 48px 96px rgba(6, 16, 40, 0.12),
+      5px 0 18px rgba(6, 16, 40, 0.18),
+      -6px 0 22px rgba(42, 95, 207, 0.22);
+  }
+  .ov-card:hover .ov-card-label {
+    color: rgba(255,255,255,0.56);
+  }
+  .ov-card:hover .ov-card-num {
+    color: rgba(255,255,255,1);
+  }
+
+  /* Per-card size variation */
+  /* Left card — compact */
+  .ov-card-col-left .ov-card {
+    width: 176px;
+    min-height: 172px;
+    padding-bottom: 36px;
+  }
+  /* Top-right — widest, anchors the cluster */
+  .ov-card-col-right .ov-card:first-child {
+    width: 212px;
+    min-height: 178px;
+    padding-bottom: 36px;
+  }
+  /* Years of Heritage — tall, staggered further down */
+  .ov-card-col-right .ov-card:last-child {
+    width: 196px;
+    min-height: 210px;
+    padding-bottom: 44px;
+    margin-top: 48px;
+  }
+
+  .ov-card-label {
+    font-family: var(--font-body);
+    font-size: 9.5px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(255,255,255,0.38);
+    line-height: 1.65;
+    margin-bottom: 0;
+    transition: color 0.44s cubic-bezier(0.22,1,0.36,1);
+  }
+  .ov-card-num {
+    font-family: var(--font-display);
+    font-size: clamp(34px, 3.2vw, 50px);
+    font-weight: 460;
+    margin-top: auto;
+    color: rgba(255,255,255,0.96);
+    letter-spacing: -0.03em; line-height: 1;
+    transition: color 0.44s cubic-bezier(0.22,1,0.36,1);
+  }
+
+  /* ── OVERVIEW REVEAL OVERRIDES — cinematic per-element ── */
+
+  /* Text block slides in from left */
+  .ov-left[data-reveal] {
+    opacity: 0;
+    transform: translateX(-28px);
+    transition:
+      opacity 0.90s cubic-bezier(0.22,1,0.36,1),
+      transform 0.90s cubic-bezier(0.22,1,0.36,1);
+  }
+  .ov-left[data-reveal].in {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* Cards rise from below with a subtle scale */
+  .ov-card[data-reveal] {
+    opacity: 0;
+    transform: translateY(48px) scale(0.95);
+    transition:
+      opacity 0.85s cubic-bezier(0.22,1,0.36,1),
+      transform 0.85s cubic-bezier(0.22,1,0.36,1);
+  }
+  .ov-card[data-reveal].in {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  /* Stagger each card independently */
+  .ov-card[data-reveal][data-d="1"] { transition-delay: 0.12s; }
+  .ov-card[data-reveal][data-d="2"] { transition-delay: 0.28s; }
+  .ov-card[data-reveal][data-d="3"] { transition-delay: 0.46s; }
+
+  @media (max-width: 1024px) {
+    .ov-layout { grid-template-columns: 1fr 1fr; gap: 48px; }
+    .ov-card-col-left { margin-left: 0; }
+    .ov-card-col-right { margin-left: 0; }
+  }
+  @media (max-width: 800px) {
+    .ov-layout { grid-template-columns: 1fr; gap: 72px; }
+    .ov-body { max-width: 100%; }
+    .ov-cards { justify-content: flex-start; padding-top: 0; }
+    .ov-card-col-left { margin-top: 0; margin-left: 0; }
+    .ov-card-col-left .ov-card,
+    .ov-card-col-right .ov-card:first-child,
+    .ov-card-col-right .ov-card:last-child { width: 175px; }
+  }
+
+  /* ──────────────────────────────────────────────
+     2. GROUP ARCHITECTURE — 3D Cube Stack
+  ────────────────────────────────────────────── */
+  /* ══════════════════════════════════════════════════
+     2. GROUP ARCHITECTURE — 3D Cube Infographic Tower
+  ════════════════════════════════════════════════════ */
+  #structure {
+    padding: 96px 0 130px;
+    background:
+      radial-gradient(ellipse 14% 18% at 56% 20%, rgba(147,204,255,0.36) 0%, rgba(147,204,255,0) 100%),
+      radial-gradient(ellipse 14% 18% at 30% 47%, rgba(147,204,255,0.36) 0%, rgba(147,204,255,0) 100%),
+      radial-gradient(ellipse 10% 13% at 55% 67%, rgba(147,204,255,0.33) 0%, rgba(147,204,255,0) 100%),
+      radial-gradient(ellipse 10% 13% at 22% 75%, rgba(147,204,255,0.33) 0%, rgba(147,204,255,0) 100%),
+      #ffffff;
+    position: relative;
+    overflow: visible;
+  }
+  .ci-wrap { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
+
+  /* Two-column layout: infographic left | narrow header right */
+  .ci-layout {
+    display: grid;
+    grid-template-columns: 1fr 190px;
+    gap: 0 24px;
+    align-items: start;
+  }
+
+
+  /* Section header — right column, sticky */
+  .ci-hdr {
+    text-align: right;
+    margin-bottom: 0;
+    padding-top: 10px;
+    margin-top: -60px;
+    order: 2;
+    z-index: 20;
+  }
+  /* Override data-reveal so the X offset is preserved alongside the Y reveal animation */
+  .ci-hdr[data-reveal]     { transform: translateX(-20px) translateY(22px); }
+  .ci-hdr[data-reveal].in  { transform: translateX(-20px) translateY(0); }
+  .ci-eyebrow {
+    font-family: var(--font-body); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.22em; text-transform: uppercase; color: #1e3a5a;
+    display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-bottom: 20px;
+  }
+  .ci-eyebrow::before {
+    content: ''; display: block; width: 10px; height: 10px;
+    border-radius: 50%; background: #5bb5f5; flex-shrink: 0;
+    box-shadow: 0 0 0 3px rgba(91,181,245,0.18), 0 0 12px rgba(91,181,245,0.50), 0 0 24px rgba(91,181,245,0.22);
+  }
+  .ci-section-title {
+    font-family: var(--font-display);
+    font-size: clamp(30px, 3vw, 42px); font-weight: 700;
+    color: #1c2b3a; letter-spacing: -0.04em; line-height: 0.95;
+    display: flex; flex-direction: column; gap: 0; align-items: flex-end;
+  }
+  .ci-section-title .t-brand  { font-size: clamp(24px, 2.6vw, 40px); font-weight: 600; color: #1a3454; }
+  .ci-section-title .t-sub    { font-size: 0.62em; font-weight: 500; color: rgba(26,52,84,0.45); letter-spacing: 0em; margin-top: 2px; line-height: 1.3; }
+  .ci-section-title .t-sep    { width: 60px; border-top: 2px solid rgba(20,20,20,0.18); font-size: 0; margin: 3px 0; }
+  .ci-section-title .t-desc   { display: flex; flex-direction: row; gap: 10px; align-items: flex-start; margin-top: 4px; }
+  .ci-section-title .t-vert   { font-size: 0.56em; font-weight: 600; color: #3a3a3a; letter-spacing: 0.04em; line-height: 1.15; text-align: center; }
+  .ci-section-title .t-vert:last-child { margin-top: 1.15em; }
+
+  /* Tower stage */
+  .ci-stage { position: relative; overflow: visible; order: 1; margin-left: -115px; margin-top: 120px; }
+
+  /* ── 3-COLUMN INFOGRAPHIC LAYOUT ── */
+  .ci-infographic {
+    display: grid;
+    grid-template-columns: 1fr 180px 1fr;
+    align-items: start;
+    position: relative;
+  }
+
+  /* Tower column — single perspective, large value to avoid distortion between cubes */
+  .ci-tower-wrap {
+    width: 180px;
+    perspective: 3800px;
+    perspective-origin: 50% 15%;
+    overflow: visible;
+    position: relative;
+  }
+
+  /* Shared 3D scene */
+  .ci-tower {
+    width: 150px;
+    margin: 0 auto;
+    transform-style: preserve-3d;
+    position: relative;
+    overflow: visible;
+  }
+
+  /* Each cube: distinct rotation per cube — varied direction, not all same way.
+     Positive rotateY = front faces right (left side visible).
+     Negative rotateY = front faces left (right side visible).
+     Near-zero = almost straight-on. */
+  .ci-cube-item {
+    width: 150px; height: 150px;
+    position: relative;
+    transform-style: preserve-3d;
+    cursor: pointer;
+  }
+  .ci-cube-item:nth-child(1) { transform: translateX(-50px) translateZ(   0px) rotateX(-17deg) rotateY(+30deg); }  /* Oil Stations */
+  .ci-cube-item:nth-child(2) { transform: translateX(30px)  translateZ( -55px) rotateX(-17deg) rotateY( +7deg); }  /* Agriculture  */
+  .ci-cube-item:nth-child(3) { transform: translateX(83px)  translateZ( -90px) rotateX(-14deg) rotateY(-12deg); }  /* extra pushback — fixes 2→3 contact */
+  .ci-cube-item:nth-child(4) { transform: translateX(59px)  translateZ(-110px) rotateX(-16deg) rotateY(-26deg); }
+  .ci-cube-item:nth-child(5) { transform: translateX(18px)  translateZ(-160px) rotateX(-17deg) rotateY(+21deg); }  /* extra pushback — fixes 4→5 contact */
+  .ci-cube-item:nth-child(6) { transform: translateX(-18px) translateZ(-210px) rotateX(-11deg) rotateY(-24deg); }
+
+  /* ── CUBE FACES ── */
+  .ci-face { position: absolute; box-sizing: border-box; }
+
+  .ci-front {
+    top: 0; left: 0; width: 150px; height: 150px;
+    transform: translateZ(75px);
+    display: flex; flex-direction: column;
+    justify-content: flex-end; align-items: center;
+    padding: 0 10px 14px; overflow: hidden;
+  }
+  .ci-front::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(145deg, rgba(255,255,255,0.10) 0%, rgba(0,0,0,0.05) 100%);
+    pointer-events: none;
+  }
+  .ci-top {
+    top: -150px; left: 0; width: 150px; height: 150px;
+    transform-origin: 50% 50%;
+    transform: rotateX(-90deg) translateZ(75px);
+  }
+  /* Right side face — no top gap (removes white seam); 3px bottom clearance only. */
+  .ci-side {
+    top: 0; left: 150px; width: 150px; height: 147px;
+    transform-origin: 50% 50%;
+    transform: rotateY(90deg) translateZ(-75px);
+    backface-visibility: hidden;
+  }
+  /* Left side face — same. */
+  .ci-side-left {
+    top: 0; left: -150px; width: 150px; height: 147px;
+    transform-origin: 50% 50%;
+    transform: rotateY(-90deg) translateZ(-75px);
+    backface-visibility: hidden;
+  }
+
+  /* Hover effects — safe for preserve-3d (box-shadow + opacity only, no filter) */
+  .ci-cube-item .ci-front {
+    transition: box-shadow 0.3s ease;
+  }
+  .ci-cube-item:hover .ci-front {
+    box-shadow:
+      inset 0 0 0 2px rgba(255,255,255,0.45),
+      inset 0 -60px 50px rgba(255,255,255,0.08);
+  }
+  .ci-cube-item .ci-side,
+  .ci-cube-item .ci-side-left {
+    transition: box-shadow 0.3s ease;
+  }
+  .ci-cube-item:hover .ci-side,
+  .ci-cube-item:hover .ci-side-left {
+    box-shadow: inset 0 0 24px rgba(0,0,0,0.18);
+  }
+  .ci-cube-item .ci-num { transition: opacity 0.3s ease; }
+  .ci-cube-item:hover .ci-num { opacity: 0.55; }
+
+  /* Number — top-right watermark */
+  .ci-num {
+    position: absolute; top: 10px; right: 10px;
+    font-family: var(--font-display); font-size: 34px;
+    font-weight: 700; letter-spacing: -0.04em; line-height: 1; opacity: 0.20;
+  }
+  /* Sector label — large centered ALL CAPS */
+  .ci-label {
+    font-family: var(--font-display);
+    font-size: 15px; font-weight: 800;
+    letter-spacing: 0.09em; text-transform: uppercase;
+    text-align: center; line-height: 1.3;
+    position: relative; z-index: 1;
+  }
+
+  /* Color themes — front gradient (top-face color → front color, top-right to bottom-left)
+                   top face flat / side slightly darker than front */
+  .ci-c1 .ci-front     { background: linear-gradient(to bottom left, #7B8CB8, #A8B8D4); color: #fff; }
+  .ci-c1 .ci-top       { background: #A8B8D4; }
+  .ci-c1 .ci-side,
+  .ci-c1 .ci-side-left { background: #6A7BA8; }
+
+  .ci-c2 .ci-front     { background: linear-gradient(to bottom left, #3B4DDE, #6878F0); color: #fff; }
+  .ci-c2 .ci-top       { background: #6878F0; }
+  .ci-c2 .ci-side,
+  .ci-c2 .ci-side-left { background: #3040C8; }
+
+  .ci-c3 .ci-front     { background: linear-gradient(to bottom left, #14B3E8, #55D4FF); color: #fff; }
+  .ci-c3 .ci-top       { background: #55D4FF; }
+  .ci-c3 .ci-side,
+  .ci-c3 .ci-side-left { background: #1A9EC8; }
+
+  .ci-c4 .ci-front     { background: linear-gradient(to bottom left, #C8B8A8, #E6DDD4); color: #1c2b3a; }
+  .ci-c4 .ci-top       { background: #E6DDD4; }
+  .ci-c4 .ci-side,
+  .ci-c4 .ci-side-left { background: #AFA090; }
+
+  .ci-c5 .ci-front     { background: linear-gradient(to bottom left, #E76540, #F89070); color: #fff; }
+  .ci-c5 .ci-top       { background: #F89070; }
+  .ci-c5 .ci-side,
+  .ci-c5 .ci-side-left { background: #CC5835; }
+
+  .ci-c6 .ci-front     { background: linear-gradient(to bottom left, #E0A82A, #F8CC66); color: #1c2b3a; }
+  .ci-c6 .ci-top       { background: #F8CC66; }
+  .ci-c6 .ci-side,
+  .ci-c6 .ci-side-left { background: #C49520; }
+
+
+  /* Ground shadow — contact shadow like a box sitting on a white floor.
+     Positioned 52px below tower layout bottom to align with the visual cube base
+     (3D perspective makes the front face extend ~70px below the layout edge). */
+  .ci-ground-shadow {
+    width: 300px; height: 60px;
+    margin: 36px auto 0;
+    transform: translateX(-20px);
+    background: radial-gradient(ellipse 60% 60% at 50% 50%,
+      rgba(10, 20, 45, 0.50) 0%,
+      rgba(10, 20, 45, 0.22) 38%,
+      rgba(10, 20, 45, 0.07) 68%,
+      transparent 100%
+    );
+    filter: blur(18px);
+    pointer-events: none;
+  }
+
+  /* ── ANNOTATION SIDE COLUMNS ── */
+  .ci-anns-left, .ci-anns-right {
+    position: relative;
+    height: 900px;
+    z-index: 10;
+  }
+  .ci-ann-block {
+    position: absolute;
+    padding: 0 14px;
+  }
+  /* 100px gap between cube and annotation on both sides */
+  .ci-anns-right .ci-ann-block { left: 20px; right: 0; }
+  .ci-anns-left  .ci-ann-block { left: 0; right: 20px; }
+  /* Cube centers: N*150+75. Offset by ~30px so line rows align near center.
+     Right → cubes 1,3,5 centers: 75, 375, 675
+     Left  → cubes 2,4,6 centers: 225, 525, 825 */
+  .ci-anns-right .ci-ann-block:nth-child(1) { top: -18px; left: -29px; }   /* cube 1: line ~10px (cube 1 number row) */
+  .ci-anns-right .ci-ann-block:nth-child(2) { top: 147px; left:  31px; }  /* cube 2: line ~160px */
+  .ci-anns-right .ci-ann-block:nth-child(3) { top: 582px; left:  30px; }  /* cube 5: line ~620px */
+  .ci-anns-left  .ci-ann-block:nth-child(1) { top: 305px; right: -76px; } /* cube 3: line ~310px */
+  .ci-anns-left  .ci-ann-block:nth-child(2) { top: 445px; right: -42px; } /* cube 4: line ~460px */
+  .ci-anns-left  .ci-ann-block:nth-child(3) { top: 722px; right: 31px; }  /* cube 6: line ~760px */
+
+  /* Connector: line with icon floating above its outer end */
+  .ci-ann-conn {
+    display: flex;
+    align-items: flex-end;
+    overflow: visible;
+    margin-bottom: 5px;
+  }
+  .ci-anns-right .ci-ann-conn { flex-direction: row; }
+  .ci-anns-left  .ci-ann-conn { flex-direction: row-reverse; }
+
+  .ci-ann-hline {
+    flex: none;
+    width: 145px;
+    height: 2px;
+    background: rgba(20,20,20,0.18);
+  }
+
+  /* Icon: repositioned above the outer end of the line */
+  .ci-ann-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  /* Right column: icon is after the line in DOM, shift left to sit above line's right end */
+  .ci-anns-right .ci-ann-icon-wrap { transform: translateX(-37px) translateY(-8px); }
+  /* Left column: icon is before the line in DOM (row-reverse), shift right to sit above line's left end */
+  .ci-anns-left  .ci-ann-icon-wrap { transform: translateX(37px)  translateY(-8px); }
+  .ci-anns-left  .ci-ann-block:nth-child(2) .ci-ann-icon-wrap { transform: translateX(37px) translateY(-4px); }
+  .ci-ann-icon-sq {
+    flex-shrink: 0;
+    width: 30px; height: 30px;
+    color: #4a3a30;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ci-ann-icon-sq svg {
+    width: 100%; height: 100%;
+    stroke: currentColor; fill: none;
+    stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  /* Text block */
+  .ci-ann-name {
+    font-family: var(--font-display);
+    font-size: 16px; font-weight: 700;
+    color: #1c2b3a; letter-spacing: -0.02em; line-height: 1.2;
+    margin-bottom: 5px;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 5px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  .ci-ann-name .ci-arrow {
+    display: inline-block;
+    font-size: 0.78em; font-weight: 400;
+    opacity: 0;
+    transform: translateX(-5px);
+    transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.34,1.2,0.64,1);
+  }
+  /* Per-sector hover accent colors — exact match to hero section accents */
+  .ci-anns-left  .ci-ann-block:nth-child(1) .ci-ann-name:hover { color: #B87E10; } /* Commerce      */
+  .ci-anns-left  .ci-ann-block:nth-child(2) .ci-ann-name:hover { color: #6A3A1C; } /* Construction  */
+  .ci-anns-left  .ci-ann-block:nth-child(3) .ci-ann-name:hover { color: #9E8A76; } /* Concrete Plant */
+  .ci-anns-right .ci-ann-block:nth-child(1) .ci-ann-name:hover { color: #5B9BD5; } /* Oil Stations  */
+  .ci-anns-right .ci-ann-block:nth-child(2) .ci-ann-name:hover { color: #357848; } /* Agriculture   */
+  .ci-anns-right .ci-ann-block:nth-child(3) .ci-ann-name:hover { color: #5A7A90; } /* Services      */
+  .ci-ann-name:hover .ci-arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .ci-ann-name:active .ci-arrow { transform: translateX(4px); }
+  .ci-ann-name:hover .ci-ann-label { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  /* Left column: reverse so arrow sits before text */
+  .ci-anns-left .ci-ann-name { flex-direction: row-reverse; }
+  .ci-anns-left .ci-ann-name .ci-arrow { transform: translateX(5px); }
+  .ci-anns-left .ci-ann-name:hover .ci-arrow { transform: translateX(0); }
+  .ci-anns-left .ci-ann-name:active .ci-arrow { transform: translateX(-4px); }
+  .ci-ann-list {
+    font-family: var(--font-body);
+    font-size: 12.5px; color: #3a3a3a; line-height: 1.6;
+  }
+  .ci-ann-sub {
+    font-family: var(--font-body);
+    font-size: 11px; color: #6a7686; line-height: 1.55;
+    padding-left: 10px;
+    margin-top: 1px;
+  }
+  .ci-anns-left .ci-ann-sub { padding-left: 0; padding-right: 10px; }
+  /* Left annotations: text right-aligned so it reads toward the tower */
+  .ci-anns-left .ci-ann-name,
+  .ci-anns-left .ci-ann-list { text-align: right; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .ci-layout { grid-template-columns: 1fr; }
+    .ci-hdr { position: static; margin-bottom: 40px; }
+    .ci-infographic { grid-template-columns: 0 180px 1fr; }
+    .ci-anns-left { display: none; }
+  }
+  @media (max-width: 600px) {
+    .ci-wrap { padding: 0 20px; }
+    .ci-infographic { grid-template-columns: 1fr; }
+    .ci-tower-wrap { margin: 0 auto; }
+    .ci-anns-left, .ci-anns-right { display: none; }
+  }
+
+  /* placeholder */
+  .arc-hdr-gone { display: none; }
+
+  /* ──────────────────────────────────────────────
+     3. VISION QUOTE — "We Build What Matters"
+  ────────────────────────────────────────────── */
+  .vision-section {
+    padding: 144px 0;
+    background: #ffffff;
+    position: relative;
+    overflow: hidden;
+  }
+  .vision-section .sec-wrap { max-width: 1100px; padding: 0 64px; text-align: center; }
+  .vision-eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--font-body);
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: #1e3a5a;
+    margin-bottom: 38px;
+  }
+  .vision-eyebrow::before {
+    content: ''; width: 10px; height: 10px;
+    border-radius: 50%; background: #5bb5f5; flex-shrink: 0;
+    box-shadow: 0 0 0 3px rgba(91,181,245,0.18), 0 0 12px rgba(91,181,245,0.50), 0 0 24px rgba(91,181,245,0.22);
+  }
+  .vision-eyebrow::after { display: none; }
+  .vision-quote {
+    font-family: var(--font-display);
+    font-size: clamp(44px, 6.4vw, 96px);
+    font-weight: 400; color: #1c2b3a;
+    letter-spacing: -0.04em;
+    line-height: 1.04;
+    max-width: 960px; margin: 0 auto 32px;
+  }
+  .vision-quote em { font-style: italic; font-weight: 400; color: #3a5f8a; }
+  .vision-attr {
+    display: inline-flex; align-items: center; gap: 14px;
+    font-family: var(--font-body);
+    font-size: 12px; color: #8a96a2;
+    letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  .vision-attr::before { content: ''; width: 28px; height: 1px; background: #c8cfd6; }
+  .vision-section::before {
+    content: ''; position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 760px; height: 760px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(58, 95, 138, 0.045) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  /* ── 4. Our Approach ── */
+  .ap-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: start;
+  }
+  .ap-principles { display: flex; flex-direction: column; }
+  .ap-principle {
+    padding: 22px 0; border-bottom: 1px solid #e2e6eb;
+    display: grid; grid-template-columns: 30px 1fr;
+    gap: 16px; align-items: start;
+  }
+  .ap-principle:first-child { border-top: 1px solid #e2e6eb; }
+  .ap-principle-num {
+    font-family: var(--font-body); font-size: 10px;
+    letter-spacing: 0.1em; color: #b0bbc7; padding-top: 2px;
+  }
+  .ap-principle-name {
+    font-family: var(--font-display);
+    font-size: 14px; font-weight: 600;
+    color: #1c2b3a; margin-bottom: 5px;
+  }
+  .ap-principle-desc {
+    font-family: var(--font-body); font-size: 13px;
+    color: #526070; line-height: 1.65;
+  }
+
+  /* ── 5. Track Record ── */
+  .tr-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 0; margin-bottom: 48px;
+    border: 1px solid #e2e6eb; border-radius: 4px; overflow: hidden;
+  }
+  .tr-stat {
+    padding: 34px 28px;
+    border-right: 1px solid #e2e6eb;
+    background: #ffffff;
+  }
+  .tr-stat:last-child { border-right: none; }
+  .tr-stat-num {
+    font-family: var(--font-display);
+    font-size: 40px; font-weight: 500;
+    color: #1c2b3a; letter-spacing: -0.04em;
+    line-height: 1; margin-bottom: 8px;
+  }
+  .tr-stat-lbl {
+    font-family: var(--font-body); font-size: 11px;
+    color: #8a96a2; letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .tr-highlights {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .tr-card {
+    background: #f5f6f8; border-radius: 4px;
+    padding: 28px; border-left: 3px solid #3a5f8a;
+  }
+  .tr-card-sector {
+    font-family: var(--font-body); font-size: 10px;
+    letter-spacing: 0.15em; color: #3a5f8a;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  .tr-card-title {
+    font-family: var(--font-display);
+    font-size: 15px; font-weight: 600;
+    color: #1c2b3a; margin-bottom: 8px;
+  }
+  .tr-card-desc {
+    font-family: var(--font-body); font-size: 13px;
+    color: #526070; line-height: 1.65;
+  }
+  .tr-card-meta {
+    margin-top: 16px; font-family: var(--font-body);
+    font-size: 11px; color: #b0bbc7;
+  }
+
+  /* ── 6. Ownership & Leadership ── */
+  .ld-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: start;
+  }
+  .ld-badge {
+    display: inline-flex; align-items: center;
+    gap: 8px; padding: 5px 14px;
+    border: 1px solid #3a5f8a; border-radius: 100px;
+    font-family: var(--font-body); font-size: 10px;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: #3a5f8a; margin-bottom: 20px;
+  }
+  .ld-badge::before {
+    content: ''; width: 5px; height: 5px;
+    border-radius: 50%; background: #3a5f8a;
+  }
+  .ld-people { display: flex; flex-direction: column; }
+  .ld-person {
+    padding: 20px 0; border-bottom: 1px solid #e2e6eb;
+    display: grid; grid-template-columns: 1fr auto;
+    align-items: center; gap: 12px;
+  }
+  .ld-person:first-child { border-top: 1px solid #e2e6eb; }
+  .ld-person-name {
+    font-family: var(--font-display);
+    font-size: 14px; font-weight: 500; color: #1c2b3a;
+  }
+  .ld-person-role {
+    font-family: var(--font-body); font-size: 12px;
+    color: #8a96a2; margin-top: 3px;
+  }
+  .ld-person-tag {
+    font-family: var(--font-body); font-size: 10px;
+    letter-spacing: 0.1em; color: #3a5f8a;
+    text-transform: uppercase; background: #eef2f7;
+    padding: 4px 10px; border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  /* ── 7. Governance & Principles ── */
+  .gov-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: #e2e6eb;
+    border: 1px solid #e2e6eb;
+    border-radius: 4px; overflow: hidden;
+  }
+  .gov-card { background: #ffffff; padding: 34px 26px; }
+  .gov-card-num {
+    font-family: var(--font-display);
+    font-size: 30px; font-weight: 300;
+    color: #e8ecf0; letter-spacing: -0.03em;
+    line-height: 1; margin-bottom: 14px;
+  }
+  .gov-card-rule {
+    width: 18px; height: 2px;
+    background: #3a5f8a; margin-bottom: 12px;
+    border-radius: 2px;
+  }
+  .gov-card-name {
+    font-family: var(--font-display);
+    font-size: 15px; font-weight: 600;
+    color: #1c2b3a; margin-bottom: 10px;
+  }
+  .gov-card-desc {
+    font-family: var(--font-body); font-size: 13px;
+    color: #526070; line-height: 1.7;
+  }
+
+  /* ── 8. Contact ── */
+  .sec-contact { background: #3465B0; padding: 100px 0; }
+  .ct-inner { text-align: center; max-width: 520px; margin: 0 auto; }
+  .ct-eyebrow {
+    font-family: var(--font-body); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 20px;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .ct-eyebrow::before {
+    content: ''; display: block; width: 10px; height: 10px;
+    border-radius: 50%; background: #5bb5f5; flex-shrink: 0;
+    box-shadow: 0 0 0 3px rgba(91,181,245,0.18), 0 0 12px rgba(91,181,245,0.50), 0 0 24px rgba(91,181,245,0.22);
+  }
+  .ct-h {
+    font-family: var(--font-display);
+    font-size: clamp(26px, 2.8vw, 38px);
+    font-weight: 500; color: #ffffff;
+    letter-spacing: -0.025em; line-height: 1.2;
+    margin-bottom: 14px;
+  }
+  .ct-sub {
+    font-family: var(--font-body); font-size: 14px;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.75; margin-bottom: 36px;
+  }
+  .ct-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 32px;
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 3px;
+    font-family: var(--font-body); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: #ffffff; text-decoration: none; cursor: pointer;
+    background: transparent;
+    transition: background 0.25s ease, border-color 0.25s ease;
+  }
+  .ct-btn:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(255,255,255,0.4);
+  }
+  .ct-details {
+    display: flex; justify-content: center; gap: 48px;
+    margin-top: 48px; padding-top: 36px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .ct-detail-lbl {
+    font-family: var(--font-body); font-size: 10px;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: rgba(255,255,255,0.3); margin-bottom: 6px;
+  }
+  .ct-detail-val {
+    font-family: var(--font-body); font-size: 13px;
+    color: rgba(255,255,255,0.6);
+  }
+
+  /* ── Footer ── */
+  .site-footer {
+    background: #0f1f45;
+    padding: 22px 0;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .ft-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 24px;
+  }
+  .ft-logo-img {
+    height: 26px; width: auto;
+    filter: brightness(0) invert(1); opacity: 0.40;
+    display: block; flex-shrink: 0;
+  }
+  .ft-links {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; align-items: center; gap: 22px;
+  }
+  .ft-links a {
+    font-family: var(--font-body); font-size: 11.5px;
+    color: rgba(255,255,255,0.32); text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .ft-links a:hover { color: rgba(255,255,255,0.65); }
+  .ft-copy {
+    font-family: var(--font-body); font-size: 11px;
+    color: rgba(255,255,255,0.20); white-space: nowrap;
+  }
+
+  /* ── HOMEPAGE HERO ACCENT POLISH ────────────────────
+     --sector-rgb and --sector-glow-rgb are set per-slide
+     by updateBadge() in JS. Fallbacks keep the gold brand
+     look before the first slide initializes.            */
+  #hero-new {
+    --sector-rgb: 201,168,76;
+    --sector-glow-rgb: 225,208,165;
+  }
+  #hero-new .hn-eyebrow-line {
+    background: rgba(var(--sector-glow-rgb), 0.60);
+    transition: background 0.6s ease;
+  }
+  #hero-new .hn-eyebrow-label {
+    color: rgba(var(--sector-glow-rgb), 0.92);
+    transition: color 0.6s ease;
+  }
+
+  /* ── Title: bold accent on right portion of letterforms ── */
+  #hero-new .hn-title {
+    padding-bottom: 0.18em;
+    background: linear-gradient(95deg,
+      rgba(var(--sector-rgb), 0.78) 0%,
+      rgba(var(--sector-rgb), 0.65) 28%,
+      #ffffff 62%,
+      #ffffff 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Subtitle: pure white ── */
+  #hero-new .hn-subtitle {
+    color: #ffffff;
+  }
+
+  /* ── Badge icon: significant glow at rest, stronger on hover ── */
+  #hero-new .hn-badge-icon svg {
+    filter: drop-shadow(0 0 5px rgba(var(--badge-accent-rgb), 1))
+            drop-shadow(0 0 12px rgba(var(--badge-accent-rgb), 0.80))
+            drop-shadow(0 0 24px rgba(var(--badge-accent-rgb), 0.55))
+            drop-shadow(0 0 42px rgba(var(--badge-accent-rgb), 0.28));
+    transition: filter 0.6s ease;
+  }
+  #hero-new .hn-badge:hover .hn-badge-icon svg {
+    filter: drop-shadow(0 0 8px rgba(var(--badge-accent-rgb), 1))
+            drop-shadow(0 0 20px rgba(var(--badge-accent-rgb), 0.90))
+            drop-shadow(0 0 40px rgba(var(--badge-accent-rgb), 0.60))
+            drop-shadow(0 0 64px rgba(var(--badge-accent-rgb), 0.35));
+  }
+
+  /* ── Badge text: slow smooth pulse — builds, holds, fades ── */
+  @keyframes hn-badge-glow {
+    0%   { text-shadow: none; }
+    20%  { text-shadow:
+             0 0 3px rgba(var(--badge-accent-rgb), 0.40),
+             0 0 8px  rgba(var(--badge-accent-rgb), 0.20); }
+    45%  { text-shadow:
+             0 0 6px rgba(var(--badge-accent-rgb), 1),
+             0 0 16px rgba(var(--badge-accent-rgb), 0.80),
+             0 0 32px rgba(var(--badge-accent-rgb), 0.45); }
+    65%  { text-shadow:
+             0 0 6px rgba(var(--badge-accent-rgb), 1),
+             0 0 16px rgba(var(--badge-accent-rgb), 0.80),
+             0 0 32px rgba(var(--badge-accent-rgb), 0.45); }
+    88%  { text-shadow:
+             0 0 3px rgba(var(--badge-accent-rgb), 0.35),
+             0 0 8px  rgba(var(--badge-accent-rgb), 0.15); }
+    100% { text-shadow: none; }
+  }
+  #hero-new .hn-badge-char {
+    transition: none;
+    animation: hn-badge-glow 1.8s ease-in-out infinite;
+  }
+  #hero-new .hn-badge:hover .hn-badge-char {
+    animation: none;
+    text-shadow:
+      0 0 6px rgba(var(--badge-accent-rgb), 1),
+      0 0 16px rgba(var(--badge-accent-rgb), 0.80),
+      0 0 32px rgba(var(--badge-accent-rgb), 0.45);
+  }
+
+  #hero-new .hn-sector-num {
+    text-shadow: none;
+    filter: drop-shadow(1px 3px 4px rgba(0,0,0,0.18));
+  }
+  #hero-new .hn-tab-bar-fill {
+    background: rgba(255,255,255,0.90);
+    box-shadow: none;
+    transition: background 0.6s ease;
+  }
+  #hero-new .hn-tab.hn-played .hn-tab-bar {
+    background: rgba(255,255,255,0.90);
+    transition: background 0.6s ease;
+  }
+  #hero-new .hn-tab.hn-active .hn-tab-name {
+    color: rgba(255,255,255,0.95);
+    font-weight: 600;
+    text-shadow: 0 1px 8px rgba(0,0,0,0.45), 0 0 20px rgba(0,0,0,0.20);
+    transition: color 0.6s ease, text-shadow 0.4s ease;
+  }
+  /* View Sector button: white pill, accent icon disc */
+  #hero-new .hn-btn {
+    background: rgba(255,255,255,0.92);
+    border-color: rgba(255,255,255,0.45);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.22), 0 1px 5px rgba(0,0,0,0.12);
+    transition: background 0.50s ease, box-shadow 0.22s ease, transform 0.22s cubic-bezier(0.34,1.2,0.64,1);
+  }
+  #hero-new .hn-btn-label { color: rgba(6,13,31,0.82); }
+  #hero-new .hn-btn-icon {
+    background: rgb(var(--sector-rgb));
+    transition: background 0.50s ease, transform 0.22s cubic-bezier(0.34,1.2,0.64,1);
+  }
+  #hero-new .hn-btn:hover {
+    box-shadow: 0 12px 36px rgba(0,0,0,0.28), 0 3px 10px rgba(0,0,0,0.14);
+  }
+  #hero-new .hn-btn:hover .hn-btn-icon { transform: translateX(3px); }
+
+  /* Ghost text link — "Explore Our Group" */
+  .hn-ghost-link {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: var(--font-body); font-size: 11.5px;
+    font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    transition: color 0.28s ease, text-shadow 0.28s ease, transform 0.25s ease;
+  }
+  .hn-ghost-text {
+    display: inline;
+  }
+  .hn-ghost-link svg {
+    width: 13px; height: 13px;
+    stroke: rgba(255,255,255,0.65); fill: none; stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round;
+    flex-shrink: 0;
+    transition: transform 0.25s cubic-bezier(0.25,0,0,1), stroke 0.3s ease;
+  }
+  .hn-ghost-link:hover {
+    color: #89ceff;
+    text-shadow:
+      0 0 6px rgba(137,206,255,0.90),
+      0 0 14px rgba(137,206,255,0.55),
+      0 0 30px rgba(137,206,255,0.28);
+    transform: translateY(-1px);
+  }
+  .hn-ghost-link:hover svg {
+    transform: translateX(5px);
+    stroke: #89ceff;
+  }
+  #hero-new .hn-scroll-btn:hover .hn-scroll-disk {
+    box-shadow:
+      0 6px 28px rgba(0,0,0,0.18),
+      0 2px 8px rgba(0,0,0,0.10),
+      0 0 24px rgba(var(--sector-rgb), 0.32);
+  }
+  /* Scroll-button arrow: lighter stroke + very soft glow */
+  #hero-new .hn-scroll-arrow-svg line,
+  #hero-new .hn-scroll-arrow-svg polyline {
+    stroke: rgba(var(--sector-rgb), 0.82);
+    transition: stroke 0.6s ease;
+  }
+  #hero-new .hn-scroll-arrow-svg {
+    filter: none;
+    transition: filter 0.4s ease;
+  }
+  #hero-new .hn-scroll-btn:hover .hn-scroll-arrow-svg {
+    filter: drop-shadow(0 0 3px rgba(var(--sector-rgb), 0.90))
+            drop-shadow(0 0 8px rgba(var(--sector-rgb), 0.60))
+            drop-shadow(0 0 18px rgba(var(--sector-rgb), 0.35));
+  }
+
+</style>
+  <!-- Prevent flash of hero/navbar before preloader completes -->
+  <style>#hero-new, #navbar { opacity: 0; }</style>
+</head>
+<body>
+
+<!-- SVG filter: removes white background, converts logo marks to white -->
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden">
+  <defs>
+    <filter id="liquid-glass" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="1" seed="1" result="turbulence"/>
+      <feGaussianBlur in="turbulence" stdDeviation="2" result="blurredNoise"/>
+      <feDisplacementMap in="SourceGraphic" in2="blurredNoise" scale="60" xChannelSelector="R" yChannelSelector="B" result="displaced"/>
+      <feGaussianBlur in="displaced" stdDeviation="3" result="finalBlur"/>
+      <feComposite in="finalBlur" in2="finalBlur" operator="over"/>
+    </filter>
+    <filter id="white-to-transparent" color-interpolation-filters="sRGB">
+      <!-- Set all RGB output channels to 1 (white), then make white pixels transparent -->
+      <!-- A' = -R - G - B + 3: white(1,1,1)→0, dark pixels→>1 clamped to 1 -->
+      <feColorMatrix type="matrix"
+        values="0 0 0 0 1
+                0 0 0 0 1
+                0 0 0 0 1
+               -1 -1 -1 0 3"/>
+    </filter>
+    <!-- Outline filter: dilates alpha, subtracts original → leaves only the border ring, colored white -->
+    <filter id="pl-outline-filter" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
+      <feMorphology in="SourceAlpha" operator="dilate" radius="0.9" result="dilated"/>
+      <feComposite in="dilated" in2="SourceAlpha" operator="out" result="ring"/>
+      <feFlood flood-color="white" flood-opacity="1" result="white"/>
+      <feComposite in="white" in2="ring" operator="in"/>
+    </filter>
+  </defs>
+</svg>
+
+<!-- ════════════════════════════════════════════════
+     PRELOADER
+═════════════════════════════════════════════════ -->
+<div id="preloader">
+  <div id="pl-center">
+    <div id="pl-mark-wrap">
+      <div id="pl-mark-glow"></div>
+
+      <!-- Ghost layer: border ring (visible during fill phase) -->
+      <img id="pl-ghost-svg" src="KP Logo no bg.png" alt="">
+
+      <!-- Stroke-draw + fill: single SVG, stroke always visible, fill rises via viewport-space clipPath -->
+      <svg id="pl-draw-svg" viewBox="0 0 452.09 559.87" preserveAspectRatio="xMidYMid meet"
+           fill="none" xmlns="http://www.w3.org/2000/svg"
+           style="position:absolute;left:17.75%;top:9.5%;width:66%;height:70%;pointer-events:none;">
+        <!-- Fill layer: fades in after stroke completes -->
+        <g id="pl-fill-g">
+          <g transform="translate(-19.962976,560.035776) scale(0.100000,-0.100000)">
+            <path id="pl-fill-path"
+              d="M207 5593 c-12 -11 -8 -3293 4 -3401 24 -224 86 -444 182 -645 105 -220 220 -381 407 -567 200 -202 419 -352 762 -526 207 -104 464 -240 717 -379 162 -89 187 -92 296 -35 44 24 100 54 125 68 115 64 472 253 630 333 196 99 240 124 240 138 0 22 -238 304 -270 321 -16 9 -61 -11 -247 -106 -126 -64 -286 -148 -358 -187 -71 -38 -150 -81 -174 -93 -24 -13 -50 -24 -59 -24 -8 0 -67 28 -131 61 -64 34 -270 142 -458 240 -457 238 -600 335 -799 542 -248 257 -392 565 -424 909 -7 75 -10 577 -8 1508 l3 1395 338 3 337 2 0 -1800 c0 -1576 2 -1805 15 -1836 36 -86 239 -234 513 -374 100 -51 125 -60 137 -50 13 11 15 99 15 656 l0 643 59 68 c32 38 88 100 125 138 l65 70 33 -36 c67 -72 99 -110 224 -265 71 -88 184 -226 252 -309 309 -376 380 -463 536 -655 262 -321 317 -389 376 -461 30 -36 73 -89 95 -117 61 -77 73 -80 145 -26 158 116 369 342 485 519 178 270 286 586 314 920 16 182 15 3337 -1 3353 -9 9 -288 12 -1194 12 -650 0 -1189 -3 -1198 -6 -14 -5 -16 -34 -16 -219 0 -185 2 -214 16 -219 9 -3 451 -6 983 -6 l968 0 7 -77 c10 -129 7 -2677 -4 -2817 -12 -145 -51 -309 -104 -441 -36 -90 -123 -245 -137 -245 -10 0 -93 94 -299 340 -94 113 -188 225 -209 250 -47 55 -373 445 -600 715 -92 110 -178 214 -191 232 l-23 32 96 118 c52 65 148 183 213 263 64 80 167 206 227 280 61 74 241 295 399 490 159 195 329 404 378 464 50 60 90 115 90 122 0 12 -69 14 -415 14 l-415 0 -84 -102 c-46 -57 -146 -180 -223 -275 -263 -327 -467 -578 -563 -693 -53 -63 -148 -180 -212 -260 -63 -80 -134 -165 -156 -190 l-41 -45 -1 1127 c0 1104 0 1128 -19 1138 -22 11 -1763 15 -1774 3z"
+              fill="white" stroke="none"/>
+          </g>
+        </g>
+
+        <!-- Stroke layer: no clip, always fully visible during draw AND hold AND fill -->
+        <g transform="translate(-19.962976,560.035776) scale(0.100000,-0.100000)">
+          <path id="pl-draw-path"
+            d="M207 5593 c-12 -11 -8 -3293 4 -3401 24 -224 86 -444 182 -645 105 -220 220 -381 407 -567 200 -202 419 -352 762 -526 207 -104 464 -240 717 -379 162 -89 187 -92 296 -35 44 24 100 54 125 68 115 64 472 253 630 333 196 99 240 124 240 138 0 22 -238 304 -270 321 -16 9 -61 -11 -247 -106 -126 -64 -286 -148 -358 -187 -71 -38 -150 -81 -174 -93 -24 -13 -50 -24 -59 -24 -8 0 -67 28 -131 61 -64 34 -270 142 -458 240 -457 238 -600 335 -799 542 -248 257 -392 565 -424 909 -7 75 -10 577 -8 1508 l3 1395 338 3 337 2 0 -1800 c0 -1576 2 -1805 15 -1836 36 -86 239 -234 513 -374 100 -51 125 -60 137 -50 13 11 15 99 15 656 l0 643 59 68 c32 38 88 100 125 138 l65 70 33 -36 c67 -72 99 -110 224 -265 71 -88 184 -226 252 -309 309 -376 380 -463 536 -655 262 -321 317 -389 376 -461 30 -36 73 -89 95 -117 61 -77 73 -80 145 -26 158 116 369 342 485 519 178 270 286 586 314 920 16 182 15 3337 -1 3353 -9 9 -288 12 -1194 12 -650 0 -1189 -3 -1198 -6 -14 -5 -16 -34 -16 -219 0 -185 2 -214 16 -219 9 -3 451 -6 983 -6 l968 0 7 -77 c10 -129 7 -2677 -4 -2817 -12 -145 -51 -309 -104 -441 -36 -90 -123 -245 -137 -245 -10 0 -93 94 -299 340 -94 113 -188 225 -209 250 -47 55 -373 445 -600 715 -92 110 -178 214 -191 232 l-23 32 96 118 c52 65 148 183 213 263 64 80 167 206 227 280 61 74 241 295 399 490 159 195 329 404 378 464 50 60 90 115 90 122 0 12 -69 14 -415 14 l-415 0 -84 -102 c-46 -57 -146 -180 -223 -275 -263 -327 -467 -578 -563 -693 -53 -63 -148 -180 -212 -260 -63 -80 -134 -165 -156 -190 l-41 -45 -1 1127 c0 1104 0 1128 -19 1138 -22 11 -1763 15 -1774 3z"
+            stroke="rgba(255,255,255,0.75)" stroke-width="25"
+            stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </g>
+      </svg>
+
+      <!-- Fill layer: solid white, mask reveals bottom→top -->
+      <img id="pl-fill-svg" src="KP Logo no bg.png" alt="">
+    </div>
+
+  </div>
+  <div id="pl-wordmark">
+    <div id="pl-brand-name">KUNPOL</div>
+    <div id="pl-rule"></div>
+    <div id="pl-brand-sub">Group</div>
+  </div>
+  <div id="pl-counter"><span id="pl-num">0</span>%</div>
+  <div id="pl-bar"><div id="pl-bar-fill"></div></div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     HERO-ONLY FIXED UI
+═════════════════════════════════════════════════ -->
+<a href="#" id="hero-logo-fixed" aria-label="KUNPOL Group">
+  <svg viewBox="190 170 700 740" xmlns="http://www.w3.org/2000/svg" style="width:48px;height:48px;display:block;">
+    <image href="Kunpol Logo 1.png" x="0" y="0" width="1080" height="1080" filter="url(#white-to-transparent)"/>
+  </svg>
+</a>
+
+<button id="hero-hamburger" aria-label="Open menu">
+  <svg viewBox="0 0 18 12">
+    <line x1="0" y1="1" x2="18" y2="1"/>
+    <line x1="0" y1="6" x2="18" y2="6"/>
+    <line x1="0" y1="11" x2="18" y2="11"/>
+  </svg>
+</button>
+
+<!-- Full-screen overlay menu -->
+<div id="menu-overlay" role="dialog" aria-modal="true">
+  <button id="menu-close" aria-label="Close menu">
+    <svg viewBox="0 0 18 18"><line x1="2" y1="2" x2="16" y2="16"/><line x1="16" y1="2" x2="2" y2="16"/></svg>
+  </button>
+  <ul class="menu-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#structure">Group Structure</a></li>
+    <li><a href="#works">Track Record</a></li>
+    <li><a href="#leadership">Leadership</a></li>
+    <li><a href="#contact">Contact Us</a></li>
+  </ul>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     STANDARD NAVBAR (appears after hero)
+═════════════════════════════════════════════════ -->
+<nav id="navbar">
+  <!-- Left: logo mark + divider + wordmark -->
+  <a href="#" class="nav-logo">
+    <span class="nav-logo-wrap">
+      <img src="KP Logo no bg.png" alt="KUNPOL" class="nav-logo-svg">
+      <img src="KP Logo no bg.png" alt="" aria-hidden="true" class="nav-logo-white">
+    </span>
+    <div class="nav-logo-divider"></div>
+    <div class="nav-wordmark">
+      <span class="nav-wordmark-top">Kunpol</span>
+      <span class="nav-wordmark-sub">Group</span>
+    </div>
+  </a>
+  <!-- Centre: nav links -->
+  <div class="nav-center">
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about">About</a></li>
+      <li class="nav-has-drop">
+        <a href="#sectors">Sectors
+          <svg class="nav-drop-chevron" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4"/></svg>
+        </a>
+        <div class="nav-dropdown">
+          <a href="oil-stations.html" class="nav-drop-item">
+            <span class="nav-drop-num">01</span>
+            <span class="nav-drop-name">Oil Stations</span>
+          </a>
+          <a href="agriculture.html" class="nav-drop-item">
+            <span class="nav-drop-num">02</span>
+            <span class="nav-drop-name">Agriculture</span>
+          </a>
+          <a href="commerce.html" class="nav-drop-item">
+            <span class="nav-drop-num">03</span>
+            <span class="nav-drop-name">Commerce</span>
+          </a>
+          <a href="construction.html" class="nav-drop-item">
+            <span class="nav-drop-num">04</span>
+            <span class="nav-drop-name">Construction</span>
+          </a>
+          <a href="services.html" class="nav-drop-item">
+            <span class="nav-drop-num">05</span>
+            <span class="nav-drop-name">Services</span>
+          </a>
+          <a href="concrete-plant.html" class="nav-drop-item">
+            <span class="nav-drop-num">06</span>
+            <span class="nav-drop-name">Concrete Plant</span>
+          </a>
+        </div>
+      </li>
+      <li><a href="#works">Track Record</a></li>
+      <li><a href="#leadership">Leadership</a></li>
+    </ul>
+  </div>
+  <!-- Right: language + hamburger + contact -->
+  <div class="nav-right">
+    <button class="nav-lang" id="navLang" title="Switch language">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+      </svg>
+      <span id="navLangLabel">EN</span>
+      <span class="nav-lang-sep">/</span>
+      <span>TH</span>
+    </button>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="#contact" class="nav-cta">Contact Us</a>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════════════
+     NEW HERO — SECTOR SHOWCASE
+═════════════════════════════════════════════════ -->
+<section id="hero-new">
+
+  <!-- Background slide layers — stacked, crossfade + Ken Burns zoom -->
+  <div class="hn-bg-track" id="hnBgTrack">
+    <div class="hn-bg" style="background-image:url('Inspirations/Oil Station Footage.jpeg')"></div>
+    <div class="hn-bg" style="background-image:url('Inspirations/Agriculture Footage .jpeg')"></div>
+    <div class="hn-bg" style="background-image:url('Inspirations/warehouse footage.jpeg')"></div>
+    <div class="hn-bg" style="background-image:url('Inspirations/Construction Footage.jpeg')"></div>
+    <div class="hn-bg" style="background-image:url('Inspirations/A tree and a sky img.jpeg')"></div>
+    <div class="hn-bg" style="background-image:url('Inspirations/Concrete Plant Footage.jpeg')"></div>
+  </div>
+
+  <!-- Accent colour bloom -->
+  <div class="hn-accent-overlay" id="hnAccentOverlay"></div>
+
+  <!-- Overlay -->
+  <div class="hn-overlay"></div>
+
+  <!-- White fade — bottom of hero into page background -->
+  <div class="hn-white-fade"></div>
+
+  <!-- Bottom-left content -->
+  <div class="hn-content">
+    <div class="hn-content-inner" id="hnContentInner">
+      <!-- Sector badge — contextual label, not clickable -->
+      <div class="hn-badge" id="hnBadge">
+        <span class="hn-badge-icon" id="hnBadgeIcon">
+          <!-- Icon injected by JS per sector -->
+        </span>
+        <span class="hn-badge-text" id="hnBadgeText">Energy Operations</span>
+      </div>
+      <h1 class="hn-title" id="hnTitle">Oil Stations</h1>
+      <p class="hn-subtitle" id="hnSubtitle">Operating 3 strategic PT fuel stations across Khon Kaen, powering local logistics, agriculture fleets, and communities with reliable energy.</p>
+      <div class="hn-ctas">
+        <a href="oil-stations.html" class="hn-btn" id="hnExplorBtn">
+          <span class="hn-btn-label">View This Sector</span>
+          <span class="hn-btn-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.90)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7,7 17,7 17,17"/></svg>
+          </span>
+        </a>
+        <a href="#structure" class="hn-ghost-link">
+          <span class="hn-ghost-text">Explore Our Group</span>
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13,6 19,12 13,18"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right-side scroll circle -->
+  <a href="#about" class="hn-scroll-btn" id="hnScrollBtn">
+    <div class="hn-scroll-wrap">
+      <!-- Frosted glass circle -->
+      <div class="hn-scroll-disk"></div>
+      <!-- Orbiting text -->
+      <svg class="hn-orbit-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <path id="orbitPath" d="M 60,60 m -51,0 a 51,51 0 1,1 102,0 a 51,51 0 1,1 -102,0"/>
+        </defs>
+        <text font-family="var(--font-body)" font-size="8.5" font-weight="500" letter-spacing="0.18em" fill="rgba(255,255,255,0.55)" text-anchor="start">
+          <textPath href="#orbitPath">SCROLL TO EXPLORE OUR STORY  ·  SCROLL TO EXPLORE OUR STORY  ·</textPath>
+        </text>
+      </svg>
+      <!-- Single unified arrow SVG: stem + chevron as one connected shape -->
+      <svg class="hn-scroll-arrow-svg" id="hnArrowSvg"
+           width="20" height="52" viewBox="0 0 20 52"
+           xmlns="http://www.w3.org/2000/svg" overflow="visible">
+        <line id="hnArrowStem" x1="10" y1="0" x2="10" y2="39"
+              stroke="rgba(15,20,35,0.82)" stroke-width="2.5" stroke-linecap="round"/>
+        <polyline id="hnArrowHead" points="2,31 10,41 18,31"
+              fill="none" stroke="rgba(15,20,35,0.88)" stroke-width="3"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </a>
+
+  <!-- Sector timeline (replaces box tabs) -->
+  <div class="hn-tabs" id="hnTabs">
+    <div class="hn-timeline">
+      <div class="hn-tab hn-active" data-index="0">
+        <div class="hn-tab-bar"><div class="hn-tab-bar-fill"></div></div>
+        <div class="hn-tab-label">
+          <div class="hn-tab-num">01</div>
+          <div class="hn-tab-name">Oil Stations</div>
+        </div>
+      </div>
+      <div class="hn-tab" data-index="1">
+        <div class="hn-tab-bar"><div class="hn-tab-bar-fill"></div></div>
+        <div class="hn-tab-label">
+          <div class="hn-tab-num">02</div>
+          <div class="hn-tab-name">Agriculture</div>
+        </div>
+      </div>
+      <div class="hn-tab" data-index="2">
+        <div class="hn-tab-bar"><div class="hn-tab-bar-fill"></div></div>
+        <div class="hn-tab-label">
+          <div class="hn-tab-num">03</div>
+          <div class="hn-tab-name">Commerce</div>
+        </div>
+      </div>
+      <div class="hn-tab" data-index="3">
+        <div class="hn-tab-bar"><div class="hn-tab-bar-fill"></div></div>
+        <div class="hn-tab-label">
+          <div class="hn-tab-num">04</div>
+          <div class="hn-tab-name">Construction</div>
+        </div>
+      </div>
+      <div class="hn-tab" data-index="4">
+        <div class="hn-tab-bar"><div class="hn-tab-bar-fill"></div></div>
+        <div class="hn-tab-label">
+          <div class="hn-tab-num">05</div>
+          <div class="hn-tab-name">Services</div>
+        </div>
+      </div>
+      <div class="hn-tab" data-index="5">
+        <div class="hn-tab-bar"><div class="hn-tab-bar-fill"></div></div>
+        <div class="hn-tab-label">
+          <div class="hn-tab-num">06</div>
+          <div class="hn-tab-name">Concrete Plant</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</section>
+
+<!-- hidden legacy element kept for JS compatibility -->
+<section id="hero" style="display:none">
+  <div class="hero-carousel" style="display:none">
+    <div class="hero-cards-track" id="_heroCardsTrack_unused">
+
+      <a href="/sectors/energy" class="hero-card">
+        <div class="hero-card-bg hp-energy"></div>
+        <div class="hero-card-overlay"></div>
+        <span class="hero-card-num">01</span>
+        <div class="hero-card-content">
+          <div class="hero-card-icon">
+            <svg viewBox="0 0 18 18" fill="none"><path d="M9 2C9 2 4.5 8.5 4.5 12.5C4.5 15.5 6.5 17 9 17C11.5 17 13.5 15.5 13.5 12.5C13.5 8.5 9 2 9 2Z" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="hero-card-name">Oil Stations</span>
+          <p class="hero-card-desc">Fuel distribution across three locations</p>
+          <ul class="hero-card-subs">
+            <li>Kunpol Oil Station 1</li>
+            <li>Kunpol Oil Station 2</li>
+            <li>Kunpol Oil Station 3</li>
+          </ul>
+        </div>
+      </a>
+
+      <a href="/sectors/agriculture" class="hero-card">
+        <div class="hero-card-bg hp-agri"></div>
+        <div class="hero-card-overlay"></div>
+        <span class="hero-card-num">02</span>
+        <div class="hero-card-content">
+          <div class="hero-card-icon">
+            <svg viewBox="0 0 18 18" fill="none"><path d="M5 15C5 15 4 8 9 5C14 2 15 5 15 8C15 13 9 15 5 15Z" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="15" x2="11" y2="9" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <span class="hero-card-name">Agriculture</span>
+          <p class="hero-card-desc">Crops cultivation &amp; farm operations</p>
+          <ul class="hero-card-subs">
+            <li>Kunpol Agriculture Co.</li>
+          </ul>
+        </div>
+      </a>
+
+      <a href="/sectors/commerce" class="hero-card">
+        <div class="hero-card-bg hp-commerce"></div>
+        <div class="hero-card-overlay"></div>
+        <span class="hero-card-num">03</span>
+        <div class="hero-card-content">
+          <div class="hero-card-icon">
+            <svg viewBox="0 0 18 18" fill="none"><rect x="3" y="7" width="12" height="9" rx="1" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linejoin="round"/><path d="M6 7V5.5C6 4.1 7.3 3 9 3C10.7 3 12 4.1 12 5.5V7" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="hero-card-name">Commerce</span>
+          <p class="hero-card-desc">General trading &amp; retail</p>
+          <ul class="hero-card-subs">
+            <li>Kunpol Commerce Co. Ltd.</li>
+          </ul>
+        </div>
+      </a>
+
+      <a href="/sectors/construction" class="hero-card">
+        <div class="hero-card-bg hp-construct"></div>
+        <div class="hero-card-overlay"></div>
+        <span class="hero-card-num">04</span>
+        <div class="hero-card-content">
+          <div class="hero-card-icon">
+            <svg viewBox="0 0 18 18" fill="none"><rect x="4" y="6" width="10" height="10" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linejoin="round"/><polyline points="2,6 9,1 16,6" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><line x1="7" y1="16" x2="7" y2="11" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linecap="round"/><line x1="11" y1="16" x2="11" y2="11" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <span class="hero-card-name">Construction</span>
+          <p class="hero-card-desc">Infrastructure &amp; development</p>
+          <ul class="hero-card-subs">
+            <li>Kunpol Development Co.</li>
+            <li>Tiger Cooperation</li>
+          </ul>
+        </div>
+      </a>
+
+      <a href="/sectors/services" class="hero-card">
+        <div class="hero-card-bg hp-services"></div>
+        <div class="hero-card-overlay"></div>
+        <span class="hero-card-num">05</span>
+        <div class="hero-card-content">
+          <div class="hero-card-icon">
+            <svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="2.5" stroke="rgba(255,255,255,0.88)" stroke-width="1.5"/><path d="M9 2v1.5M9 14.5V16M2 9h1.5M14.5 9H16M3.75 3.75l1.05 1.05M13.2 13.2l1.05 1.05M3.75 14.25l1.05-1.05M13.2 4.8l1.05-1.05" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <span class="hero-card-name">Services</span>
+          <p class="hero-card-desc">Hospitality, recreation &amp; leisure</p>
+          <ul class="hero-card-subs">
+            <li>Khao Suan Kwang Car Service</li>
+            <li>Kunpol C&amp;S Co. Ltd.</li>
+            <li>Phusuankhang Camping Resort</li>
+            <li>Golf Cart Service</li>
+            <li>Water Park</li>
+            <li>Khon Kaen Zoo</li>
+          </ul>
+        </div>
+      </a>
+
+      <a href="/sectors/concrete" class="hero-card">
+        <div class="hero-card-bg hp-concrete"></div>
+        <div class="hero-card-overlay"></div>
+        <span class="hero-card-num">06</span>
+        <div class="hero-card-content">
+          <div class="hero-card-icon">
+            <svg viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="4" rx="0.5" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linejoin="round"/><rect x="3" y="7" width="12" height="4" rx="0.5" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linejoin="round"/><rect x="3" y="12" width="12" height="4" rx="0.5" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="hero-card-name">Concrete Plant</span>
+          <p class="hero-card-desc">Concrete production &amp; supply</p>
+          <ul class="hero-card-subs">
+            <li>Kunpol Commerce (2018) Co. Ltd.</li>
+          </ul>
+        </div>
+      </a>
+
+    </div><!-- /.hero-cards-track -->
+  </div><!-- /.hero-carousel -->
+
+
+  <!-- Navigation arrows -->
+
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+     1. GROUP OVERVIEW — staggered cards
+═════════════════════════════════════════════════ -->
+<section id="about">
+  <div class="sec-wrap">
+    <div class="ov-layout">
+
+      <!-- Left: text block -->
+      <div class="ov-left" data-reveal>
+        <div class="ov-eyebrow">
+          <span class="ov-dot"></span>
+          <span class="ov-eyebrow-text">Group Overview</span>
+        </div>
+        <h2 class="ov-headline">Built for<br>the long term</h2>
+        <p class="ov-body">Founded in 1999 by the Temtanakitpaisan family in Khon Kaen, KUNPOL Group began as a single PTT oil station. Over 25 years, it has quietly expanded into six distinct sectors — energy, agriculture, commerce, construction, services, and concrete production — each run with full operational independence, bound by a shared discipline of patient capital and regional commitment.</p>
+        <hr class="ov-divider">
+      </div>
+
+      <!-- Right: staggered floating cards -->
+      <div class="ov-cards">
+        <!-- Left card — offset down -->
+        <div class="ov-card-col-left">
+          <div class="ov-card" data-reveal data-d="2">
+            <div class="ov-card-label">Subsidiaries<br>under the group</div>
+            <div class="ov-card-num" data-count="10" data-suffix="">0</div>
+          </div>
+        </div>
+        <!-- Right column — two stacked -->
+        <div class="ov-card-col-right">
+          <div class="ov-card" data-reveal data-d="1">
+            <div class="ov-card-label">Employees<br>across all sectors</div>
+            <div class="ov-card-num" data-count="500" data-suffix="+">0</div>
+          </div>
+          <div class="ov-card" data-reveal data-d="3">
+            <div class="ov-card-label">Years of<br>heritage</div>
+            <div class="ov-card-num" data-count="25" data-suffix="+">0</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     2. GROUP ARCHITECTURE — 3D Cube Infographic Tower
+═════════════════════════════════════════════════ -->
+<section id="structure">
+  <div class="ci-wrap">
+    <div class="ci-layout">
+    <div class="ci-hdr" data-reveal>
+      <div class="ci-eyebrow">Group Architecture</div>
+      <h2 class="ci-section-title">
+        <span class="t-brand">KUNPOL</span>
+        <span class="t-sub">Group</span>
+        <span class="t-sep">——</span>
+        <span class="t-desc">
+          <span class="t-vert">S<br>I<br>X<br><br>S<br>E<br>C<br>T<br>O<br>R<br>S</span>
+          <span class="t-vert">T<br>E<br>N<br><br>S<br>U<br>B<br>S<br>I<br>D<br>I<br>A<br>R<br>I<br>E<br>S</span>
+        </span>
+      </h2>
+    </div>
+    <div class="ci-stage" id="ciStage">
+      <div class="ci-infographic">
+
+        <!-- ── LEFT ANNOTATIONS: cubes 1(Agri) 3(Construction) 5(Concrete) ── -->
+        <div class="ci-anns-left">
+
+          <div class="ci-ann-block">
+            <div class="ci-ann-conn">
+              <div class="ci-ann-hline"></div>
+              <div class="ci-ann-icon-wrap">
+                <div class="ci-ann-icon-sq"><svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
+              </div>
+            </div>
+            <div class="ci-ann-text">
+              <a class="ci-ann-name" href="commerce.html"><span class="ci-ann-label">Commerce</span><span class="ci-arrow">→</span></a>
+              <div class="ci-ann-list">Kunpol Commerce (2018) Co., Ltd.</div>
+            </div>
+          </div>
+
+          <div class="ci-ann-block">
+            <div class="ci-ann-conn">
+              <div class="ci-ann-hline"></div>
+              <div class="ci-ann-icon-wrap">
+                <div class="ci-ann-icon-sq"><svg viewBox="0 0 24 24"><path d="M2 20h20"/><path d="M4 20V10l8-7 8 7v10"/><path d="M10 20v-6h4v6"/></svg></div>
+              </div>
+            </div>
+            <div class="ci-ann-text">
+              <a class="ci-ann-name" href="construction.html"><span class="ci-ann-label">Construction</span><span class="ci-arrow">→</span></a>
+              <div class="ci-ann-list">Kunpol Development Co., Ltd.<br>Tiger Cooperation Co., Ltd.</div>
+            </div>
+          </div>
+
+          <div class="ci-ann-block">
+            <div class="ci-ann-conn">
+              <div class="ci-ann-hline"></div>
+              <div class="ci-ann-icon-wrap">
+                <div class="ci-ann-icon-sq"><svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+              </div>
+            </div>
+            <div class="ci-ann-text">
+              <a class="ci-ann-name" href="concrete-plant.html"><span class="ci-ann-label">Concrete Plant</span><span class="ci-arrow">→</span></a>
+              <div class="ci-ann-list">Kunpol Commerce Co., Ltd.</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ── CENTER: SINGLE 3D TOWER ── -->
+        <div class="ci-tower-wrap">
+          <div class="ci-tower">
+
+            <!-- 01 Oil Stations — TOP (faces RIGHT: +rotateY, left side visible) -->
+            <div class="ci-cube-item ci-c1">
+              <div class="ci-face ci-front">
+                <span class="ci-num">01</span>
+                <div class="ci-label">Oil Stations</div>
+              </div>
+              <div class="ci-face ci-top"></div>
+              <div class="ci-face ci-side"></div>
+              <div class="ci-face ci-side-left"></div>
+            </div>
+
+            <!-- 02 Agriculture (faces LEFT: -rotateY, right side visible) -->
+            <div class="ci-cube-item ci-c2">
+              <div class="ci-face ci-front">
+                <span class="ci-num">02</span>
+                <div class="ci-label">Agriculture</div>
+              </div>
+              <div class="ci-face ci-top"></div>
+              <div class="ci-face ci-side"></div>
+              <div class="ci-face ci-side-left"></div>
+            </div>
+
+            <!-- 03 Commerce (almost straight-on: near-zero rotateY) -->
+            <div class="ci-cube-item ci-c3">
+              <div class="ci-face ci-front">
+                <span class="ci-num">03</span>
+                <div class="ci-label">Commerce</div>
+              </div>
+              <div class="ci-face ci-top"></div>
+              <div class="ci-face ci-side"></div>
+              <div class="ci-face ci-side-left"></div>
+            </div>
+
+            <!-- 04 Construction (faces LEFT more: -rotateY strong) -->
+            <div class="ci-cube-item ci-c4">
+              <div class="ci-face ci-front">
+                <span class="ci-num">04</span>
+                <div class="ci-label">Constru<br>ction</div>
+              </div>
+              <div class="ci-face ci-top"></div>
+              <div class="ci-face ci-side"></div>
+              <div class="ci-face ci-side-left"></div>
+            </div>
+
+            <!-- 05 Services (faces RIGHT: +rotateY, left side visible) -->
+            <div class="ci-cube-item ci-c5">
+              <div class="ci-face ci-front">
+                <span class="ci-num">05</span>
+                <div class="ci-label">Services</div>
+              </div>
+              <div class="ci-face ci-top"></div>
+              <div class="ci-face ci-side"></div>
+              <div class="ci-face ci-side-left"></div>
+            </div>
+
+            <!-- 06 Concrete Plant — BOTTOM (faces LEFT: -rotateY mild) -->
+            <div class="ci-cube-item ci-c6">
+              <div class="ci-face ci-front">
+                <span class="ci-num">06</span>
+                <div class="ci-label">Concrete Plant</div>
+              </div>
+              <div class="ci-face ci-top"></div>
+              <div class="ci-face ci-side"></div>
+              <div class="ci-face ci-side-left"></div>
+            </div>
+
+          </div>
+          <!-- Ground shadow lives OUTSIDE the 3D scene so it isn't transformed -->
+          <div class="ci-ground-shadow"></div>
+        </div>
+
+        <!-- ── RIGHT ANNOTATIONS: cubes 0(Oil) 2(Commerce) 4(Services) ── -->
+        <div class="ci-anns-right">
+
+          <div class="ci-ann-block">
+            <div class="ci-ann-conn">
+              <div class="ci-ann-hline"></div>
+              <div class="ci-ann-icon-wrap">
+                <div class="ci-ann-icon-sq"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></div>
+              </div>
+            </div>
+            <div class="ci-ann-text">
+              <a class="ci-ann-name" href="oil-stations.html"><span class="ci-ann-label">Oil Stations</span><span class="ci-arrow">→</span></a>
+              <div class="ci-ann-list">Kunpol Service Co., Ltd.<br>Kunpol Service Nam Phong Co., Ltd.<br>Kunpol Petroleum Co., Ltd.</div>
+            </div>
+          </div>
+
+          <div class="ci-ann-block">
+            <div class="ci-ann-conn">
+              <div class="ci-ann-hline"></div>
+              <div class="ci-ann-icon-wrap">
+                <div class="ci-ann-icon-sq"><svg viewBox="0 0 24 24"><path d="M12 22V12"/><path d="M12 12C12 7 8 4 4 4c0 4 3 8 8 8"/><path d="M12 12c0-5 4-8 8-8-0 4-3 8-8 8"/></svg></div>
+              </div>
+            </div>
+            <div class="ci-ann-text">
+              <a class="ci-ann-name" href="agriculture.html"><span class="ci-ann-label">Agriculture</span><span class="ci-arrow">→</span></a>
+              <div class="ci-ann-list">Kunpol Agriculture</div>
+            </div>
+          </div>
+
+          <div class="ci-ann-block">
+            <div class="ci-ann-conn">
+              <div class="ci-ann-hline"></div>
+              <div class="ci-ann-icon-wrap">
+                <div class="ci-ann-icon-sq"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+              </div>
+            </div>
+            <div class="ci-ann-text">
+              <a class="ci-ann-name" href="services.html"><span class="ci-ann-label">Services</span><span class="ci-arrow">→</span></a>
+              <div class="ci-ann-list">Khao Suan Kwang Car Service Co., Ltd.</div>
+              <div class="ci-ann-sub">Phu Suan Kwang Camping &amp; Resort<br>Golf Cart Service</div>
+              <div class="ci-ann-list">Kunpol Construction and Services Co., Ltd.</div>
+              <div class="ci-ann-sub">Khon Kaen Zoo Water Park</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+    </div><!-- /ci-layout -->
+  </div>
+</section>
+
+
+
+
+<!-- ════════════════════════════════════════════════
+     3. VISION QUOTE — "We Build What Matters"
+═════════════════════════════════════════════════ -->
+<section class="vision-section">
+  <div class="sec-wrap">
+    <span class="vision-eyebrow" data-reveal>Our Philosophy</span>
+    <h2 class="vision-quote" data-reveal data-d="1">
+      We build <em>what matters —</em><br>and what lasts.
+    </h2>
+    <span class="vision-attr" data-reveal data-d="2">KUNPOL Group · Est. 1999</span>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     4. OUR APPROACH
+═════════════════════════════════════════════════ -->
+<section class="sec sec-alt" id="approach">
+  <div class="sec-wrap">
+    <div class="ap-grid">
+      <div>
+        <span class="sec-eyebrow" data-reveal>Our Approach</span>
+        <h2 class="sec-h1" data-reveal data-d="1">Disciplined. Long-term. Privately held.</h2>
+        <p class="sec-body" data-reveal data-d="2">We do not chase short-term returns. KUNPOL Group operates with a multi-generational perspective — selecting sectors carefully, deploying capital with discipline, and building businesses that can endure across economic cycles.</p>
+        <p class="sec-body" data-reveal data-d="3">This approach has guided every investment decision since our founding, and remains unchanged today.</p>
+      </div>
+      <div class="ap-principles" data-reveal data-d="2">
+        <div class="ap-principle">
+          <div class="ap-principle-num">01</div>
+          <div>
+            <div class="ap-principle-name">Long-Term Focus</div>
+            <div class="ap-principle-desc">We measure success across years, not quarters. Every decision reflects our commitment to sustainable growth over immediate gain.</div>
+          </div>
+        </div>
+        <div class="ap-principle">
+          <div class="ap-principle-num">02</div>
+          <div>
+            <div class="ap-principle-name">Selective Investment</div>
+            <div class="ap-principle-desc">We enter sectors where we have an operational edge and where demand is structural, not speculative.</div>
+          </div>
+        </div>
+        <div class="ap-principle">
+          <div class="ap-principle-num">03</div>
+          <div>
+            <div class="ap-principle-name">Operational Discipline</div>
+            <div class="ap-principle-desc">Each subsidiary is held to clear standards of accountability, governance, and financial control.</div>
+          </div>
+        </div>
+        <div class="ap-principle">
+          <div class="ap-principle-num">04</div>
+          <div>
+            <div class="ap-principle-name">Community Commitment</div>
+            <div class="ap-principle-desc">Our businesses serve the communities of Northeast Thailand — we succeed when our region succeeds.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     5. TRACK RECORD
+═════════════════════════════════════════════════ -->
+<section class="sec sec-white" id="works">
+  <div class="sec-wrap">
+    <div class="sec-hdr" data-reveal>
+      <span class="sec-eyebrow">Track Record</span>
+      <h2 class="sec-h2">Over two decades of steady, measured growth.</h2>
+    </div>
+  </div>
+  <!-- Track record carousel -->
+  <div class="hero-carousel" id="heroCarousel" style="margin-top:40px;">
+    <div class="hero-cards-track" id="heroCardsTrack">
+
+      <a href="#" class="hero-card">
+        <div class="hero-card-bg hp-energy"></div>
+        <div class="hero-card-overlay"></div>
+        <span class="hero-card-num">01</span>
+        <div class="hero-card-content">
+          <div class="hero-card-icon">
+            <svg viewBox="0 0 18 18" fill="none"><path d="M9 2C9 2 4.5 8.5 4.5 12.5C4.5 15.5 6.5 17 9 17C11.5 17 13.5 15.5 13.5 12.5C13.5 8.5 9 2 9 2Z" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="hero-card-name">Station Network</span>
+          <p class="hero-card-desc">Energy · 2019–2022</p>
+          <ul class="hero-card-subs">
+            <li>3 PT Stations across Khon Kaen</li>
+            <li>Fuel distribution infrastructure</li>
+            <li>Status: Completed</li>
+          </ul>
+        </div>
+      </a>
+
+      <a href="#" class="hero-card">
+        <div class="hero-card-bg hp-agri"></div>
+        <div class="hero-card-overlay"></div>
+        <span class="hero-card-num">02</span>
+        <div class="hero-card-content">
+          <div class="hero-card-icon">
+            <svg viewBox="0 0 18 18" fill="none"><path d="M5 15C5 15 4 8 9 5C14 2 15 5 15 8C15 13 9 15 5 15Z" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="15" x2="11" y2="9" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <span class="hero-card-name">Crop Production Facility</span>
+          <p class="hero-card-desc">Agriculture · 2020</p>
+          <ul class="hero-card-subs">
+            <li>Large-scale farming operations</li>
+            <li>Crop storage &amp; logistics</li>
+            <li>Status: Completed</li>
+          </ul>
+        </div>
+      </a>
+
+      <a href="#" class="hero-card">
+        <div class="hero-card-bg hp-commerce"></div>
+        <div class="hero-card-overlay"></div>
+        <span class="hero-card-num">03</span>
+        <div class="hero-card-content">
+          <div class="hero-card-icon">
+            <svg viewBox="0 0 18 18" fill="none"><rect x="3" y="7" width="12" height="9" rx="1" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linejoin="round"/><path d="M6 7V5.5C6 4.1 7.3 3 9 3C10.7 3 12 4.1 12 5.5V7" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="hero-card-name">Commerce Operations</span>
+          <p class="hero-card-desc">Commerce · 2021</p>
+          <ul class="hero-card-subs">
+            <li>Retail &amp; wholesale trading hub</li>
+            <li>Multi-sector distribution</li>
+            <li>Status: Completed</li>
+          </ul>
+        </div>
+      </a>
+
+      <a href="#" class="hero-card">
+        <div class="hero-card-bg hp-construct"></div>
+        <div class="hero-card-overlay"></div>
+        <span class="hero-card-num">04</span>
+        <div class="hero-card-content">
+          <div class="hero-card-icon">
+            <svg viewBox="0 0 18 18" fill="none"><rect x="4" y="6" width="10" height="10" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linejoin="round"/><polyline points="2,6 9,1 16,6" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><line x1="7" y1="16" x2="7" y2="11" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linecap="round"/><line x1="11" y1="16" x2="11" y2="11" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <span class="hero-card-name">Infrastructure Phase I</span>
+          <p class="hero-card-desc">Construction · 2018–2022</p>
+          <ul class="hero-card-subs">
+            <li>Regional development project</li>
+            <li>Kunpol Development Co.</li>
+            <li>Status: Completed</li>
+          </ul>
+        </div>
+      </a>
+
+      <a href="#" class="hero-card">
+        <div class="hero-card-bg hp-services"></div>
+        <div class="hero-card-overlay"></div>
+        <span class="hero-card-num">05</span>
+        <div class="hero-card-content">
+          <div class="hero-card-icon">
+            <svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="2.5" stroke="rgba(255,255,255,0.88)" stroke-width="1.5"/><path d="M9 2v1.5M9 14.5V16M2 9h1.5M14.5 9H16M3.75 3.75l1.05 1.05M13.2 13.2l1.05 1.05M3.75 14.25l1.05-1.05M13.2 4.8l1.05-1.05" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <span class="hero-card-name">Northeast Service Centre</span>
+          <p class="hero-card-desc">Services · 2022–Present</p>
+          <ul class="hero-card-subs">
+            <li>Hospitality &amp; leisure complex</li>
+            <li>Khao Suan Kwang operations</li>
+            <li>Status: Ongoing</li>
+          </ul>
+        </div>
+      </a>
+
+      <a href="#" class="hero-card">
+        <div class="hero-card-bg hp-concrete"></div>
+        <div class="hero-card-overlay"></div>
+        <span class="hero-card-num">06</span>
+        <div class="hero-card-content">
+          <div class="hero-card-icon">
+            <svg viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="4" rx="0.5" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linejoin="round"/><rect x="3" y="7" width="12" height="4" rx="0.5" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linejoin="round"/><rect x="3" y="12" width="12" height="4" rx="0.5" stroke="rgba(255,255,255,0.88)" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="hero-card-name">Ready-Mix Plant Phase I</span>
+          <p class="hero-card-desc">Concrete · 2023–Present</p>
+          <ul class="hero-card-subs">
+            <li>Industrial concrete production</li>
+            <li>Supply across Khon Kaen region</li>
+            <li>Status: Ongoing</li>
+          </ul>
+        </div>
+      </a>
+
+    </div><!-- /.hero-cards-track -->
+  </div><!-- /.hero-carousel -->
+</section>
+
+<!-- ════════════════════════════════════════════════
+     6. OWNERSHIP & LEADERSHIP
+═════════════════════════════════════════════════ -->
+<section class="sec sec-alt" id="leadership">
+  <div class="sec-wrap">
+    <div class="ld-grid">
+      <div>
+        <div class="ld-badge" data-reveal>Privately Held</div>
+        <h2 class="sec-h1" data-reveal data-d="1">Family ownership.<br>Generational continuity.</h2>
+        <p class="sec-body" data-reveal data-d="2">KUNPOL Group is fully owned and managed by the Temtanakitpaisan family. There are no external shareholders, and no intent to list. Our private structure allows us to make decisions based on long-term principle, not short-term market pressure.</p>
+        <p class="sec-body" data-reveal data-d="3">The family remains actively involved in the governance and strategic direction of every subsidiary — this is not passive ownership, but committed stewardship.</p>
+      </div>
+      <div data-reveal data-d="2">
+        <div class="ld-people">
+          <div class="ld-person">
+            <div>
+              <div class="ld-person-name">Mrs. Yupin Temtanakitpaisan</div>
+              <div class="ld-person-role">Chairman of the Board</div>
+            </div>
+            <div class="ld-person-tag">Founder</div>
+          </div>
+          <div class="ld-person">
+            <div>
+              <div class="ld-person-name">Mr. Thanatit Temtanakitpaisan</div>
+              <div class="ld-person-role">Chief Executive Officer</div>
+            </div>
+            <div class="ld-person-tag">Executive</div>
+          </div>
+          <div class="ld-person">
+            <div>
+              <div class="ld-person-name">Family Member</div>
+              <div class="ld-person-role">Director</div>
+            </div>
+            <div class="ld-person-tag">Board</div>
+          </div>
+          <div class="ld-person">
+            <div>
+              <div class="ld-person-name">Family Member</div>
+              <div class="ld-person-role">Director</div>
+            </div>
+            <div class="ld-person-tag">Board</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     7. GOVERNANCE & PRINCIPLES
+═════════════════════════════════════════════════ -->
+<section class="sec sec-white" id="governance">
+  <div class="sec-wrap">
+    <div class="sec-hdr" data-reveal>
+      <span class="sec-eyebrow">Governance</span>
+      <h2 class="sec-h2">Four principles that guide every decision we make.</h2>
+    </div>
+    <div class="gov-grid">
+      <div class="gov-card" data-reveal>
+        <div class="gov-card-num">01</div>
+        <div class="gov-card-rule"></div>
+        <div class="gov-card-name">Stewardship</div>
+        <div class="gov-card-desc">We manage resources — capital, land, people — as temporary custodians responsible to future generations.</div>
+      </div>
+      <div class="gov-card" data-reveal data-d="1">
+        <div class="gov-card-num">02</div>
+        <div class="gov-card-rule"></div>
+        <div class="gov-card-name">Discipline</div>
+        <div class="gov-card-desc">We decline more opportunities than we accept. Discipline means knowing what we do well and staying within it.</div>
+      </div>
+      <div class="gov-card" data-reveal data-d="2">
+        <div class="gov-card-num">03</div>
+        <div class="gov-card-rule"></div>
+        <div class="gov-card-name">Accountability</div>
+        <div class="gov-card-desc">Every subsidiary has a clear mandate. Every manager is measured. We do not tolerate ambiguity in responsibility.</div>
+      </div>
+      <div class="gov-card" data-reveal data-d="3">
+        <div class="gov-card-num">04</div>
+        <div class="gov-card-rule"></div>
+        <div class="gov-card-name">Consistency</div>
+        <div class="gov-card-desc">We apply the same principles across all sectors, all cycles, and all conditions. Trust is built through repetition.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     8. CONTACT
+═════════════════════════════════════════════════ -->
+<section id="contact">
+  <div class="container">
+    <div class="section-eyebrow" data-reveal>
+      <span class="eyebrow-text">Get In Touch</span>
+    </div>
+    <div class="contact-grid">
+      <div>
+        <h2 class="contact-head" data-reveal data-d="1">
+          Let's build<br>something great.
+        </h2>
+        <p class="contact-desc" data-reveal data-d="2">
+          We welcome enquiries from investors, partners, and businesses
+          seeking collaboration across our six sectors. Reach out to learn
+          more about KUNPOL Group or explore potential partnerships.
+        </p>
+        <div class="contact-items" data-reveal data-d="3">
+          <div class="ci">
+            <div class="ci-icon">
+              <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <div class="ci-label">Headquarters</div>
+              <div class="ci-val">Khon Kaen, Thailand</div>
+            </div>
+          </div>
+          <div class="ci">
+            <div class="ci-icon">
+              <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <div class="ci-label">Email</div>
+              <div class="ci-val">kunpol999@hotmail.com</div>
+            </div>
+          </div>
+          <div class="ci">
+            <div class="ci-icon">
+              <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.22 1.16 2 2 0 012.22 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+            </div>
+            <div>
+              <div class="ci-label">Phone</div>
+              <div class="ci-val">087 665 8787</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <form class="cf" data-reveal data-d="2">
+        <div class="cf-row">
+          <div class="fg"><label>First Name</label><input type="text" placeholder="First name"></div>
+          <div class="fg"><label>Last Name</label><input type="text" placeholder="Last name"></div>
+        </div>
+        <div class="fg"><label>Email Address</label><input type="email" placeholder="your@email.com"></div>
+        <div class="fg"><label>Organisation</label><input type="text" placeholder="Company or organisation"></div>
+        <div class="fg">
+          <label>Subject</label>
+          <select>
+            <option value="" disabled selected>Select a subject</option>
+            <option>General Enquiry</option>
+            <option>Partnership &amp; Investment</option>
+            <option>Energy Sector</option>
+            <option>Construction Sector</option>
+            <option>Services Sector</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="fg"><label>Message</label><textarea placeholder="How can we help you?"></textarea></div>
+        <button type="submit" class="btn-send">
+          Send Message
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="sec-wrap">
+    <div class="ft-bar">
+      <img src="KP Logo no bg.png" class="ft-logo-img" alt="KUNPOL Group">
+      <ul class="ft-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#sectors">Sectors</a></li>
+        <li><a href="#structure">Structure</a></li>
+        <li><a href="#leadership">Leadership</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <p class="ft-copy">&copy; 2025 KUNPOL Group &mdash; Khon Kaen, Thailand</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ══════════════════════════════════════════════════
+//  PREVIEW MODE  (?flat=SECTION  hides hero + above sections)
+// ══════════════════════════════════════════════════
+(function() {
+  const _p = new URLSearchParams(location.search);
+  if (!_p.has('flat')) return;
+  const target = _p.get('flat') || 'about';
+  const order = ['about','structure','leadership','works','contact'];
+  const idx = order.indexOf(target);
+  // Hide preloader and hero
+  document.getElementById('preloader').style.display = 'none';
+  document.getElementById('hero').style.display = 'none';
+  // Hide all sections above target
+  order.slice(0, idx).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  // Reveal all animated elements
+  document.querySelectorAll('[data-reveal]').forEach(el => el.classList.add('in'));
+})();
+
+// ══════════════════════════════════════════════════
+//  STANDARD NAVBAR (mobile hamburger)
+// ══════════════════════════════════════════════════
+const hamburger = document.getElementById('hamburger');
+const navLinks  = document.getElementById('navLinks');
+hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+navLinks.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => navLinks.classList.remove('open'));
+});
+
+// Navbar: CSS class toggle — pill starts when timeline bar exits viewport top
+(function () {
+  var navbar = document.getElementById('navbar');
+  function updateNavbar() {
+    // Trigger: scrolled past the timeline bar (pinned at 100vh - 96px from hero top)
+    var triggerY = window.innerHeight - 96;
+    navbar.classList.toggle('nav-scrolled', window.scrollY > triggerY);
+  }
+  window.addEventListener('scroll', updateNavbar, { passive: true });
+  window.addEventListener('resize', updateNavbar);
+  updateNavbar();
+})();
+
+// ══════════════════════════════════════════════════
+//  HERO CARD CAROUSEL — infinite auto-scroll + mouse speed control
+// ══════════════════════════════════════════════════
+(function () {
+  var hero  = document.getElementById('hero');
+  var track = document.getElementById('heroCardsTrack');
+  if (!hero || !track) return;
+
+  // --- 1. Clone all 6 cards to make 12 for seamless loop ---
+  var origCards = Array.from(track.children);
+  origCards.forEach(function (card) {
+    var clone = card.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    track.appendChild(clone);
+  });
+
+  // --- 2. Animation state ---
+  var currentX    = 0;
+  var targetSpeed = 0.6;
+  var currentSpeed = 0.6;
+  var overTrack   = false;   // mouse is directly over the cards track
+
+  // --- 3. RAF loop ---
+  function animate() {
+    currentSpeed += (targetSpeed - currentSpeed) * 0.06;
+
+    // Handle negative scroll (scrolling right/backward) — wrap from 0 to halfWidth
+    var halfWidth = track.scrollWidth / 2;
+    currentX += currentSpeed;
+    if (currentX >= halfWidth) currentX = 0;
+    if (currentX < 0) currentX = halfWidth + currentX; // wrap when going backwards
+
+    track.style.transform = 'translateX(-' + currentX + 'px)';
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  // --- 4. Zone-based mouse speed: left zone = scroll left faster, right zone = scroll right ---
+  var heroCarousel = document.getElementById('heroCarousel');
+  heroCarousel.addEventListener('mousemove', function (e) {
+    var rect = heroCarousel.getBoundingClientRect();
+    var relX = (e.clientX - rect.left) / rect.width; // 0 = left edge, 1 = right edge
+    if (relX < 0.25) {
+      // Left zone — speed up toward left (reverse)
+      targetSpeed = -2.5;
+    } else if (relX > 0.75) {
+      // Right zone — speed up toward right (forward)
+      targetSpeed = 2.5;
+    } else {
+      // Center — normal speed
+      targetSpeed = 0.6;
+    }
+  });
+  heroCarousel.addEventListener('mouseleave', function () {
+    targetSpeed = 0.6;
+  });
+})();
+
+// ══════════════════════════════════════════════════
+//  NEW HERO — SECTOR SWITCHER
+// ══════════════════════════════════════════════════
+(function () {
+  var sectors = [
+    { title: 'Oil Stations',   subtitle: 'Operating 3 strategic PT fuel stations across Khon Kaen, powering local logistics, agriculture fleets, and communities.',                    page: 'oil-stations.html',   accent: '#5B9BD5', badge: 'Energy Operations',   subtitleOffset: '7px', icon: '<svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 4-4 8-7 13C9 17 5 13 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>' },
+    { title: 'Agriculture',    subtitle: 'Cultivating cassava and seasonal crops across Northeast — from field preparation through harvest & distribution.',              page: 'agriculture.html',    accent: '#357848', badge: 'Agriculture Sector',  subtitleOffset: '5px', icon: '<svg viewBox="0 0 24 24"><path d="M12 22V12M12 12C12 7 7 4 3 5c1 4 4 7 9 7zM12 12c0-5 5-8 9-7-1 4-4 7-9 7z"/></svg>' },
+    { title: 'Commerce',       subtitle: 'Bringing goods to villages through mobile hawker trucks and retail operations across rural Khon Kaen.',                                   page: 'commerce.html',       accent: '#B87E10', badge: 'Commerce Division',   subtitleOffset: '7px', icon: '<svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>' },
+    { title: 'Construction',   subtitle: 'Delivering roads, civil works, and large-scale infrastructure projects across the region through our experienced teams.',                  page: 'construction.html',   accent: '#6A3A1C', badge: 'Construction Sector', subtitleOffset: '7px', icon: '<svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>' },
+    { title: 'Services',       subtitle: 'A leisure and automotive portfolio — operating Khao Suan Kwang Car Service and Kunpol C&S Co. Ltd. across Khon Kaen.',                   page: 'services.html',       accent: '#5A7A90', badge: 'Service Division',    subtitleOffset: '7px', icon: '<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>' },
+    { title: 'Concrete Plant', subtitle: 'Supplying ready-mix concrete across Khon Kaen with high quality and reliable delivery',  page: 'concrete-plant.html', accent: '#9E8A76', badge: 'Materials Supply',     subtitleOffset: '7px', icon: '<svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>' },
+  ];
+
+  var current   = 0;
+  var autoTimer = null;
+  var DURATION  = 5500;
+
+  var track      = document.getElementById('hnBgTrack');
+  var tabs       = document.querySelectorAll('.hn-tab');
+  var titleEl    = document.getElementById('hnTitle');
+  var subtitleEl = document.getElementById('hnSubtitle');
+  var hero       = document.getElementById('hero-new');
+  var bgs        = track.querySelectorAll('.hn-bg');
+
+  // Editorial crossfade with per-slide Ken Burns zoom.
+  // Driven by .hn-bg-active / .hn-bg-leaving class toggles; all easing is in CSS.
+  function crossfadeTo(prevIndex, nextIndex) {
+    var prev = bgs[prevIndex];
+    var next = bgs[nextIndex];
+    if (prev === next) return;
+
+    prev.classList.remove('hn-bg-active');
+    prev.classList.add('hn-bg-leaving');
+    // Strip the leaving class after the fade finishes so the layer returns to
+    // its resting state (opacity:0, scale 1.04) ready for its next turn.
+    (function (leavingEl) {
+      setTimeout(function () { leavingEl.classList.remove('hn-bg-leaving'); }, 1700);
+    })(prev);
+
+    // If `next` happens to still be mid-fade from a prior click, clear its
+    // leaving state and force reflow so the Ken Burns transition restarts
+    // cleanly from the resting scale(1.04).
+    next.classList.remove('hn-bg-leaving');
+    // eslint-disable-next-line no-unused-expressions
+    next.getBoundingClientRect();
+    next.classList.add('hn-bg-active');
+  }
+
+  function resetFills() {
+    tabs.forEach(function (tab) {
+      var fill = tab.querySelector('.hn-tab-bar-fill');
+      fill.style.transition = 'none';
+      fill.style.width = '0%';
+    });
+  }
+
+  function startFill(index) {
+    var fill = tabs[index].querySelector('.hn-tab-bar-fill');
+    fill.getBoundingClientRect();
+    fill.style.transition = 'width ' + (DURATION / 1000) + 's linear';
+    fill.style.width = '100%';
+  }
+
+  function updatePlayed() {
+    tabs.forEach(function (tab, i) { tab.classList.toggle('hn-played', i < current); });
+  }
+
+
+  function goTo(index) {
+    var prevIndex = current;
+    index = ((index % sectors.length) + sectors.length) % sectors.length;
+    if (index === current) return;
+
+    clearTimeout(autoTimer);
+    resetFills();
+    tabs[current].classList.remove('hn-active');
+    current = index;
+    tabs[current].classList.add('hn-active');
+    updatePlayed();
+
+    // Crossfade naturally handles the wrap from last → first, no clone needed.
+    crossfadeTo(prevIndex, current);
+
+    gsap.to(titleEl,    { opacity: 0, y: -12, filter: 'blur(10px)', duration: 0.32, ease: 'power2.in' });
+    gsap.to(subtitleEl, { opacity: 0, y: -8,  filter: 'blur(7px)',  duration: 0.28, ease: 'power2.in', delay: 0.06 });
+
+    setTimeout(function () {
+      titleEl.textContent    = sectors[current].title;
+      subtitleEl.textContent = sectors[current].subtitle;
+      subtitleEl.style.marginLeft = sectors[current].subtitleOffset || '7px';
+      var btn = document.getElementById('hnExplorBtn');
+      if (btn) btn.href = sectors[current].page;
+      updateBadge(current);
+      gsap.fromTo(titleEl,
+        { opacity: 0, y: 22, filter: 'blur(14px)' },
+        { opacity: 1, y: 0,  filter: 'blur(0px)', duration: 1.05, ease: 'power3.out', clearProps: 'filter' }
+      );
+      gsap.fromTo(subtitleEl,
+        { opacity: 0, y: 15, filter: 'blur(10px)' },
+        { opacity: 1, y: 0,  filter: 'blur(0px)', duration: 0.95, ease: 'power3.out', delay: 0.28, clearProps: 'filter' }
+      );
+    }, 310);
+
+    startFill(current);
+    autoTimer = setTimeout(function () { goTo(current + 1); }, DURATION);
+  }
+
+  var badgeEl     = document.getElementById('hnBadge');
+  var badgeIconEl = document.getElementById('hnBadgeIcon');
+  var badgeTextEl = document.getElementById('hnBadgeText');
+  var sectorNumEl = document.getElementById('hnSectorNum');
+
+  function hexToRgb(hex) {
+    var r = parseInt(hex.slice(1,3), 16);
+    var g = parseInt(hex.slice(3,5), 16);
+    var b = parseInt(hex.slice(5,7), 16);
+    return r + ',' + g + ',' + b;
+  }
+  // Blends accent color 70% toward white so dark hues glow visibly on dark bg
+  function hexToGlowRgb(hex) {
+    var r = parseInt(hex.slice(1,3), 16);
+    var g = parseInt(hex.slice(3,5), 16);
+    var b = parseInt(hex.slice(5,7), 16);
+    var t = 0.70;
+    return Math.round(r+(255-r)*t)+','+Math.round(g+(255-g)*t)+','+Math.round(b+(255-b)*t);
+  }
+
+  function updateBadge(idx) {
+    var s = sectors[idx];
+    if (!badgeTextEl || !badgeIconEl) return;
+    // Split badge text into per-character spans — animation-delay staggers the wave L→R
+    var chars = s.badge.split('');
+    var html = chars.map(function(ch, i) {
+      var delay = (i * 55) + 'ms'; // 55ms per char = smooth left-to-right ripple
+      var content = ch === ' ' ? '&nbsp;' : ch;
+      return '<span class="hn-badge-char" style="animation-delay:' + delay + '">' + content + '</span>';
+    }).join('');
+    badgeTextEl.innerHTML = html;
+    // Inject accent-colored icon SVG
+    var svgStr = s.icon.replace('<svg ', '<svg stroke="' + s.accent + '" color="' + s.accent + '" style="color:' + s.accent + '" ');
+    badgeIconEl.innerHTML = svgStr;
+    // Set accent RGB for icon; lightened glow RGB for text shadow
+    badgeEl.style.setProperty('--badge-accent-rgb', hexToRgb(s.accent));
+    badgeEl.style.setProperty('--badge-glow-rgb', hexToGlowRgb(s.accent));
+    // Propagate sector accent to entire hero for eyebrow, timeline, sector number,
+    // CTA hover glow, and scroll-disk hover glow.
+    var heroRoot = document.getElementById('hero-new');
+    if (heroRoot) {
+      heroRoot.style.setProperty('--sector-rgb', hexToRgb(s.accent));
+      heroRoot.style.setProperty('--sector-glow-rgb', hexToGlowRgb(s.accent));
+    }
+    // Update ghost sector number
+    if (sectorNumEl) sectorNumEl.textContent = String(idx + 1).padStart(2, '0');
+  }
+
+  function init() {
+    resetFills();
+    // Slide 0 becomes visible + kicks off its Ken Burns zoom.
+    if (bgs[0]) bgs[0].classList.add('hn-bg-active');
+    startFill(0);
+    var btn = document.getElementById('hnExplorBtn');
+    if (btn) btn.href = sectors[0].page;
+    subtitleEl.style.marginLeft = sectors[0].subtitleOffset || '7px';
+    updateBadge(0);
+    autoTimer = setTimeout(function () { goTo(1); }, DURATION);
+  }
+
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () { goTo(parseInt(tab.dataset.index)); });
+  });
+
+  // Exposed for preloader to call
+  window._hnInit = init;
+})();
+
+// ══════════════════════════════════════════════════
+//  GROUP ARCHITECTURE — Cube infographic scroll reveal + hover
+// ══════════════════════════════════════════════════
+(function () {
+  var cubes = document.querySelectorAll('.ci-cube-item');
+  var anns  = document.querySelectorAll('.ci-ann-block');
+  if (!cubes.length) return;
+
+  // Per-cube base rotations (must match CSS :nth-child values exactly)
+  var baseRots = [
+    'translateX(-50px) translateZ(   0px) rotateX(-17deg) rotateY(+30deg)',
+    'translateX(30px)  translateZ( -55px) rotateX(-17deg) rotateY( +7deg)',
+    'translateX(83px)  translateZ( -90px) rotateX(-14deg) rotateY(-12deg)',
+    'translateX(59px)  translateZ(-110px) rotateX(-16deg) rotateY(-26deg)',
+    'translateX(18px)  translateZ(-160px) rotateX(-17deg) rotateY(+21deg)',
+    'translateX(-18px) translateZ(-210px) rotateX(-11deg) rotateY(-24deg)'
+  ];
+
+  // Hide initially (slide down + fade)
+  cubes.forEach(function (c, i) {
+    c.style.opacity = '0';
+    c.style.transform = baseRots[i] + ' translateY(18px)';
+  });
+  anns.forEach(function (a) { a.style.opacity = '0'; });
+
+  // Staggered reveal on scroll
+  var revealed = false;
+  var obs = new IntersectionObserver(function (entries) {
+    if (revealed || !entries[0].isIntersecting) return;
+    revealed = true;
+    cubes.forEach(function (c, i) {
+      setTimeout(function () {
+        c.style.transition = 'opacity 0.65s ease, transform 0.65s cubic-bezier(0.25,0,0,1)';
+        c.style.opacity = '1';
+        c.style.transform = baseRots[i];
+      }, i * 80);
+    });
+    anns.forEach(function (a, i) {
+      setTimeout(function () {
+        a.style.transition = 'opacity 0.5s ease';
+        a.style.opacity = '1';
+      }, 200 + i * 80);
+    });
+    obs.disconnect();
+  }, { threshold: 0.10 });
+
+  var stage = document.getElementById('ciStage');
+  if (stage) obs.observe(stage);
+
+  // Hover: cast a tiny shadow on the top face of the cube directly below.
+  // No lifting — the tower stays physically stacked.
+  cubes.forEach(function (c, i) {
+    c.addEventListener('mouseenter', function () {
+      var below = cubes[i + 1];
+      if (below) {
+        var top = below.querySelector('.ci-top');
+        if (top) {
+          top.style.transition = 'box-shadow 0.25s ease';
+          top.style.boxShadow = 'inset 0 0 14px rgba(0,0,0,0.18)';
+        }
+      }
+    });
+    c.addEventListener('mouseleave', function () {
+      var below = cubes[i + 1];
+      if (below) {
+        var top = below.querySelector('.ci-top');
+        if (top) {
+          top.style.transition = 'box-shadow 0.4s ease';
+          top.style.boxShadow = '';
+        }
+      }
+    });
+  });
+})();
+
+// ── Scroll-down circle: click bounce + scroll fade + arrow grow
+(function () {
+  var btn  = document.getElementById('hnScrollBtn');
+  var stem = document.getElementById('hnArrowStem');
+  var head = document.getElementById('hnArrowHead');
+  var svg  = document.getElementById('hnArrowSvg');
+  var hero = document.getElementById('hero-new');
+  if (!btn) return;
+
+  btn.addEventListener('click', function (e) {
+    e.preventDefault();
+    btn.classList.remove('hn-clicking');
+    void btn.offsetWidth;
+    btn.classList.add('hn-clicking');
+    btn.addEventListener('animationend', function () {
+      btn.classList.remove('hn-clicking');
+    }, { once: true });
+    var target = document.querySelector('#about');
+    if (!target) return;
+    if (window.__lenis) {
+      window.__lenis.scrollTo(target, { duration: 1.4, easing: function(t){ return 1 - Math.pow(1 - t, 3); } });
+    } else {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  var whiteFade = document.querySelector('.hn-white-fade');
+
+  window.addEventListener('scroll', function () {
+    var scrollY = window.scrollY;
+    btn.classList.toggle('hn-scrolled-away', scrollY > 60);
+
+    // Scroll-driven white fade: clearly visible at rest (0.85), full by 180px
+    if (whiteFade) {
+      var fadeProgress = Math.min(1, scrollY / 180);
+      whiteFade.style.opacity = 0.85 + fadeProgress * 0.15;
+    }
+
+    // Grow arrow as user scrolls — chevron pops out below the circle
+    if (stem && head && svg && hero) {
+      var heroH    = hero.offsetHeight;
+      var progress = Math.min(1, scrollY / (heroH * 0.55));
+      var stemEnd  = 39 + progress * 90;
+      var chevy    = stemEnd - 8;
+      stem.setAttribute('y2', stemEnd);
+      head.setAttribute('points', '2,' + chevy + ' 10,' + (stemEnd + 2) + ' 18,' + chevy);
+      svg.setAttribute('height', stemEnd + 6);
+    }
+  }, { passive: true });
+})();
+
+
+// Scroll reveal handled by cinematic scroll system (ScrollTrigger + Lenis)
+
+// ══════════════════════════════════════════════════
+//  STAT COUNT-UP
+// ══════════════════════════════════════════════════
+(function () {
+  function countUp(el, target, suffix, duration) {
+    let start = null;
+    function step(ts) {
+      if (!start) start = ts;
+      var progress = Math.min((ts - start) / duration, 1);
+      // ease-out cubic
+      var eased = 1 - Math.pow(1 - progress, 3);
+      var current = Math.round(eased * target);
+      el.textContent = current + suffix;
+      if (progress < 1) requestAnimationFrame(step);
+      else el.textContent = target + suffix;
+    }
+    requestAnimationFrame(step);
+  }
+
+  var isAnimating = false;
+  var cardsSection = document.querySelector('.ov-cards');
+  if (!cardsSection) return;
+
+  var obs = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting && !isAnimating) {
+      isAnimating = true;
+      document.querySelectorAll('.ov-card-num[data-count]').forEach(function(el, i) {
+        var target = parseInt(el.getAttribute('data-count'), 10);
+        var suffix = el.getAttribute('data-suffix') || '';
+        var duration = target > 100 ? 2000 : 1500;
+        setTimeout(function() { countUp(el, target, suffix, duration); }, i * 180);
+      });
+      // Reset lock after longest animation completes so it can replay
+      var longest = 2000 + (document.querySelectorAll('.ov-card-num[data-count]').length - 1) * 180;
+      setTimeout(function() { isAnimating = false; }, longest + 200);
+    }
+    // Reset numbers to 0 when section leaves view so count-up replays on return
+    if (!entries[0].isIntersecting) {
+      document.querySelectorAll('.ov-card-num[data-count]').forEach(function(el) {
+        el.textContent = '0';
+      });
+      isAnimating = false;
+    }
+  }, { threshold: 0.3 });
+
+  obs.observe(cardsSection);
+})();
+
+// ══════════════════════════════════════════════════
+//  REVEAL FALLBACK — runs if GSAP/ScrollTrigger CDN fails to load
+//  ScrollTrigger adds '.in'; this IntersectionObserver acts as safety net
+// ══════════════════════════════════════════════════
+(function() {
+  // Immediately reveal anything in the initial viewport that's still hidden
+  var vH = window.innerHeight;
+  document.querySelectorAll('[data-reveal]:not(.in)').forEach(function(el) {
+    var rect = el.getBoundingClientRect();
+    if (rect.top < vH) el.classList.add('in');
+  });
+
+  // Watch below-fold elements — fires if ScrollTrigger never set up
+  // Uses toggleClass pattern so animations replay on scroll-back
+  var revFallback = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+      } else {
+        e.target.classList.remove('in');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  // 800ms grace period lets ScrollTrigger init first if GSAP loads normally
+  setTimeout(function() {
+    document.querySelectorAll('[data-reveal]:not(.in)').forEach(function(el) {
+      revFallback.observe(el);
+    });
+  }, 800);
+})();
+
+// ══════════════════════════════════════════════════
+//  OVERVIEW CARDS — 3D TILT ON HOVER
+// ══════════════════════════════════════════════════
+(function () {
+  document.querySelectorAll('.ov-card').forEach(function (card) {
+    card.addEventListener('mousemove', function (e) {
+      var rect = card.getBoundingClientRect();
+      var x = e.clientX - rect.left;
+      var y = e.clientY - rect.top;
+      var cx = rect.width  / 2;
+      var cy = rect.height / 2;
+      var rotY =  ((x - cx) / cx) * 7;   // ±7° horizontal tilt
+      var rotX = -((y - cy) / cy) * 5;   // ±5° vertical tilt
+      card.style.transform =
+        'translateY(-12px) scale(1.03) perspective(700px) rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg)';
+    });
+
+    card.addEventListener('mouseenter', function () {
+      card.style.transition = 'transform 0.08s linear, box-shadow 0.44s cubic-bezier(0.22,1,0.36,1), background 0.44s cubic-bezier(0.22,1,0.36,1), border-color 0.44s cubic-bezier(0.22,1,0.36,1)';
+    });
+    card.addEventListener('mouseleave', function () {
+      card.style.transition = 'transform 0.36s cubic-bezier(0.22,1,0.36,1), box-shadow 0.44s cubic-bezier(0.22,1,0.36,1), background 0.44s cubic-bezier(0.22,1,0.36,1), border-color 0.44s cubic-bezier(0.22,1,0.36,1)';
+      card.style.transform = '';
+    });
+  });
+})();
+
+
+</script>
+
+<script>
+// Flag any internal link click so the preloader is skipped on arrival
+document.addEventListener('click', function (e) {
+  var a = e.target.closest('a[href]');
+  if (!a) return;
+  var href = a.getAttribute('href');
+  // Only flag real page navigations, not same-page anchors
+  if (href && href !== '#' && !href.startsWith('#')) {
+    sessionStorage.setItem('kunpol_nav', '1');
+  }
+}, true);
+
+(function () {
+  if (new URLSearchParams(location.search).has('flat')) return;
+
+  // Skip preloader when arriving from an internal page navigation
+  if (sessionStorage.getItem('kunpol_nav')) {
+    sessionStorage.removeItem('kunpol_nav');
+    var pl = document.getElementById('preloader');
+    if (pl) pl.remove();
+    document.body.style.overflow = '';
+    var hero = document.getElementById('hero-new');
+    if (hero) gsap.set(hero, { opacity: 1 });
+    var inner = document.getElementById('hnContentInner');
+    if (inner) gsap.set(inner, { opacity: 1 });
+    gsap.set(['#hnTitle','#hnSubtitle','.hn-ctas','.hn-tabs','#hnScrollBtn'], { opacity: 1, y: 0, x: 0, filter: 'none', clearProps: 'all' });
+    gsap.set('#navbar', { opacity: 1 });
+    if (window._hnInit) window._hnInit();
+    if (window._cursorEnable) window._cursorEnable();
+    setTimeout(function() { if (window._initCinematicScroll) window._initCinematicScroll(); }, 0);
+    return;
+  }
+
+  document.body.style.overflow = 'hidden';
+
+  var preloader  = document.getElementById('preloader');
+  var drawSvgEl  = document.getElementById('pl-draw-svg');
+  var drawPath   = document.getElementById('pl-draw-path');
+
+  // ── Stroke-dashoffset setup ─────────────────────────────────────────
+  var pathLen = drawPath.getTotalLength();
+  drawPath.style.strokeDasharray  = pathLen;
+  drawPath.style.strokeDashoffset = pathLen;
+
+  // ── Initial states ─────────────────────────────────────────────────
+  gsap.set('#pl-ghost-svg', { opacity: 0 });
+  gsap.set('#pl-fill-svg',  { opacity: 0 });
+  gsap.set('#pl-draw-svg',  { opacity: 1 });
+  gsap.set('#pl-mark-glow', { opacity: 0 });
+  gsap.set('#pl-wordmark',  { opacity: 0, y: 8 });
+  gsap.set('#pl-brand-sub', { opacity: 0 });
+  gsap.set('#pl-counter',   { opacity: 0 });
+  gsap.set('#pl-fill-g',    { opacity: 0 });
+
+  var tl = gsap.timeline();
+
+  // Act 1 · Stroke trace (5.5s → ends at 5.65s)
+  tl.to(drawPath, { strokeDashoffset: 0, duration: 5.5, ease: 'power2.inOut' }, 0.15);
+
+  // Act 2 · Fill fades in, stroke fades out (5.65s)
+  tl.to('#pl-fill-g',    { opacity: 1, duration: 0.35, ease: 'power1.out' }, 5.65);
+  tl.to('#pl-draw-path', { opacity: 0, duration: 0.4,  ease: 'power1.in'  }, 5.65);
+
+  // Glow + wordmark
+  tl.to('#pl-mark-glow', { opacity: 1, duration: 1.2,  ease: 'power1.out'  }, 6.1);
+  tl.to('#pl-wordmark',  { opacity: 1, y: 0, duration: 0.95, ease: 'power2.out' }, 6.4);
+  tl.to('#pl-brand-sub', { opacity: 1, duration: 0.7,  ease: 'power2.out'  }, 6.8);
+
+  // Counter + bar
+  tl.to('#pl-counter', { opacity: 1, duration: 0.4, ease: 'power1.out' }, 0.3);
+  var cnt = { val: 0 };
+  tl.to(cnt, {
+    val: 100, duration: 6.8, ease: 'power1.inOut',
+    onUpdate: function () { document.getElementById('pl-num').textContent = Math.floor(cnt.val); }
+  }, 0.15);
+  tl.fromTo('#pl-bar-fill', { width: '0%' }, { width: '100%', duration: 6.5, ease: 'power3.out' }, 0.15);
+
+  // Exit
+  tl.to('#pl-center, #pl-counter', { opacity: 0, duration: 0.45, ease: 'power2.in'    }, 7.2);
+  tl.to(preloader,                  { opacity: 0, duration: 0.65, ease: 'power2.inOut' }, 7.45);
+
+  // Hero reveal
+  tl.call(function() {
+    preloader.remove();
+    document.body.style.overflow = '';
+    gsap.set('#hero-new', { opacity: 1 });
+    gsap.set('#hnContentInner', { opacity: 1 });
+    gsap.set(['#hnTitle', '#hnSubtitle', '.hn-ctas'], { opacity: 0, y: 36, filter: 'blur(14px)' });
+    gsap.set('.hn-tabs', { opacity: 0, y: 14 });
+    gsap.set('#hnScrollBtn', { opacity: 0, x: 12 });
+    gsap.to('#hnTitle',   { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.85, ease: 'power3.out', delay: 0.15, clearProps: 'transform,opacity,filter' });
+    gsap.to('#hnSubtitle',{ opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.80, ease: 'power3.out', delay: 0.32, clearProps: 'transform,opacity,filter' });
+    gsap.to('.hn-ctas',   { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.72, ease: 'power3.out', delay: 0.48, clearProps: 'transform,opacity,filter' });
+    gsap.to('.hn-tabs',   { opacity: 1, y: 0, duration: 0.65, ease: 'power3.out', delay: 0.58, clearProps: 'transform,opacity' });
+    gsap.to('#hnScrollBtn', { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out', delay: 0.62, clearProps: 'transform,opacity' });
+    if (window._hnInit) window._hnInit();
+    if (window._cursorEnable) window._cursorEnable();
+    if (window._initCinematicScroll) window._initCinematicScroll();
+    gsap.fromTo('#navbar', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out', delay: 0.12 });
+  }, null, 8.2);
+})();
+</script>
+
+<script>
+// ══════════════════════════════════════════════════
+//  CINEMATIC SCROLL — Lenis + GSAP ScrollTrigger
+//  Called after preloader completes so body overflow
+//  is already restored before Lenis starts.
+// ══════════════════════════════════════════════════
+(function () {
+  'use strict';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Cubic-out easing — smooth deceleration with a shorter tail than expo-out.
+  // Expo-out has an extremely long, gentle tail (the "floaty" feeling);
+  // cubic-out resolves faster while still feeling premium and never abrupt.
+  function cubicOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+  window._initCinematicScroll = function () {
+
+    // ─── 1. Lenis engine ─────────────────────────────
+    var lenis = new Lenis({
+      duration: 1.05,           // reduced from 1.35 — more reactive, less floaty
+      easing: cubicOut,         // shorter tail than expo-out, still silky smooth
+      smoothWheel: true,
+      wheelMultiplier: 1.05,    // up from 0.88 — fast inputs travel farther/faster
+      smoothTouch: false,       // leave mobile native
+    });
+
+    window.__lenis = lenis;
+
+    // ─── 2. GSAP ticker integration ──────────────────
+    // ScrollTrigger reads Lenis's scroll position on every tick
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
+    gsap.ticker.lagSmoothing(0); // prevents GSAP from compensating frame drops → no jitter
+
+    // ─── 3. Anchor navigation through Lenis ──────────
+    // Ensures href="#section" links use the same cinematic easing
+    document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var hash = a.getAttribute('href');
+        if (!hash || hash === '#') return;
+        var target = document.querySelector(hash);
+        if (!target) return;
+        e.preventDefault();
+        lenis.scrollTo(target, { duration: 1.2, easing: cubicOut });
+      });
+    });
+
+    // ─── 4. Replace IntersectionObserver → ScrollTrigger ─
+    // Lenis drives scroll, so ScrollTrigger (synced to Lenis) fires
+    // reveals at the correct visual position — IntersectionObserver
+    // can fire early/late when the virtual scroll position leads the DOM.
+    document.querySelectorAll('[data-reveal]').forEach(function (el) {
+      var delay = el.dataset.d ? parseFloat(el.dataset.d) * 0.11 : 0;
+      var timer = null;
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top 89%',
+        onEnter: function () {
+          clearTimeout(timer);
+          if (delay > 0) {
+            timer = setTimeout(function () { el.classList.add('in'); }, delay * 1000);
+          } else {
+            el.classList.add('in');
+          }
+        },
+        onLeaveBack: function () {
+          clearTimeout(timer);
+          el.classList.remove('in');
+        },
+      });
+    });
+
+    // ─── 5. Hero background parallax ─────────────────
+    // Background panels move at ~70% of scroll speed → depth illusion
+    gsap.to('#hnBgTrack', {
+      y: '22%',
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#hero-new',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 2,           // 2s lag → smooth, never jittery
+      },
+    });
+
+    // Hero content fades and lifts as you scroll away
+    gsap.to('#hnContentInner', {
+      y: -55,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#hero-new',
+        start: 'top top',
+        end: '40% top',
+        scrub: 1.8,
+      },
+    });
+
+    // ─── 6. Track Record carousel — cinematic enter ──
+    // The carousel itself has no data-reveal so it's safe to GSAP
+    gsap.fromTo('#heroCarousel',
+      { opacity: 0, y: 40 },
+      {
+        opacity: 1, y: 0,
+        duration: 1.1, ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '#heroCarousel',
+          start: 'top 84%',
+          toggleActions: 'play none none none',
+        },
+      }
+    );
+
+    // ─── 7. Contact columns — slide from sides ───────
+    // contact-grid > div[0] has NO data-reveal (only its children do)
+    var cGrid = document.querySelector('.contact-grid');
+    if (cGrid && cGrid.children.length >= 2) {
+      var cLeft  = cGrid.children[0];
+      var cRight = cGrid.children[1];
+      // Only animate if NOT already a data-reveal element itself
+      if (!cLeft.hasAttribute('data-reveal')) {
+        gsap.fromTo(cLeft,
+          { opacity: 0, x: -44 },
+          {
+            opacity: 1, x: 0, duration: 1.05, ease: 'power3.out',
+            scrollTrigger: { trigger: '#contact', start: 'top 78%', toggleActions: 'play none none none' },
+          }
+        );
+      }
+      if (!cRight.hasAttribute('data-reveal')) {
+        gsap.fromTo(cRight,
+          { opacity: 0, x: 44 },
+          {
+            opacity: 1, x: 0, duration: 1.05, ease: 'power3.out', delay: 0.1,
+            scrollTrigger: { trigger: '#contact', start: 'top 78%', toggleActions: 'play none none none' },
+          }
+        );
+      }
+    }
+
+    // ─── 8. Subtle section background depth ──────────
+    // Sections with solid or gradient backgrounds shift their
+    // visual mass slightly as you scroll through them.
+    ['#about', '#structure', '#works', '#leadership'].forEach(function (id) {
+      var el = document.querySelector(id);
+      if (!el) return;
+      gsap.fromTo(el,
+        { backgroundPositionY: '0%' },
+        {
+          backgroundPositionY: '12%',
+          ease: 'none',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1.5,
+          },
+        }
+      );
+    });
+  };
+})();
+</script>
+
+<!-- Global scroll cursor (div must come before the script so getElementById finds it) -->
+<div class="hn-cursor" id="hnCursor"><span class="hn-cursor-label">Scroll</span></div>
+<script>
+(function () {
+  var cursor = document.getElementById('hnCursor');
+  if (!cursor) return;
+  var mouseX = 0, mouseY = 0, onPage = false, overInteractive = false;
+  var cursorReady = false;
+  var OFFSET_X = 22, OFFSET_Y = 26;
+  var heroEl = document.getElementById('hero-new');
+  var INTERACTIVE = 'a, button, input, select, textarea, label, [role="button"], summary, .hn-tab, #hnBadge, [tabindex]';
+  var TEXT     = 'p, h1, h2, h3, h4, h5, h6, li, blockquote, figcaption';
+
+  // Called by preloader once it finishes
+  window._cursorEnable = function () { cursorReady = true; };
+
+  document.addEventListener('mousemove', function (e) {
+    mouseX = e.clientX; mouseY = e.clientY; onPage = true;
+    if (!overInteractive && cursorReady) cursor.classList.add('hn-cursor-visible');
+  });
+  document.addEventListener('mouseleave', function () {
+    onPage = false; cursor.classList.remove('hn-cursor-visible');
+  });
+
+  function bindHide(el) {
+    if (el._cursorBound) return; el._cursorBound = true;
+    el.addEventListener('mouseenter', function () {
+      overInteractive = true; cursor.classList.remove('hn-cursor-visible');
+    });
+    el.addEventListener('mouseleave', function () {
+      overInteractive = false;
+      if (onPage) cursor.classList.add('hn-cursor-visible');
+    });
+  }
+
+  function attach() {
+    // Always hide on interactive elements everywhere
+    document.querySelectorAll(INTERACTIVE).forEach(bindHide);
+    // Also hide on text elements outside the hero
+    document.querySelectorAll(TEXT).forEach(function (el) {
+      if (heroEl && heroEl.contains(el)) return;
+      bindHide(el);
+    });
+  }
+  attach();
+  new MutationObserver(attach).observe(document.body, { childList: true, subtree: true });
+
+  (function loop() {
+    cursor.style.left = (mouseX + OFFSET_X) + 'px';
+    cursor.style.top  = (mouseY + OFFSET_Y) + 'px';
+    requestAnimationFrame(loop);
+  })();
+})();
+</script>
+</body>
+</html>
