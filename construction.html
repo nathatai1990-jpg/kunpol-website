@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Construction — KUNPOL Group</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent:       #C4723C;
+      --accent-light: #D48A52;
+      --accent-pale:  #F5EDE5;
+      --accent-rgb:   196,114,60;
+      --navy:         #060D1F;
+      --text:         #111827;
+      --text-muted:   #4B5563;
+      --text-light:   #9CA3AF;
+      --cream:        #F9F7F5;
+      --gray-100:     #F3F4F6;
+      --gray-200:     #E5E7EB;
+      --font-display: 'Plus Jakarta Sans', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+      --font-serif:   'Cormorant Garamond', serif;
+    }
+    html { overflow-x: hidden; } /* smooth scroll handled by Lenis */
+    body {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='M2 1l10 6-5 1.5L5 13z' fill='white' stroke='rgba(0,0,0,0.5)' stroke-width='1'/%3E%3C/svg%3E") 2 1, auto; font-family: var(--font-body); background: #fff; color: var(--text); -webkit-font-smoothing: antialiased; }
+
+    /* ── MENU OVERLAY ── */
+    #menu-overlay {
+      position: fixed; inset: 0; z-index: 2000;
+      background: rgba(6,13,31,0.97);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.38s cubic-bezier(0.4,0,0.2,1);
+    }
+    #menu-overlay.open { opacity: 1; pointer-events: all; }
+    #menu-close {
+      position: absolute; top: 24px; right: 32px;
+      width: 48px; height: 48px; border-radius: 50%;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: white; transition: background 0.2s;
+    }
+    #menu-close:hover { background: rgba(255,255,255,0.16); }
+    #menu-close svg { width: 18px; height: 18px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; }
+    .menu-links { list-style: none; display: flex; flex-direction: column; align-items: center; gap: 28px; }
+    .menu-links a {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 400;
+      color: rgba(255,255,255,0.8); text-decoration: none;
+      letter-spacing: 0.03em; transition: color 0.2s;
+    }
+    .menu-links a:hover { color: var(--gold, #c79d42); }
+
+    /* ── NAVBAR ── */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      display: grid; grid-template-columns: auto 1fr auto;
+      align-items: center; padding: 0 80px; height: 68px;
+      background: rgba(6,13,31,0.10);
+      backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      transition:
+        top 0.30s cubic-bezier(0.4,0,0.2,1),
+        left 0.30s cubic-bezier(0.4,0,0.2,1),
+        right 0.30s cubic-bezier(0.4,0,0.2,1),
+        height 0.30s cubic-bezier(0.4,0,0.2,1),
+        border-radius 0.30s cubic-bezier(0.4,0,0.2,1),
+        background 0.30s cubic-bezier(0.4,0,0.2,1),
+        padding 0.30s cubic-bezier(0.4,0,0.2,1),
+        box-shadow 0.30s cubic-bezier(0.4,0,0.2,1),
+        border-color 0.30s cubic-bezier(0.4,0,0.2,1),
+        opacity 0.30s cubic-bezier(0.4,0,0.2,1);
+    }
+    #navbar.nav-scrolled {
+      opacity: 1;
+      top: 14px;
+      left: calc(50% - 400px); right: calc(50% - 400px);
+      height: 52px; border-radius: 100px;
+      background: rgba(6,13,31,0.37);
+      backdrop-filter: blur(28px) saturate(160%); -webkit-backdrop-filter: blur(28px) saturate(160%);
+      border: none;
+      box-shadow:
+        0 26px 18px -8px rgba(0,0,0,0.18),
+        0 10px  6px -3px rgba(0,0,0,0.09);
+      padding: 0 38px;
+    }
+    #navbar.nav-scrolled .nav-logo-svg { width: 40px; height: 40px; }
+    .nav-logo-white {
+      position: absolute; inset: 0;
+      width: 64px; height: 64px; object-fit: contain;
+      filter: brightness(0) invert(1);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 20%, black 55%, black 100%);
+      mask-image:         linear-gradient(to right, transparent 0%, transparent 20%, black 55%, black 100%);
+      pointer-events: none;
+      transition: width 0.30s cubic-bezier(0.4,0,0.2,1),
+                  height 0.30s cubic-bezier(0.4,0,0.2,1),
+                  opacity 0.40s cubic-bezier(0.4,0,0.2,1);
+    }
+    #navbar.nav-scrolled .nav-logo-white { opacity: 0; }
+    #navbar.nav-scrolled .nav-logo-divider { height: 20px; }
+    #navbar.nav-scrolled .nav-wordmark { margin-left: 10px; }
+    #navbar.nav-scrolled .nav-wordmark-top { font-size: 10px; letter-spacing: 0.20em; }
+    #navbar.nav-scrolled .nav-wordmark-sub { font-size: 7px; }
+    #navbar.nav-scrolled .nav-links { gap: 30px; }
+    #navbar.nav-scrolled .nav-links a { font-size: 12px; }
+    #navbar.nav-scrolled .nav-lang { font-size: 10.5px; }
+    #navbar.nav-scrolled .nav-cta { font-size: 11px; padding: 7px 16px; background: #3465B0; box-shadow: 0 2px 14px rgba(52,101,176,0.50), 0 1px 4px rgba(0,0,0,0.18); }
+    .nav-logo { display: flex; align-items: center; gap: 0; text-decoration: none; flex-shrink: 0; }
+    .nav-logo-wrap {
+      position: relative;
+      display: inline-flex;
+      flex-shrink: 0;
+      margin-right: -10px;
+      transform: perspective(320px) rotateY(-8deg) rotateX(3deg);
+      transform-style: preserve-3d;
+      transition: margin-right 0.30s cubic-bezier(0.4,0,0.2,1),
+                  transform 0.40s cubic-bezier(0.4,0,0.2,1);
+    }
+    #navbar.nav-scrolled .nav-logo-wrap { transform: none; margin-right: -6px; }
+    .nav-logo-svg {
+      width: 64px; height: 64px; flex-shrink: 0; object-fit: contain;
+      filter:
+        brightness(0) saturate(100%) invert(16%) sepia(60%) saturate(700%) hue-rotate(200deg) brightness(0.95)
+        drop-shadow(1px 2px 0px rgba(0,8,32,1))
+        drop-shadow(2px 3px 0px rgba(0,8,32,0.75))
+        drop-shadow(3px 5px 2px rgba(0,8,32,0.35));
+      transition: filter 0.30s cubic-bezier(0.4,0,0.2,1),
+                  width 0.30s cubic-bezier(0.4,0,0.2,1),
+                  height 0.30s cubic-bezier(0.4,0,0.2,1);
+    }
+    #navbar.nav-scrolled .nav-logo-svg {
+      filter: brightness(0) saturate(100%) invert(16%) sepia(60%) saturate(700%) hue-rotate(200deg) brightness(0.95) drop-shadow(0 2px 6px rgba(26,52,84,0.18));
+    }
+    .nav-logo-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.22); flex-shrink: 0; transition: height 0.30s cubic-bezier(0.4,0,0.2,1); }
+    .nav-wordmark { display: flex; flex-direction: column; line-height: 1; gap: 2px; margin-left: 14px; transition: margin-left 0.30s cubic-bezier(0.4,0,0.2,1); }
+    .nav-wordmark-top { font-family: var(--font-body); font-size: 11.5px; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(255,255,255,0.92); transition: font-size 0.30s cubic-bezier(0.4,0,0.2,1), letter-spacing 0.30s cubic-bezier(0.4,0,0.2,1); }
+    .nav-wordmark-sub { font-family: var(--font-body); font-size: 8px; font-weight: 400; letter-spacing: 0.35em; text-transform: uppercase; color: rgba(255,255,255,0.48); transition: font-size 0.30s cubic-bezier(0.4,0,0.2,1); }
+    .nav-center { display: flex; align-items: center; justify-content: center; }
+    .nav-links { display: flex; align-items: center; gap: 36px; list-style: none; transition: gap 0.30s cubic-bezier(0.4,0,0.2,1); }
+    .nav-links a { font-family: var(--font-body); color: rgba(255,255,255,0.62); text-decoration: none; font-size: 13.5px; font-weight: 400; letter-spacing: 0.02em; position: relative; transition: color 0.22s ease, font-size 0.30s cubic-bezier(0.4,0,0.2,1); }
+    .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: rgba(255,255,255,0.9); transition: width 0.3s cubic-bezier(0.4,0,0.2,1); }
+    .nav-links a:hover { color: rgba(255,255,255,0.95); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-has-drop { position: relative; }
+    .nav-has-drop > a { display: inline-flex; align-items: center; gap: 5px; }
+    .nav-drop-chevron { width: 9px; height: 9px; flex-shrink: 0; stroke: rgba(255,255,255,0.45); fill: none; stroke-width: 1.8; transition: transform 0.25s ease, stroke 0.2s; }
+    .nav-has-drop:hover .nav-drop-chevron { transform: rotate(180deg); stroke: rgba(255,255,255,0.80); }
+    .nav-dropdown { position: absolute; top: calc(100% + 18px); left: 50%; transform: translateX(-50%) translateY(-8px); background: rgba(6,13,31,0.88); backdrop-filter: blur(32px) saturate(160%); -webkit-backdrop-filter: blur(32px) saturate(160%); border: 1px solid rgba(255,255,255,0.10); border-radius: 16px; padding: 8px; min-width: 210px; opacity: 0; pointer-events: none; transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.34,1.2,0.64,1); box-shadow: 0 16px 48px rgba(0,0,0,0.50), 0 4px 16px rgba(0,0,0,0.30); z-index: 200; }
+    .nav-has-drop:hover .nav-dropdown { opacity: 1; pointer-events: all; transform: translateX(-50%) translateY(0); }
+    .nav-dropdown::before { content: ''; position: absolute; top: -18px; left: 0; right: 0; height: 18px; }
+    .nav-drop-item { display: flex; align-items: center; gap: 11px; padding: 9px 13px; border-radius: 9px; text-decoration: none; transition: background 0.15s ease; }
+    .nav-drop-item:hover { background: rgba(255,255,255,0.08); }
+    .nav-links .nav-dropdown a::after { display: none !important; content: none !important; width: 0 !important; }
+    .nav-drop-num { font-family: var(--font-body); font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.30); letter-spacing: 0.06em; min-width: 18px; flex-shrink: 0; }
+    .nav-drop-icon svg { width: 13px; height: 13px; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .nav-drop-name { font-size: 13px; font-weight: 400; color: rgba(255,255,255,0.68); transition: color 0.15s ease; }
+    .nav-drop-item:hover .nav-drop-name { color: rgba(255,255,255,0.95); }
+    .nav-right { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
+    .nav-lang { display: flex; align-items: center; gap: 6px; font-family: var(--font-body); font-size: 11.5px; color: rgba(255,255,255,0.52); cursor: pointer; border: none; background: none; padding: 0; transition: color 0.2s ease, font-size 0.30s cubic-bezier(0.4,0,0.2,1); }
+    .nav-lang:hover { color: rgba(255,255,255,0.85); }
+    .nav-lang svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .nav-lang-sep { color: rgba(255,255,255,0.22); }
+    .nav-cta { font-family: var(--font-body); font-size: 12px; font-weight: 600; letter-spacing: 0.04em; padding: 9px 24px; border-radius: 6px; background: #3465B0; color: #ffffff; text-decoration: none; white-space: nowrap; transition: background 0.2s ease, transform 0.18s ease, box-shadow 0.2s ease, font-size 0.30s cubic-bezier(0.4,0,0.2,1), padding 0.30s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 2px 12px rgba(0,0,0,0.28); }
+    .nav-cta:hover { background: #e8edf5; transform: translateY(-1px); box-shadow: 0 4px 18px rgba(0,0,0,0.32); }
+    .nav-cta:active { transform: translateY(0); box-shadow: 0 1px 6px rgba(0,0,0,0.22); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { display: block; width: 22px; height: 1.5px; background: rgba(255,255,255,0.85); transition: transform 0.3s, opacity 0.3s; }
+    @media (max-width: 900px) {
+      #navbar { padding: 0 24px; grid-template-columns: auto 1fr auto; }
+      .nav-center { display: none; }
+      .hamburger { display: flex; z-index: 1001; }
+      .nav-lang { display: none; }
+      .nav-cta { display: none; }
+    }
+
+    .s-hero { position: relative; height: 100vh; min-height: 640px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .s-hero-bg { position: absolute; inset: 0; background: url('Inspirations/Construction Footage.jpeg') center center / cover no-repeat; }
+    .s-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(6,13,31,0.88) 0%, rgba(6,13,31,0.52) 50%, rgba(6,13,31,0.20) 100%), linear-gradient(to top, rgba(6,13,31,0.55) 0%, rgba(6,13,31,0.0) 50%); }
+    .s-hero-content { position: relative; z-index: 2; padding: 0 80px; max-width: 760px; margin: 0 auto; text-align: center; padding-top: 68px; }
+    .s-breadcrumb { display: flex; align-items: center; gap: 10px; margin-bottom: 32px;  justify-content: center;}
+    .s-breadcrumb a, .s-breadcrumb span { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.48); text-decoration: none; transition: color 0.2s; }
+    .s-breadcrumb a:hover { color: rgba(255,255,255,0.75); }
+    .s-breadcrumb-sep { color: rgba(255,255,255,0.28); }
+    .s-breadcrumb .current { color: var(--accent-light); }
+    .s-sector-label { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .s-sector-line { width: 28px; height: 1.5px; background: var(--accent); }
+    .s-sector-tag { font-size: 10px; letter-spacing: 0.30em; text-transform: uppercase; color: var(--accent-light); font-weight: 500; }
+    .s-hero-title { font-family: var(--font-display); font-size: clamp(48px, 6vw, 80px); font-weight: 600; letter-spacing: -0.03em; color: #fff; line-height: 1.0; margin-bottom: 20px; }
+    .s-hero-desc { font-size: 16px; line-height: 1.75; color: rgba(255,255,255,0.65); max-width: 480px; margin: 0 auto 40px; }
+    .s-hero-cta { display: inline-flex; align-items: center; gap: 10px; background: var(--accent); color: #fff; padding: 16px 36px; border-radius: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; transition: background 0.2s, transform 0.2s; box-shadow: 0 4px 20px rgba(140,74,30,0.40); }
+    .s-hero-cta:hover { background: var(--accent-light); transform: translateY(-2px); }
+    .s-hero-cta svg { width: 16px; height: 16px; }
+    .s-hero-scroll { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 2; display: flex; align-items: center; gap: 14px; }
+    .s-hero-scroll-line { width: 40px; height: 1px; background: rgba(255,255,255,0.30); }
+    .s-hero-scroll-label { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(255,255,255,0.38); }
+
+    .container { max-width: 1240px; margin: 0 auto; padding: 0 80px; }
+    .section { padding: 128px 0; }
+    .section-lg { padding: 160px 0; }
+    .divider { height: 1px; background: var(--gray-200); }
+    .eyebrow { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: #1e3a5a; margin-bottom: 20px; }
+    .eyebrow::before { content: ''; display: block; width: 10px; height: 10px; border-radius: 50%; background: #5bb5f5; flex-shrink: 0; box-shadow: 0 0 0 3px rgba(91,181,245,0.18), 0 0 12px rgba(91,181,245,0.50), 0 0 24px rgba(91,181,245,0.22); }
+    h2.section-heading { font-family: var(--font-display); font-size: clamp(28px, 3.5vw, 46px); font-weight: 600; letter-spacing: -0.025em; color: var(--text); line-height: 1.1; margin-bottom: 24px; }
+    .body-text { font-size: 15px; line-height: 1.85; color: var(--text-muted); }
+    /* ─── HERO ENTRY ────────────────────────────────── */
+    @keyframes heroReveal {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .s-breadcrumb   { animation: heroReveal 0.85s cubic-bezier(0.22,1,0.36,1) 0.15s backwards;  justify-content: center;}
+    .s-sector-label { animation: heroReveal 0.85s cubic-bezier(0.22,1,0.36,1) 0.32s backwards; }
+    .s-hero-title   { animation: heroReveal 0.85s cubic-bezier(0.22,1,0.36,1) 0.48s backwards; }
+    .s-hero-desc    { animation: heroReveal 0.85s cubic-bezier(0.22,1,0.36,1) 0.64s backwards; }
+    .s-hero-cta     { animation: heroReveal 0.85s cubic-bezier(0.22,1,0.36,1) 0.78s backwards; }
+    .s-hero-scroll  { animation: heroReveal 0.85s cubic-bezier(0.22,1,0.36,1) 0.95s backwards; }
+
+    /* ─── SCROLL REVEAL ─────────────────────────────── */
+    [data-reveal] { opacity: 0; transform: translateY(36px); transition: opacity 0.78s cubic-bezier(0.22,1,0.36,1), transform 0.78s cubic-bezier(0.22,1,0.36,1); }
+    [data-reveal].revealed { opacity: 1; transform: translateY(0); }
+    [data-reveal][data-d="1"] { transition-delay: 0.12s; }
+    [data-reveal][data-d="2"] { transition-delay: 0.24s; }
+    [data-reveal][data-d="3"] { transition-delay: 0.36s; }
+    [data-reveal][data-d="4"] { transition-delay: 0.48s; }
+
+    /* OVERVIEW — full-width intro then image below */
+    .overview-full { max-width: 680px; margin-bottom: 80px; }
+    .overview-lead { font-family: var(--font-serif); font-size: clamp(20px, 2.2vw, 28px); font-weight: 300; line-height: 1.6; color: var(--text); margin-bottom: 28px; font-style: italic; }
+    .overview-img-row { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+    .overview-img-item { border-radius: 4px; overflow: hidden; }
+    .overview-img-item img { width: 100%; height: 100%; object-fit: cover; display: block; aspect-ratio: 16/10; }
+    .overview-img-item:last-child img { aspect-ratio: 1/1; }
+
+    /* SUBSIDIARIES — 2×2 grid (4 subsidiaries) */
+    .subsidiaries { background: var(--cream); }
+    .sub-4grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 64px; }
+    .sub-4card { background: #fff; padding: 52px 48px; border-radius: 4px; position: relative; overflow: hidden; transition: box-shadow 0.3s; }
+    .sub-4card:hover { box-shadow: 0 12px 48px rgba(0,0,0,0.07); }
+    .sub-4card-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--accent); }
+    .sub-card-number { font-size: 10px; font-weight: 500; letter-spacing: 0.25em; color: var(--accent); text-transform: uppercase; margin-bottom: 20px; }
+    .sub-card-name { font-family: var(--font-display); font-size: 22px; font-weight: 600; letter-spacing: -0.01em; color: var(--text); margin-bottom: 14px; }
+    .sub-card-desc { font-size: 14px; line-height: 1.80; color: var(--text-muted); margin-bottom: 28px; }
+    .sub-card-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+    .sub-tag { background: var(--accent-pale); color: var(--accent); font-size: 10px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; padding: 5px 11px; border-radius: 2px; }
+    .learn-more { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; padding-bottom: 2px; transition: border-color 0.2s, gap 0.2s; }
+    .learn-more:hover { border-color: var(--accent); gap: 12px; }
+    .learn-more svg { width: 14px; height: 14px; }
+
+    /* CAPABILITIES */
+    .cap-3col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; margin-top: 64px; }
+    .cap-3item { background: var(--cream); padding: 44px 40px; border-radius: 4px; }
+    .cap-3icon { width: 48px; height: 48px; border-radius: 4px; background: var(--accent-pale); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+    .cap-3icon svg { width: 22px; height: 22px; stroke: var(--accent); fill: none; stroke-width: 1.5; }
+    .cap-3title { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+    .cap-3desc { font-size: 13.5px; line-height: 1.75; color: var(--text-muted); }
+
+    /* TRACK RECORD — timeline layout */
+    .tr-timeline { display: flex; flex-direction: column; gap: 0; margin-top: 64px; position: relative; }
+    .tr-timeline::before { content: ''; position: absolute; left: 120px; top: 0; bottom: 0; width: 1px; background: var(--gray-200); }
+    .tr-row { display: grid; grid-template-columns: 120px 1fr; gap: 48px; align-items: start; padding: 48px 0; border-bottom: 1px solid var(--gray-200); }
+    .tr-row:first-child { padding-top: 0; }
+    .tr-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .tr-year { font-family: var(--font-display); font-size: 13px; font-weight: 600; letter-spacing: 0.10em; color: var(--accent); padding-top: 4px; position: relative; }
+    .tr-year::after { content: ''; position: absolute; right: -52px; top: 8px; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); border: 2px solid #fff; box-shadow: 0 0 0 1px var(--accent); }
+    .tr-content { }
+    .tr-title { font-family: var(--font-display); font-size: 19px; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+    .tr-desc { font-size: 14px; line-height: 1.80; color: var(--text-muted); }
+
+    /* GALLERY — masonry-style 3 col */
+    .gallery-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 64px; }
+    .gallery-item { overflow: hidden; border-radius: 4px; background: var(--gray-100); }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; aspect-ratio: 4/3; transition: transform 0.6s; }
+    .gallery-item:nth-child(2) { grid-row: span 2; }
+    .gallery-item:nth-child(2) img { aspect-ratio: 2/3; height: 100%; }
+    .gallery-item:hover img { transform: scale(1.03); }
+
+    .key-stats { background: var(--navy); padding: 96px 0; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+    .stat-item { padding: 0 48px; border-right: 1px solid rgba(255,255,255,0.08); }
+    .stat-item:first-child { padding-left: 0; }
+    .stat-item:last-child { border-right: none; }
+    .stat-number { font-family: var(--font-display); font-size: clamp(36px, 4vw, 52px); font-weight: 700; color: #fff; line-height: 1; margin-bottom: 8px; }
+    .stat-number span { color: var(--accent-light); }
+    .stat-label { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.42); line-height: 1.5; }
+
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .contact-lead { font-family: var(--font-serif); font-size: clamp(20px, 2.2vw, 28px); font-weight: 300; line-height: 1.5; color: var(--text); margin-bottom: 32px; font-style: italic; }
+    .contact-person-name { font-family: var(--font-display); font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .contact-person-role { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 28px; }
+    .contact-details { display: flex; flex-direction: column; gap: 12px; }
+    .contact-detail { display: flex; align-items: center; gap: 14px; font-size: 14px; color: var(--text-muted); }
+    .contact-detail-icon { width: 36px; height: 36px; border-radius: 4px; background: var(--accent-pale); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .contact-detail-icon svg { width: 16px; height: 16px; stroke: var(--accent); fill: none; stroke-width: 1.5; }
+    .contact-form { background: var(--cream); border-radius: 8px; padding: 52px 48px; }
+    .form-group { margin-bottom: 24px; }
+    .form-label { display: block; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; font-weight: 500; }
+    .form-input, .form-textarea { width: 100%; font-family: var(--font-body); font-size: 14px; color: var(--text); background: #fff; border: 1px solid var(--gray-200); border-radius: 4px; padding: 14px 16px; outline: none; transition: border-color 0.2s; }
+    .form-input:focus, .form-textarea:focus { border-color: var(--accent); }
+    .form-textarea { min-height: 120px; resize: vertical; }
+    .form-submit { width: 100%; background: var(--accent); color: #fff; border: none; border-radius: 4px; padding: 16px; font-family: var(--font-body); font-size: 12px; font-weight: 600; letter-spacing: 0.10em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+    .form-submit:hover { background: var(--accent-light); }
+
+    footer { background: var(--navy); padding: 48px 0; border-top: 1px solid rgba(255,255,255,0.06); }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { display: flex; align-items: center; text-decoration: none; }
+    .footer-logo img { width: 40px; height: 40px; object-fit: contain; margin-right: -6px; }
+    .footer-wordmark { margin-left: 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.20em; color: rgba(255,255,255,0.55); }
+    .footer-copy { font-size: 11px; color: rgba(255,255,255,0.25); }
+    .footer-back { font-size: 11px; color: rgba(255,255,255,0.38); text-decoration: none; letter-spacing: 0.10em; text-transform: uppercase; transition: color 0.2s; }
+    .footer-back:hover { color: rgba(255,255,255,0.65); }
+
+
+    /* ─── EDITORIAL HERO ─────────────────────────────── */
+    .sh-hero {
+      background: #fff;
+      padding-top: 68px; /* navbar height */
+    }
+    .sh-hero-text {
+      padding: 56px 80px 32px 64px;
+    }
+    .sh-breadcrumb {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 26px;
+      opacity: 0; transform: translateY(14px);
+      animation: shReveal 0.70s cubic-bezier(0.22,1,0.36,1) 0.10s forwards;
+    }
+    .sh-breadcrumb a, .sh-breadcrumb span {
+      font-family: var(--font-body); font-size: 11px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: #9CA3AF; text-decoration: none;
+      transition: color 0.2s;
+    }
+    .sh-breadcrumb a:hover { color: #1a3454; }
+    .sh-breadcrumb-sep { color: #D1D5DB; font-size: 10px; }
+    .sh-breadcrumb .current { color: #1a3454; font-weight: 500; }
+    .sh-heading {
+      font-family: var(--font-display);
+      font-size: clamp(62px, 7.8vw, 104px);
+      font-weight: 500; letter-spacing: -0.02em;
+      color: #1a3454; line-height: 0.93;
+      margin-bottom: 22px;
+      opacity: 0; transform: translateY(22px);
+      animation: shReveal 0.85s cubic-bezier(0.22,1,0.36,1) 0.20s forwards;
+    }
+    .sh-desc {
+      font-family: var(--font-body); font-size: 15px; line-height: 1.78;
+      color: #4B5563; max-width: 490px;
+      opacity: 0; transform: translateY(18px);
+      animation: shReveal 0.85s cubic-bezier(0.22,1,0.36,1) 0.32s forwards;
+    }
+    .sh-visual-outer {
+      padding: 0 64px;
+      position: relative;
+    }
+    .sh-visual {
+      position: relative;
+      opacity: 0;
+      animation: shReveal 0.90s cubic-bezier(0.22,1,0.36,1) 0.46s forwards;
+    }
+    .sh-img {
+      width: 100%; height: 520px;
+      border-radius: 0; overflow: hidden;
+    }
+    .sh-img img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .sh-card {
+      position: absolute; right: 40px; top: -90px;
+      width: 272px;
+      background: #1a3454;
+      border-radius: 14px;
+      padding: 26px 24px;
+      box-shadow:
+        0 24px 64px rgba(6,13,31,0.32),
+        0 6px 20px rgba(6,13,31,0.22);
+    }
+    .sh-card-eyebrow {
+      font-family: var(--font-body); font-size: 9px;
+      letter-spacing: 0.24em; text-transform: uppercase;
+      color: rgba(255,255,255,0.38); margin-bottom: 14px; font-weight: 600;
+    }
+    .sh-card-divider {
+      height: 1px; background: rgba(255,255,255,0.10); margin-bottom: 14px;
+    }
+    .sh-card-list {
+      list-style: none; display: flex; flex-direction: column;
+      margin-bottom: 20px;
+    }
+    .sh-card-list li {
+      font-family: var(--font-body); font-size: 12.5px;
+      color: rgba(255,255,255,0.80); line-height: 1.48;
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex; align-items: flex-start; gap: 9px;
+    }
+    .sh-card-list li:last-child { border-bottom: none; }
+    .sh-card-list li::before {
+      content: ''; display: block; flex-shrink: 0;
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--accent, #6EB5EC); margin-top: 5px;
+    }
+    .sh-card-stats {
+      display: flex; flex-direction: column; gap: 10px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.10);
+    }
+    .sh-stat {
+      display: flex; align-items: baseline; gap: 8px;
+    }
+    .sh-stat-num {
+      font-family: var(--font-display);
+      font-size: 22px; font-weight: 400;
+      color: rgba(255,255,255,0.90); letter-spacing: -0.01em; line-height: 1;
+      white-space: nowrap;
+    }
+    .sh-stat-label {
+      font-family: var(--font-body); font-size: 10px;
+      letter-spacing: 0.10em; text-transform: uppercase;
+      color: rgba(255,255,255,0.38); font-weight: 500;
+    }
+    .sh-scroll {
+      max-width: 1240px; margin: 0 auto;
+      padding: 32px 80px 52px 16px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .sh-scroll-line { width: 40px; height: 1px; background: rgba(26,52,84,0.18); }
+    .sh-scroll-label {
+      font-family: var(--font-body); font-size: 10px;
+      letter-spacing: 0.25em; text-transform: uppercase; color: rgba(26,52,84,0.34);
+    }
+
+    .sh-card-tags {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-top: 14px; padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,0.10);
+    }
+    .sh-tag {
+      font-family: var(--font-body); font-size: 10px;
+      letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500;
+      color: rgba(255,255,255,0.60);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 100px;
+      padding: 4px 10px;
+    }
+    @keyframes shReveal {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* Navbar override — light hero background */
+    #navbar:not(.nav-scrolled) {
+      background: rgba(255,255,255,0.96);
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    }
+    #navbar:not(.nav-scrolled) .nav-wordmark-top { color: #1a3454; }
+    #navbar:not(.nav-scrolled) .nav-wordmark-sub { color: rgba(26,52,84,0.42); }
+    #navbar:not(.nav-scrolled) .nav-logo-divider { background: rgba(26,52,84,0.16); }
+    #navbar:not(.nav-scrolled) .nav-links a { color: rgba(26,52,84,0.58); }
+    #navbar:not(.nav-scrolled) .nav-links a:hover { color: #1a3454; }
+    #navbar:not(.nav-scrolled) .nav-links a::after { background: #1a3454; }
+    #navbar:not(.nav-scrolled) .nav-drop-chevron { stroke: rgba(26,52,84,0.40); }
+    #navbar:not(.nav-scrolled) .nav-lang { color: rgba(26,52,84,0.50); }
+    #navbar:not(.nav-scrolled) .nav-lang:hover { color: #1a3454; }
+    #navbar:not(.nav-scrolled) .hamburger span { background: rgba(26,52,84,0.80); }
+    #navbar:not(.nav-scrolled) .nav-logo-white { opacity: 0; }
+    #navbar:not(.nav-scrolled) .nav-logo-svg {
+      filter:
+        brightness(0) saturate(100%) invert(16%) sepia(60%) saturate(700%) hue-rotate(200deg) brightness(0.95)
+        drop-shadow(1px 2px 0px rgba(0,8,32,1))
+        drop-shadow(2px 3px 0px rgba(0,8,32,0.75))
+        drop-shadow(3px 5px 2px rgba(0,8,32,0.35));
+    }
+    #navbar:not(.nav-scrolled) .nav-cta { background: #1a3454; color: #fff; }
+    #navbar:not(.nav-scrolled) .nav-cta:hover { background: #243d61; }
+    @media (max-width: 900px) {
+      .sh-hero-text { padding: 40px 28px 24px; }
+      .sh-visual-outer { padding: 0 20px; }
+      .sh-img { width: 100%; height: 280px; border-radius: 12px; }
+      .sh-card {
+        position: static; width: 100%; margin-top: 20px;
+        box-shadow: 0 8px 32px rgba(6,13,31,0.22);
+      }
+      .sh-scroll { padding: 24px 28px 40px; }
+    }
+
+    /* ── HERO ACCENT POLISH ─────────────────────────── */
+    .s-hero-overlay::after {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 70% at 8% 95%, rgba(var(--accent-rgb), 0.40) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 60% at 115% -5%, rgba(var(--accent-rgb), 0.24) 0%, transparent 58%);
+      pointer-events: none;
+    }
+    .s-hero-content { position: relative; }
+    .s-hero-title { text-shadow: 0 2px 32px rgba(var(--accent-rgb), 0.22); }
+    .s-hero-cta:hover { box-shadow: 0 10px 34px rgba(var(--accent-rgb), 0.58); }
+    .s-hero-scroll-line {
+      width: 52px; background: linear-gradient(to right, transparent, var(--accent-light));
+      position: relative;
+    }
+    .s-hero-scroll-line::after {
+      content: ''; position: absolute; right: -1px; top: -2px;
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--accent-light); box-shadow: 0 0 12px var(--accent-light);
+    }
+    .s-hero-scroll-label { color: rgba(255,255,255,0.58); font-weight: 500; }
+    .nav-links a::after { background: var(--accent-light); height: 1.5px; }
+    .s-breadcrumb a:hover { color: var(--accent-light); }
+  
+  /* ── Global scroll cursor ── */
+  .kp-cursor {
+    position: fixed; z-index: 9999; pointer-events: none;
+    width: 76px; height: 76px; border-radius: 50%;
+    background: rgba(0,0,0,0.18);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border: 0.5px solid rgba(255,255,255,0.10);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transform: translate(-50%,-50%) scale(0.75);
+    transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.34,1.4,0.64,1);
+  }
+  .kp-cursor.kp-cursor-visible { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+  .kp-cursor-label {
+    font-family: var(--font-body);
+    font-size: 13px; letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.92); font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<!-- Full-screen overlay menu -->
+<div id="menu-overlay" role="dialog" aria-modal="true">
+  <button id="menu-close" aria-label="Close menu">
+    <svg viewBox="0 0 18 18"><line x1="2" y1="2" x2="16" y2="16"/><line x1="16" y1="2" x2="2" y2="16"/></svg>
+  </button>
+  <ul class="menu-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#sectors">Sectors</a></li>
+    <li><a href="index.html#works">Track Record</a></li>
+    <li><a href="index.html#leadership">Leadership</a></li>
+    <li><a href="#contact">Contact Us</a></li>
+  </ul>
+</div>
+
+<nav id="navbar" class="nav-scrolled">
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-wrap">
+      <img src="KP Logo no bg.png" alt="KUNPOL" class="nav-logo-svg">
+      <img src="KP Logo no bg.png" alt="" aria-hidden="true" class="nav-logo-white">
+    </span>
+    <div class="nav-logo-divider"></div>
+    <div class="nav-wordmark">
+      <span class="nav-wordmark-top">Kunpol</span>
+      <span class="nav-wordmark-sub">Group</span>
+    </div>
+  </a>
+  <div class="nav-center">
+    <ul class="nav-links" id="navLinks">
+      <li class="nav-has-drop">
+        <a href="index.html">Home
+          <svg class="nav-drop-chevron" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4"/></svg>
+        </a>
+        <div class="nav-dropdown">
+          <a href="index.html#about" class="nav-drop-item"><span class="nav-drop-name">Group Overview</span></a>
+          <a href="index.html#structure" class="nav-drop-item"><span class="nav-drop-name">Group Structure</span></a>
+          <a href="index.html#governance" class="nav-drop-item"><span class="nav-drop-name">Governance</span></a>
+          <a href="index.html#leadership" class="nav-drop-item"><span class="nav-drop-name">Leadership</span></a>
+          <a href="index.html#works" class="nav-drop-item"><span class="nav-drop-name">Track Record</span></a>
+          <div class="nav-drop-divider"></div>
+          <a href="index.html#contact" class="nav-drop-item"><span class="nav-drop-name">Contact Us</span></a>
+        </div>
+      </li>
+      <li class="nav-has-drop">
+        <a href="index.html#sectors">Sectors
+          <svg class="nav-drop-chevron" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4"/></svg>
+        </a>
+        <div class="nav-dropdown">
+          <a href="oil-stations.html" class="nav-drop-item">
+            <span class="nav-drop-num">01</span>
+            <span class="nav-drop-name">Oil Stations</span>
+          </a>
+          <a href="agriculture.html" class="nav-drop-item">
+            <span class="nav-drop-num">02</span>
+            <span class="nav-drop-name">Agriculture</span>
+          </a>
+          <a href="commerce.html" class="nav-drop-item">
+            <span class="nav-drop-num">03</span>
+            <span class="nav-drop-name">Commerce</span>
+          </a>
+          <a href="construction.html" class="nav-drop-item">
+            <span class="nav-drop-num">04</span>
+            <span class="nav-drop-name">Construction</span>
+          </a>
+          <a href="services.html" class="nav-drop-item">
+            <span class="nav-drop-num">05</span>
+            <span class="nav-drop-name">Services</span>
+          </a>
+          <a href="concrete-plant.html" class="nav-drop-item">
+            <span class="nav-drop-num">06</span>
+            <span class="nav-drop-name">Concrete Plant</span>
+          </a>
+        </div>
+      </li>
+      <li><a href="index.html#leadership">Leadership</a></li>
+    </ul>
+  </div>
+  <div class="nav-right">
+    <button class="nav-lang" id="navLang" title="Switch language">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+      </svg>
+      <span id="navLangLabel">EN</span>
+      <span class="nav-lang-sep">/</span>
+      <span>TH</span>
+    </button>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="index.html#contact" class="nav-cta">Contact Us</a>
+  </div>
+</nav>
+
+<!-- HERO EDITORIAL -->
+<section class="sh-hero">
+  <div class="sh-hero-text">
+    <nav class="sh-breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="sh-breadcrumb-sep">›</span>
+      <a href="index.html#sectors">Sectors</a>
+      <span class="sh-breadcrumb-sep">›</span>
+      <span class="current">Construction</span>
+    </nav>
+    <h1 class="sh-heading">Construction</h1>
+    <p class="sh-desc">Delivering infrastructure across the region — roads, civil works, and large-scale developments through experienced teams built for the demands of Northeast Thailand.</p>
+  </div>
+  <div class="sh-visual-outer">
+    <div class="sh-visual">
+      <div class="sh-img">
+        <img src="Inspirations/Construction Footage.jpeg" alt="Construction">
+      </div>
+      <div class="sh-card">
+        <div class="sh-card-eyebrow">Subsidiaries</div>
+        <div class="sh-card-divider"></div>
+        <ul class="sh-card-list">
+          <li>Kunpol Development Co., Ltd.</li>
+          <li>Tiger Cooperation Co., Ltd.</li>
+        </ul>
+        <div class="sh-card-divider"></div>
+        <div class="sh-card-stats">
+          <div class="sh-stat"><span class="sh-stat-num">20+</span><span class="sh-stat-label">Projects Delivered</span></div>
+          <div class="sh-stat"><span class="sh-stat-num">500M+</span><span class="sh-stat-label">Baht Contracted</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sh-scroll">
+    <div class="sh-scroll-line"></div>
+    <span class="sh-scroll-label">Scroll to explore</span>
+  </div>
+</section>
+
+<!-- OVERVIEW -->
+<section class="section" style="background:#fff;">
+  <div class="container">
+    <div class="overview-full" data-reveal>
+      <span class="eyebrow">Sector Overview</span>
+      <h2 class="section-heading">Infrastructure That<br>Outlasts Any Season</h2>
+      <p class="overview-lead">"We do not build for today. Every road, every structure, every foundation we lay is meant to serve the next generation."</p>
+      <p class="body-text" style="margin-bottom: 24px;">KUNPOL's Construction Division has been a trusted partner in regional infrastructure development across Khon Kaen and the broader Northeast. Our teams deliver civil engineering projects, road construction, earthworks, and government-contracted developments with consistent quality and on-schedule delivery.</p>
+      <p class="body-text">With deep roots in the region and established relationships with provincial authorities, KUNPOL Construction is positioned to take on both public infrastructure contracts and private development projects of significant scale.</p>
+    </div>
+    <div class="overview-img-row" data-reveal data-d="1">
+      <div class="overview-img-item"><img src="Inspirations/Construction Footage.jpeg" alt="Construction — KUNPOL"></div>
+      <div class="overview-img-item"><img src="https://placehold.co/480x480/1C110A/3D220E?text=+" alt="Construction site"></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SUBSIDIARIES — 2×2 grid -->
+<section class="section-lg subsidiaries">
+  <div class="container">
+    <div data-reveal>
+      <span class="eyebrow">Our Subsidiaries</span>
+      <h2 class="section-heading">Two Companies.<br>One Construction Standard.</h2>
+      <p class="body-text" style="max-width: 560px;">KUNPOL's Construction sector operates through two companies, delivering roads, civil works, and large-scale infrastructure projects across the region.</p>
+    </div>
+    <div class="sub-4grid">
+      <div class="sub-4card" data-reveal>
+        <div class="sub-4card-accent"></div>
+        <div class="sub-card-number">01 — Construction</div>
+        <div class="sub-card-name">Kunpol Development Co., Ltd.</div>
+        <p class="sub-card-desc">KUNPOL's primary construction company, delivering roads, civil works, and large-scale infrastructure projects across the region. Working with government bodies and private clients on public works tenders and development contracts throughout Khon Kaen province.</p>
+        <div class="sub-card-tags"><span class="sub-tag">Civil Works</span><span class="sub-tag">Infrastructure</span><span class="sub-tag">Roads</span></div>
+        <a href="#contact" class="learn-more">Get in Touch <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </div>
+      <div class="sub-4card" data-reveal data-d="1">
+        <div class="sub-4card-accent"></div>
+        <div class="sub-card-number">02 — Construction</div>
+        <div class="sub-card-name">Tiger Cooperation Co., Ltd.</div>
+        <p class="sub-card-desc">The second construction company under KUNPOL's Construction sector. Working alongside Kunpol Development to deliver construction services across the province, contributing to the Group's capacity for large-scale and concurrent project delivery.</p>
+        <div class="sub-card-tags"><span class="sub-tag">Construction Services</span><span class="sub-tag">Khon Kaen</span></div>
+        <a href="#contact" class="learn-more">Get in Touch <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CAPABILITIES -->
+<section class="section" style="background:#fff;">
+  <div class="container">
+    <div data-reveal>
+      <span class="eyebrow">Capabilities &amp; Services</span>
+      <h2 class="section-heading">What We Deliver</h2>
+    </div>
+    <div class="cap-3col">
+      <div class="cap-3item" data-reveal>
+        <div class="cap-3icon"><svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg></div>
+        <div class="cap-3title">Road &amp; Highway Construction</div>
+        <p class="cap-3desc">Design and build of rural and provincial road networks, including asphalt paving, drainage, and roadside structures to government specification.</p>
+      </div>
+      <div class="cap-3item" data-reveal data-d="1">
+        <div class="cap-3icon"><svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+        <div class="cap-3title">Civil &amp; Structural Engineering</div>
+        <p class="cap-3desc">Foundation works, reinforced concrete structures, bridges, culverts, and other civil engineering components for public and private projects.</p>
+      </div>
+      <div class="cap-3item" data-reveal data-d="2">
+        <div class="cap-3icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg></div>
+        <div class="cap-3title">Commercial &amp; Industrial Buildings</div>
+        <p class="cap-3desc">Full general contracting for warehouses, factories, community centres, and agricultural storage facilities across the province.</p>
+      </div>
+      <div class="cap-3item" data-reveal>
+        <div class="cap-3icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></div>
+        <div class="cap-3title">Site Preparation &amp; Earthworks</div>
+        <p class="cap-3desc">Large-volume earth removal, grading, compaction, and site levelling operations using a fully owned fleet of modern heavy machinery.</p>
+      </div>
+      <div class="cap-3item" data-reveal data-d="1">
+        <div class="cap-3icon"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>
+        <div class="cap-3title">Heavy Equipment Rental</div>
+        <p class="cap-3desc">Short and long-term hire of excavators, dump trucks, graders, and compactors to third-party contractors and public agencies.</p>
+      </div>
+      <div class="cap-3item" data-reveal data-d="2">
+        <div class="cap-3icon"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+        <div class="cap-3title">Government Project Tendering</div>
+        <p class="cap-3desc">Established experience submitting and winning provincial government tenders, with a strong track record of contract performance and delivery.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TRACK RECORD — timeline -->
+<section class="section" style="background: var(--cream);">
+  <div class="container">
+    <div data-reveal>
+      <span class="eyebrow">Track Record</span>
+      <h2 class="section-heading">Projects &amp; Milestones</h2>
+    </div>
+    <div class="tr-timeline">
+      <div class="tr-row" data-reveal>
+        <div class="tr-year">2007</div>
+        <div class="tr-content">
+          <div class="tr-title">First Government Road Contract Awarded</div>
+          <p class="tr-desc">KP Civil Engineering was awarded its first provincial road construction contract in Khon Kaen — a 12-kilometre rural road project connecting three sub-districts. Delivered on time and within budget, establishing the Group's credibility as a public works contractor.</p>
+        </div>
+      </div>
+      <div class="tr-row" data-reveal>
+        <div class="tr-year">2013</div>
+        <div class="tr-content">
+          <div class="tr-title">Heavy Equipment Fleet Expanded</div>
+          <p class="tr-desc">KP Machinery Rental was formally incorporated following significant investment in a modern heavy equipment fleet. The fleet was made available to third-party contractors, creating a new revenue stream for the Construction Division.</p>
+        </div>
+      </div>
+      <div class="tr-row" data-reveal>
+        <div class="tr-year">2018</div>
+        <div class="tr-content">
+          <div class="tr-title">20+ Projects Completed Milestone</div>
+          <p class="tr-desc">The Construction Division surpassed 20 completed infrastructure projects across Khon Kaen and neighbouring provinces, encompassing roads, drainage systems, and commercial structures with a combined contract value exceeding 500 million baht.</p>
+        </div>
+      </div>
+      <div class="tr-row" data-reveal>
+        <div class="tr-year">2023</div>
+        <div class="tr-content">
+          <div class="tr-title">KP Building Works Established</div>
+          <p class="tr-desc">Following growing demand from the private sector, KUNPOL incorporated KP Building Works to address commercial and industrial building construction — separating this scope from civil infrastructure and allowing for more focused project delivery.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="section" style="background:#fff;">
+  <div class="container">
+    <div data-reveal><span class="eyebrow">Gallery</span><h2 class="section-heading">Our Work</h2></div>
+    <div class="gallery-grid">
+      <div class="gallery-item" data-reveal><img src="Inspirations/Construction Footage.jpeg" alt="Construction site"></div>
+      <div class="gallery-item" data-reveal data-d="1"><img src="https://placehold.co/480x800/1C110A/3D220E?text=+" alt="Civil works"></div>
+      <div class="gallery-item" data-reveal data-d="2"><img src="https://placehold.co/600x400/1C110A/3D220E?text=+" alt="Road project"></div>
+      <div class="gallery-item" data-reveal data-d="3"><img src="https://placehold.co/600x400/160E07/2C1A0E?text=+" alt="Earthworks"></div>
+    </div>
+  </div>
+</section>
+
+<!-- KEY STATS -->
+<section class="key-stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item" data-reveal><div class="stat-number">20<span>+</span></div><div class="stat-label">Infrastructure<br>Projects Completed</div></div>
+      <div class="stat-item" data-reveal data-d="1"><div class="stat-number">4<span></span></div><div class="stat-label">Specialised<br>Subsidiaries</div></div>
+      <div class="stat-item" data-reveal data-d="2"><div class="stat-number">500<span>M+</span></div><div class="stat-label">Baht in Contract<br>Value Delivered</div></div>
+      <div class="stat-item" data-reveal data-d="3"><div class="stat-number">15<span>+</span></div><div class="stat-label">Years of<br>Regional Experience</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section" style="background:#fff; padding: 72px 0;" id="contact">
+  <div class="container">
+    <div data-reveal>
+      <span class="eyebrow">Get in Touch</span>
+      <div class="contact-details" style="margin-top: 24px;">
+        <div class="contact-detail">
+          <div class="contact-detail-icon">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.19 2 2 0 012 .01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+          </div>
+          +66 (0)43 000 444
+        </div>
+        <div class="contact-detail">
+          <div class="contact-detail-icon">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          kunpol999@hotmail.com
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <a href="index.html" class="footer-logo"><img src="KP Logo no bg.png" alt="KUNPOL"><span class="footer-wordmark">KUNPOL GROUP</span></a>
+      <span class="footer-copy">© 2024 KUNPOL Group Co., Ltd. All rights reserved.</span>
+      <a href="index.html#sectors" class="footer-back">← Back to All Sectors</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── Lenis smooth scroll ──────────────────────────
+  var lenis = new Lenis({
+    duration: 1.25,
+    easing: function(t) { return 1 - Math.pow(1 - t, 3); },
+    smoothWheel: true,
+    wheelMultiplier: 1.05,
+    smoothTouch: false,
+  });
+  function raf(time) { lenis.raf(time); requestAnimationFrame(raf); } requestAnimationFrame(raf);
+  window.__lenis = lenis;
+
+  // Anchor links through Lenis
+  document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+    a.addEventListener('click', function(e) {
+      var hash = a.getAttribute('href');
+      if (!hash || hash === '#') return;
+      var target = document.querySelector(hash);
+      if (!target) return;
+      e.preventDefault();
+      lenis.scrollTo(target, { duration: 1.0 });
+    });
+  });
+
+  // Pill navbar
+  (function () {
+    var navbar   = document.getElementById('navbar');
+    var overlay  = document.getElementById('menu-overlay');
+    var hamburger = document.getElementById('hamburger');
+    var menuClose = document.getElementById('menu-close');
+
+    // Hamburger opens overlay
+    hamburger.addEventListener('click', function () { overlay.classList.add('open'); });
+    menuClose.addEventListener('click', function () { overlay.classList.remove('open'); });
+    overlay.querySelectorAll('.menu-links a').forEach(function (a) {
+      a.addEventListener('click', function () { overlay.classList.remove('open'); });
+    });
+
+    // Pill animation — trigger after 100px scroll
+    function updateNavbar() {
+      // nav-scrolled pre-applied in HTML — pill always shown
+    }
+    window.addEventListener('scroll', updateNavbar, { passive: true });
+    window.addEventListener('resize', updateNavbar);
+    updateNavbar();
+  })();
+
+  // Scroll reveal — skip animation for elements already visible in viewport
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('revealed'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.10 });
+  document.querySelectorAll('[data-reveal]').forEach(function(el) {
+    var rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      el.classList.add('revealed'); // already in view — no animation flash
+    } else {
+      observer.observe(el);
+    }
+  });
+
+  // Hero bg parallax (tied to Lenis scroll position)
+  (function() {
+    var heroBg = document.querySelector('.s-hero-bg');
+    if (!heroBg) return;
+    lenis.on('scroll', function(e) {
+      heroBg.style.transform = 'translateY(' + (e.scroll * 0.28) + 'px)';
+    });
+  })();
+
+  // Stat counter
+  (function() {
+    function animateCounter(el) {
+      var numEl = el.querySelector('.stat-number');
+      if (!numEl) return;
+      var textNode = null;
+      numEl.childNodes.forEach(function(n) { if (n.nodeType === 3 && !textNode) textNode = n; });
+      if (!textNode) return;
+      var raw = textNode.textContent.trim();
+      var target = parseInt(raw.replace(/[^0-9]/g, ''), 10);
+      if (!target) return;
+      var duration = 1600;
+      var start = performance.now();
+      (function tick(now) {
+        var p = Math.min((now - start) / duration, 1);
+        var val = Math.round((1 - Math.pow(1 - p, 3)) * target);
+        textNode.textContent = val >= 1000 ? val.toLocaleString() : String(val);
+        if (p < 1) requestAnimationFrame(tick);
+      })(start);
+    }
+    var statObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) { animateCounter(e.target); statObs.unobserve(e.target); }
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.stat-item').forEach(function(el) { statObs.observe(el); });
+  })();
+</script>
+
+<!-- Global scroll cursor -->
+<div class="kp-cursor" id="kpCursor"><span class="kp-cursor-label">Scroll</span></div>
+
+<script>
+// Global scroll cursor
+(function () {
+  var cursor = document.getElementById('kpCursor');
+  if (!cursor) return;
+  var mouseX = 0, mouseY = 0, onPage = false, overInteractive = false;
+  var OFFSET_X = 22, OFFSET_Y = 26;
+  var heroEl = document.querySelector('.s-hero');
+  var INTERACTIVE = 'a, button, input, select, textarea, label, [role="button"], summary, [tabindex]';
+  var TEXT = 'p, h1, h2, h3, h4, h5, h6, li, blockquote, figcaption';
+  document.addEventListener('mousemove', function (e) {
+    mouseX = e.clientX; mouseY = e.clientY; onPage = true;
+    if (!overInteractive) cursor.classList.add('kp-cursor-visible');
+  });
+  document.addEventListener('mouseleave', function () {
+    onPage = false; cursor.classList.remove('kp-cursor-visible');
+  });
+  function bindHide(el) {
+    if (el._kpBound) return; el._kpBound = true;
+    el.addEventListener('mouseenter', function () {
+      overInteractive = true; cursor.classList.remove('kp-cursor-visible');
+    });
+    el.addEventListener('mouseleave', function () {
+      overInteractive = false;
+      if (onPage) cursor.classList.add('kp-cursor-visible');
+    });
+  }
+  function attach() {
+    document.querySelectorAll(INTERACTIVE).forEach(bindHide);
+    document.querySelectorAll(TEXT).forEach(function (el) {
+      if (heroEl && heroEl.contains(el)) return;
+      bindHide(el);
+    });
+  }
+  attach();
+  new MutationObserver(attach).observe(document.body, { childList: true, subtree: true });
+  (function loop() {
+    cursor.style.left = (mouseX + OFFSET_X) + 'px';
+    cursor.style.top  = (mouseY + OFFSET_Y) + 'px';
+    requestAnimationFrame(loop);
+  })();
+})();
+</script>
+
+<script>
+// Flag internal navigation so homepage preloader is skipped on return
+document.addEventListener('click', function (e) {
+  var a = e.target.closest('a[href]');
+  if (!a) return;
+  var href = a.getAttribute('href');
+  if (href && href !== '#' && !href.startsWith('#')) {
+    sessionStorage.setItem('kunpol_nav', '1');
+  }
+}, true);
+</script>
+
+</body>
+</html>

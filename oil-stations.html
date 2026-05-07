@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oil Stations — KUNPOL Group</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent:       #6EB5EC;
+      --accent-light: #88C6F4;
+      --accent-pale:  #EBF6FD;
+      --accent-rgb:   110,181,236;
+      --navy:         #060D1F;
+      --navy-mid:     #0C1A38;
+      --ink:          #1a3454;
+      --text:         #111827;
+      --text-muted:   #4B5563;
+      --text-light:   #9CA3AF;
+      --cream:        #F9F7F4;
+      --gray-100:     #F3F4F6;
+      --gray-200:     #E5E7EB;
+      --radius:       12px;
+      --font-display: 'Plus Jakarta Sans', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+      --font-serif:   'Cormorant Garamond', serif;
+    }
+    html { overflow-x: hidden; }
+    body {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='M2 1l10 6-5 1.5L5 13z' fill='white' stroke='rgba(0,0,0,0.5)' stroke-width='1'/%3E%3C/svg%3E") 2 1, auto;
+      font-family: var(--font-body); background: #fff; color: var(--text); -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── MENU OVERLAY ── */
+    #menu-overlay {
+      position: fixed; inset: 0; z-index: 2000;
+      background: rgba(6,13,31,0.97);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.38s cubic-bezier(0.4,0,0.2,1);
+    }
+    #menu-overlay.open { opacity: 1; pointer-events: all; }
+    #menu-close {
+      position: absolute; top: 24px; right: 32px;
+      width: 48px; height: 48px; border-radius: 50%;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: white; transition: background 0.2s;
+    }
+    #menu-close:hover { background: rgba(255,255,255,0.16); }
+    #menu-close svg { width: 18px; height: 18px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; }
+    .menu-links { list-style: none; display: flex; flex-direction: column; align-items: center; gap: 28px; }
+    .menu-links a {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 400;
+      color: rgba(255,255,255,0.8); text-decoration: none;
+      letter-spacing: 0.03em; transition: color 0.2s;
+    }
+    .menu-links a:hover { color: var(--accent-light); }
+
+    /* ── NAVBAR ── */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      display: grid; grid-template-columns: auto 1fr auto;
+      align-items: center; padding: 0 80px; height: 68px;
+      background: rgba(6,13,31,0.10);
+      backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      transition:
+        top 0.30s cubic-bezier(0.4,0,0.2,1), left 0.30s cubic-bezier(0.4,0,0.2,1),
+        right 0.30s cubic-bezier(0.4,0,0.2,1), height 0.30s cubic-bezier(0.4,0,0.2,1),
+        border-radius 0.30s cubic-bezier(0.4,0,0.2,1), background 0.30s cubic-bezier(0.4,0,0.2,1),
+        padding 0.30s cubic-bezier(0.4,0,0.2,1), box-shadow 0.30s cubic-bezier(0.4,0,0.2,1),
+        border-color 0.30s cubic-bezier(0.4,0,0.2,1), opacity 0.30s cubic-bezier(0.4,0,0.2,1);
+    }
+    #navbar.nav-scrolled {
+      opacity: 1; top: 14px;
+      left: calc(50% - 430px); right: calc(50% - 430px);
+      height: 52px; border-radius: 100px;
+      background: rgba(6,13,31,0.37);
+      backdrop-filter: blur(28px) saturate(160%); -webkit-backdrop-filter: blur(28px) saturate(160%);
+      border: none;
+      box-shadow: 0 26px 18px -8px rgba(0,0,0,0.18), 0 10px 6px -3px rgba(0,0,0,0.09);
+      padding: 0 38px;
+    }
+    #navbar.nav-scrolled .nav-logo-svg { width: 40px; height: 40px; }
+    .nav-logo-white {
+      position: absolute; inset: 0; width: 64px; height: 64px; object-fit: contain;
+      filter: brightness(0) invert(1);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 20%, black 55%, black 100%);
+      mask-image: linear-gradient(to right, transparent 0%, transparent 20%, black 55%, black 100%);
+      pointer-events: none;
+      transition: width 0.30s, height 0.30s, opacity 0.40s;
+    }
+    #navbar.nav-scrolled .nav-logo-white { opacity: 0; }
+    #navbar.nav-scrolled .nav-logo-divider { height: 20px; }
+    #navbar.nav-scrolled .nav-wordmark { margin-left: 10px; }
+    #navbar.nav-scrolled .nav-wordmark-top { font-size: 10px; letter-spacing: 0.20em; }
+    #navbar.nav-scrolled .nav-wordmark-sub { font-size: 7px; }
+    #navbar.nav-scrolled .nav-links { gap: 30px; }
+    #navbar.nav-scrolled .nav-links a { font-size: 12px; }
+    #navbar.nav-scrolled .nav-lang { font-size: 10.5px; }
+    #navbar.nav-scrolled .nav-cta { font-size: 11px; padding: 7px 16px; background: #3465B0; box-shadow: 0 2px 14px rgba(52,101,176,0.50), 0 1px 4px rgba(0,0,0,0.18); }
+    .nav-logo { display: flex; align-items: center; gap: 0; text-decoration: none; flex-shrink: 0; }
+    .nav-logo-wrap {
+      position: relative; display: inline-flex; flex-shrink: 0;
+      margin-right: -10px;
+      transform: perspective(320px) rotateY(-8deg) rotateX(3deg);
+      transform-style: preserve-3d;
+      transition: margin-right 0.30s, transform 0.40s;
+    }
+    #navbar.nav-scrolled .nav-logo-wrap { transform: none; margin-right: -6px; }
+    .nav-logo-svg {
+      width: 64px; height: 64px; flex-shrink: 0; object-fit: contain;
+      filter: brightness(0) saturate(100%) invert(16%) sepia(60%) saturate(700%) hue-rotate(200deg) brightness(0.95)
+              drop-shadow(1px 2px 0px rgba(0,8,32,1)) drop-shadow(2px 3px 0px rgba(0,8,32,0.75)) drop-shadow(3px 5px 2px rgba(0,8,32,0.35));
+      transition: filter 0.30s, width 0.30s, height 0.30s;
+    }
+    #navbar.nav-scrolled .nav-logo-svg {
+      filter: brightness(0) saturate(100%) invert(16%) sepia(60%) saturate(700%) hue-rotate(200deg) brightness(0.95) drop-shadow(0 2px 6px rgba(26,52,84,0.18));
+    }
+    .nav-logo-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.22); flex-shrink: 0; transition: height 0.30s; }
+    .nav-wordmark { display: flex; flex-direction: column; line-height: 1; gap: 2px; margin-left: 14px; transition: margin-left 0.30s; }
+    .nav-wordmark-top { font-family: var(--font-body); font-size: 11.5px; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(255,255,255,0.92); transition: font-size 0.30s, letter-spacing 0.30s; }
+    .nav-wordmark-sub { font-family: var(--font-body); font-size: 8px; font-weight: 400; letter-spacing: 0.35em; text-transform: uppercase; color: rgba(255,255,255,0.48); transition: font-size 0.30s; }
+    .nav-center { display: flex; align-items: center; justify-content: center; }
+    .nav-links { display: flex; align-items: center; gap: 36px; list-style: none; transition: gap 0.30s; }
+    .nav-links a { font-family: var(--font-body); color: rgba(255,255,255,0.62); text-decoration: none; font-size: 13.5px; font-weight: 400; letter-spacing: 0.02em; position: relative; transition: color 0.22s, font-size 0.30s; }
+    .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: rgba(255,255,255,0.9); transition: width 0.3s; }
+    .nav-links a:hover { color: rgba(255,255,255,0.95); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-has-drop { position: relative; }
+    .nav-has-drop > a { display: inline-flex; align-items: center; gap: 5px; }
+    .nav-drop-chevron { width: 9px; height: 9px; flex-shrink: 0; stroke: rgba(255,255,255,0.45); fill: none; stroke-width: 1.8; transition: transform 0.25s, stroke 0.2s; }
+    .nav-has-drop:hover .nav-drop-chevron { transform: rotate(180deg); stroke: rgba(255,255,255,0.80); }
+    .nav-dropdown { position: absolute; top: calc(100% + 18px); left: 50%; transform: translateX(-50%) translateY(-8px); background: rgba(6,13,31,0.88); backdrop-filter: blur(32px) saturate(160%); -webkit-backdrop-filter: blur(32px) saturate(160%); border: 1px solid rgba(255,255,255,0.10); border-radius: 16px; padding: 8px; min-width: 210px; opacity: 0; pointer-events: none; transition: opacity 0.22s, transform 0.22s cubic-bezier(0.34,1.2,0.64,1); box-shadow: 0 16px 48px rgba(0,0,0,0.50), 0 4px 16px rgba(0,0,0,0.30); z-index: 200; }
+    .nav-has-drop:hover .nav-dropdown { opacity: 1; pointer-events: all; transform: translateX(-50%) translateY(0); }
+    .nav-dropdown::before { content: ''; position: absolute; top: -18px; left: 0; right: 0; height: 18px; }
+    .nav-drop-item { display: flex; align-items: center; gap: 11px; padding: 9px 13px; border-radius: 9px; text-decoration: none; transition: background 0.15s; }
+    .nav-drop-item:hover { background: rgba(255,255,255,0.08); }
+    .nav-links .nav-dropdown a::after { display: none !important; }
+    .nav-drop-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 4px 8px; }
+    .nav-drop-num { font-family: var(--font-body); font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.30); letter-spacing: 0.06em; min-width: 18px; flex-shrink: 0; }
+    .nav-drop-name { font-size: 13px; font-weight: 400; color: rgba(255,255,255,0.68); transition: color 0.15s; }
+    .nav-drop-item:hover .nav-drop-name { color: rgba(255,255,255,0.95); }
+    .nav-right { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
+    .nav-lang { display: flex; align-items: center; gap: 6px; font-family: var(--font-body); font-size: 11.5px; color: rgba(255,255,255,0.52); cursor: pointer; border: none; background: none; padding: 0; transition: color 0.2s, font-size 0.30s; }
+    .nav-lang:hover { color: rgba(255,255,255,0.85); }
+    .nav-lang svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .nav-lang-sep { color: rgba(255,255,255,0.22); }
+    .nav-cta { font-family: var(--font-body); font-size: 12px; font-weight: 600; letter-spacing: 0.04em; padding: 9px 24px; border-radius: 6px; background: #3465B0; color: #ffffff; text-decoration: none; white-space: nowrap; transition: background 0.2s, transform 0.18s, box-shadow 0.2s, font-size 0.30s, padding 0.30s; box-shadow: 0 2px 12px rgba(0,0,0,0.28); }
+    .nav-cta:hover { background: #e8edf5; transform: translateY(-1px); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { display: block; width: 22px; height: 1.5px; background: rgba(255,255,255,0.85); transition: transform 0.3s, opacity 0.3s; }
+    @media (max-width: 900px) {
+      #navbar { padding: 0 24px; grid-template-columns: auto 1fr auto; }
+      .nav-center { display: none; }
+      .hamburger { display: flex; z-index: 1001; }
+      .nav-lang, .nav-cta { display: none; }
+    }
+
+    /* ── NAVBAR LIGHT OVERRIDE (white bg hero) ── */
+    #navbar:not(.nav-scrolled) {
+      background: rgba(255,255,255,0.96);
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    }
+    #navbar:not(.nav-scrolled) .nav-wordmark-top { color: #1a3454; }
+    #navbar:not(.nav-scrolled) .nav-wordmark-sub { color: rgba(26,52,84,0.42); }
+    #navbar:not(.nav-scrolled) .nav-logo-divider { background: rgba(26,52,84,0.16); }
+    #navbar:not(.nav-scrolled) .nav-links a { color: rgba(26,52,84,0.58); }
+    #navbar:not(.nav-scrolled) .nav-links a:hover { color: #1a3454; }
+    #navbar:not(.nav-scrolled) .nav-links a::after { background: #1a3454; }
+    #navbar:not(.nav-scrolled) .nav-drop-chevron { stroke: rgba(26,52,84,0.40); }
+    #navbar:not(.nav-scrolled) .nav-lang { color: rgba(26,52,84,0.50); }
+    #navbar:not(.nav-scrolled) .nav-lang:hover { color: #1a3454; }
+    #navbar:not(.nav-scrolled) .hamburger span { background: rgba(26,52,84,0.80); }
+    #navbar:not(.nav-scrolled) .nav-logo-white { opacity: 0; }
+    #navbar:not(.nav-scrolled) .nav-logo-svg {
+      filter: brightness(0) saturate(100%) invert(16%) sepia(60%) saturate(700%) hue-rotate(200deg) brightness(0.95)
+              drop-shadow(1px 2px 0px rgba(0,8,32,1)) drop-shadow(2px 3px 0px rgba(0,8,32,0.75)) drop-shadow(3px 5px 2px rgba(0,8,32,0.35));
+    }
+    #navbar:not(.nav-scrolled) .nav-cta { background: #1a3454; color: #fff; }
+    #navbar:not(.nav-scrolled) .nav-cta:hover { background: #243d61; }
+
+    /* ── SHARED LAYOUT ── */
+    .container { max-width: 1240px; margin: 0 auto; padding: 0 80px; }
+    .section { padding: 100px 0; }
+    .section-sm { padding: 72px 0; }
+    .divider { height: 1px; background: var(--gray-200); }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--font-body); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink);
+      margin-bottom: 18px;
+    }
+    .eyebrow::before {
+      content: ''; display: block; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0;
+      box-shadow: 0 0 0 3px rgba(110,181,236,0.18), 0 0 10px rgba(110,181,236,0.40);
+    }
+    h2.section-heading {
+      font-family: var(--font-display); font-size: clamp(26px, 3.2vw, 42px);
+      font-weight: 600; letter-spacing: -0.025em; color: var(--text); line-height: 1.12;
+      margin-bottom: 20px;
+    }
+    .body-text { font-family: var(--font-body); font-size: 15px; line-height: 1.80; color: var(--text-muted); }
+
+    /* ── SCROLL REVEAL ── */
+    [data-reveal] { opacity: 0; transform: translateY(28px); transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1), transform 0.75s cubic-bezier(0.22,1,0.36,1); }
+    [data-reveal].revealed { opacity: 1; transform: translateY(0); }
+    [data-reveal][data-d="1"] { transition-delay: 0.10s; }
+    [data-reveal][data-d="2"] { transition-delay: 0.20s; }
+    [data-reveal][data-d="3"] { transition-delay: 0.30s; }
+
+    /* ─── EDITORIAL HERO ─────────────────────────────── */
+    .sh-hero { background: #fff; padding-top: 68px; }
+    .sh-hero-text { padding: 56px 80px 32px 64px; }
+    .sh-breadcrumb {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 26px;
+      opacity: 0; transform: translateY(14px);
+      animation: shReveal 0.70s cubic-bezier(0.22,1,0.36,1) 0.10s forwards;
+    }
+    .sh-breadcrumb a, .sh-breadcrumb span {
+      font-family: var(--font-body); font-size: 11px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: #9CA3AF; text-decoration: none; transition: color 0.2s;
+    }
+    .sh-breadcrumb a:hover { color: #1a3454; }
+    .sh-breadcrumb-sep { color: #D1D5DB; font-size: 10px; }
+    .sh-breadcrumb .current { color: #1a3454; font-weight: 500; }
+    .sh-heading {
+      font-family: var(--font-display); font-size: clamp(62px, 7.8vw, 104px);
+      font-weight: 500; letter-spacing: -0.02em; color: #1a3454; line-height: 0.93;
+      margin-bottom: 22px;
+      opacity: 0; transform: translateY(22px);
+      animation: shReveal 0.85s cubic-bezier(0.22,1,0.36,1) 0.20s forwards;
+    }
+    .sh-desc {
+      font-family: var(--font-body); font-size: 15px; line-height: 1.78;
+      color: #4B5563; max-width: 490px;
+      opacity: 0; transform: translateY(18px);
+      animation: shReveal 0.85s cubic-bezier(0.22,1,0.36,1) 0.32s forwards;
+    }
+    .sh-visual-outer { padding: 0 64px; position: relative; }
+    .sh-visual {
+      position: relative; opacity: 0;
+      animation: shReveal 0.90s cubic-bezier(0.22,1,0.36,1) 0.46s forwards;
+    }
+    .sh-img { width: 100%; height: 520px; border-radius: 0; overflow: hidden; }
+    .sh-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .sh-card {
+      position: absolute; right: 40px; top: -90px; width: 272px;
+      background: #1a3454; border-radius: 14px; padding: 26px 24px;
+      box-shadow: 0 24px 64px rgba(6,13,31,0.32), 0 6px 20px rgba(6,13,31,0.22);
+    }
+    .sh-card-eyebrow { font-family: var(--font-body); font-size: 9px; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(255,255,255,0.38); margin-bottom: 14px; font-weight: 600; }
+    .sh-card-divider { height: 1px; background: rgba(255,255,255,0.10); margin-bottom: 14px; }
+    .sh-card-list { list-style: none; display: flex; flex-direction: column; margin-bottom: 20px; }
+    .sh-card-list li { font-family: var(--font-body); font-size: 12.5px; color: rgba(255,255,255,0.80); line-height: 1.48; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; align-items: flex-start; gap: 9px; }
+    .sh-card-list li:last-child { border-bottom: none; }
+    .sh-card-list li::before { content: ''; display: block; flex-shrink: 0; width: 4px; height: 4px; border-radius: 50%; background: var(--accent); margin-top: 5px; }
+    .sh-card-stats { display: flex; flex-direction: column; gap: 10px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.10); }
+    .sh-stat { display: flex; align-items: baseline; gap: 8px; }
+    .sh-stat-num { font-family: var(--font-display); font-size: 22px; font-weight: 400; color: rgba(255,255,255,0.90); letter-spacing: -0.01em; line-height: 1; }
+    .sh-stat-label { font-family: var(--font-body); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: rgba(255,255,255,0.38); font-weight: 500; }
+    .sh-scroll { padding: 32px 80px 52px 64px; display: flex; align-items: center; gap: 14px; }
+    .sh-scroll-line { width: 40px; height: 1px; background: rgba(26,52,84,0.18); }
+    .sh-scroll-label { font-family: var(--font-body); font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(26,52,84,0.34); }
+    @keyframes shReveal { to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 900px) {
+      .sh-hero-text { padding: 40px 28px 24px; }
+      .sh-visual-outer { padding: 0 20px; }
+      .sh-img { height: 280px; }
+      .sh-card { position: static; width: 100%; margin-top: 20px; top: 0; }
+    }
+
+    /* ─── PTT PARTNERSHIP BANNER ─────────────────────── */
+    .ptt-banner { background: var(--cream); padding: 60px 0; }
+    .ptt-banner-inner {
+      display: grid; grid-template-columns: 1fr auto; align-items: center;
+      gap: 60px;
+    }
+    .ptt-banner-text {}
+    .ptt-banner-title {
+      font-family: var(--font-display); font-size: 20px; font-weight: 600;
+      color: var(--ink); letter-spacing: -0.01em; margin-bottom: 10px;
+    }
+    .ptt-banner-desc {
+      font-family: var(--font-body); font-size: 14px; line-height: 1.72; color: var(--text-muted);
+      max-width: 560px;
+    }
+    .ptt-fuels {
+      display: flex; flex-direction: column; align-items: flex-end; gap: 10px; flex-shrink: 0;
+    }
+    .ptt-fuels-label {
+      font-family: var(--font-body); font-size: 10px; font-weight: 600;
+      letter-spacing: 0.20em; text-transform: uppercase; color: var(--text-light);
+    }
+    .ptt-fuel-tags { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+    .ptt-fuel-tag {
+      font-family: var(--font-body); font-size: 11px; font-weight: 500;
+      color: var(--ink); background: #fff;
+      border: 1px solid var(--gray-200); border-radius: 100px;
+      padding: 5px 14px; white-space: nowrap;
+    }
+    .ptt-award {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff; border: 1px solid #e8c96a;
+      border-radius: 100px; padding: 7px 16px; margin-top: 18px;
+    }
+    .ptt-award-icon { font-size: 14px; }
+    .ptt-award-text {
+      font-family: var(--font-body); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.08em; color: #8a6d1a;
+    }
+
+    /* ─── SUBSIDIARIES ──────────────────────────────── */
+    .sec-subsidiaries { background: #fff; padding: 100px 0 0; }
+    .subs-header { margin-bottom: 64px; }
+    .subs-header .section-heading { max-width: 480px; }
+
+    .station-block {
+      padding: 64px 0;
+      border-top: 1px solid var(--gray-200);
+    }
+    .station-block:last-child { padding-bottom: 100px; }
+    .station-num-row {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 32px;
+    }
+    .station-num {
+      font-family: var(--font-display); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent);
+    }
+    .station-num-line { flex: 1; height: 1px; background: var(--gray-200); }
+
+    .station-layout {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 56px; align-items: start;
+    }
+    .station-layout.reverse { direction: rtl; }
+    .station-layout.reverse > * { direction: ltr; }
+
+    /* Photo grid */
+    .station-photos { display: flex; flex-direction: column; gap: 10px; }
+    .station-photos-row { display: grid; gap: 10px; }
+    .station-photos-row.cols-1 { grid-template-columns: 1fr; }
+    .station-photos-row.cols-2 { grid-template-columns: 1fr 1fr; }
+    .station-photos-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .station-photo-wrap {
+      position: relative; overflow: hidden; border-radius: var(--radius);
+      background: var(--gray-100);
+    }
+    .station-photo-wrap img {
+      width: 100%; display: block; object-fit: cover;
+      transition: transform 0.55s ease;
+    }
+    .station-photo-wrap:hover img { transform: scale(1.04); }
+    .station-photo-wrap.tall img { aspect-ratio: 4/3; }
+    .station-photo-wrap.short img { aspect-ratio: 16/9; }
+    .station-photo-wrap.square img { aspect-ratio: 1/1; }
+
+    /* Info panel */
+    .station-info {}
+    .station-name {
+      font-family: var(--font-display); font-size: 22px; font-weight: 600;
+      color: var(--text); letter-spacing: -0.01em; line-height: 1.2;
+      margin-bottom: 6px;
+    }
+    .station-location-row {
+      display: flex; align-items: center; gap: 7px;
+      font-family: var(--font-body); font-size: 13px; color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+    .station-location-row svg { width: 13px; height: 13px; stroke: var(--accent); fill: none; stroke-width: 1.8; flex-shrink: 0; }
+
+    .station-meta-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+      border-top: 1px solid var(--gray-200);
+      margin-bottom: 32px;
+    }
+    .station-meta-item { padding: 14px 0; border-bottom: 1px solid var(--gray-200); }
+    .station-meta-item:nth-child(odd) { padding-right: 20px; border-right: 1px solid var(--gray-200); }
+    .station-meta-item:nth-child(even) { padding-left: 20px; }
+    .station-meta-label {
+      font-family: var(--font-body); font-size: 10px; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-light);
+      margin-bottom: 4px;
+    }
+    .station-meta-value { font-family: var(--font-body); font-size: 13.5px; font-weight: 500; color: var(--text); line-height: 1.4; }
+
+    .station-services-title {
+      font-family: var(--font-body); font-size: 10px; font-weight: 700;
+      letter-spacing: 0.20em; text-transform: uppercase; color: var(--text-light);
+      margin-bottom: 14px;
+    }
+    .station-services-list { display: flex; flex-direction: column; gap: 14px; }
+    .service-item { display: flex; gap: 14px; align-items: flex-start; }
+    .service-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: var(--accent-pale); display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .service-icon svg { width: 16px; height: 16px; stroke: var(--accent); fill: none; stroke-width: 1.6; }
+    .service-name { font-family: var(--font-body); font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+    .service-desc { font-family: var(--font-body); font-size: 12.5px; line-height: 1.58; color: var(--text-muted); }
+
+    /* ─── STATION EXPERIENCE ────────────────────────── */
+    .sec-experience { background: var(--gray-100); padding: 100px 0; }
+    .experience-layout {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 72px; align-items: center;
+    }
+    .exp-img-wrap {
+      border-radius: 16px; overflow: hidden;
+      aspect-ratio: 4/3; background: var(--gray-200);
+    }
+    .exp-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .exp-content {}
+    .exp-lead {
+      font-family: var(--font-body); font-size: 15px; line-height: 1.80;
+      color: var(--text-muted); margin-bottom: 36px;
+    }
+    .exp-points { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 32px; }
+    .exp-point {}
+    .exp-point-icon {
+      width: 32px; height: 32px; margin-bottom: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .exp-point-icon svg { width: 22px; height: 22px; stroke: var(--ink); fill: none; stroke-width: 1.5; }
+    .exp-point-title { font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .exp-point-desc { font-family: var(--font-body); font-size: 12.5px; line-height: 1.65; color: var(--text-muted); }
+
+    /* ─── GALLERY ────────────────────────────────────── */
+    .sec-gallery { background: #fff; padding: 100px 0; }
+    .gallery-head { margin-bottom: 48px; }
+
+    /* Gallery grid: 1 large hero image + smaller below */
+    .gallery-grid-new {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 12px;
+    }
+    .gallery-hero-item {
+      grid-column: 1 / -1;
+    }
+    .gallery-photo {
+      position: relative; overflow: hidden; border-radius: var(--radius);
+      background: var(--gray-100); display: block;
+    }
+    .gallery-photo img {
+      width: 100%; display: block; object-fit: cover;
+      transition: transform 0.55s ease;
+    }
+    .gallery-photo:hover img { transform: scale(1.03); }
+    .gallery-hero-item .gallery-photo img { aspect-ratio: 16/7; }
+    .gallery-photo img.std { aspect-ratio: 4/3; }
+    /* Caption overlay — bottom left */
+    .gallery-caption {
+      position: absolute; bottom: 0; left: 0;
+      padding: 28px 22px 18px;
+      background: linear-gradient(to top, rgba(6,13,31,0.72) 0%, transparent 100%);
+      width: 100%;
+    }
+    .gallery-caption-location {
+      font-family: var(--font-body); font-size: 10px; font-weight: 600;
+      letter-spacing: 0.20em; text-transform: uppercase;
+      color: rgba(255,255,255,0.58); margin-bottom: 3px;
+    }
+    .gallery-caption-title {
+      font-family: var(--font-body); font-size: 13px; font-weight: 500;
+      color: rgba(255,255,255,0.90); line-height: 1.35;
+    }
+
+    /* Extra gallery rows */
+    .gallery-row {
+      display: grid; gap: 12px; margin-top: 12px;
+    }
+    .gallery-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .gallery-row.cols-2 { grid-template-columns: 1fr 1fr; }
+
+    /* ─── KEY STATS ──────────────────────────────────── */
+    .sec-stats { background: var(--navy); padding: 88px 0; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+    .stat-item { padding: 0 48px; border-right: 1px solid rgba(255,255,255,0.08); }
+    .stat-item:first-child { padding-left: 0; }
+    .stat-item:last-child { border-right: none; }
+    .stat-number { font-family: var(--font-display); font-size: clamp(32px, 4vw, 48px); font-weight: 700; color: #fff; line-height: 1; margin-bottom: 8px; }
+    .stat-number span { color: var(--accent-light); }
+    .stat-label { font-family: var(--font-body); font-size: 11.5px; letter-spacing: 0.10em; text-transform: uppercase; color: rgba(255,255,255,0.40); line-height: 1.6; }
+
+    /* ─── CONTACT ────────────────────────────────────── */
+    .sec-contact { background: var(--cream); padding: 72px 0; }
+    .contact-row { display: flex; align-items: center; gap: 48px; flex-wrap: wrap; }
+    .contact-item { display: flex; align-items: center; gap: 14px; }
+    .contact-icon { width: 40px; height: 40px; border-radius: 8px; background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid var(--gray-200); }
+    .contact-icon svg { width: 16px; height: 16px; stroke: var(--ink); fill: none; stroke-width: 1.5; }
+    .contact-label { font-family: var(--font-body); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-light); margin-bottom: 2px; }
+    .contact-val { font-family: var(--font-body); font-size: 14px; font-weight: 500; color: var(--text); }
+
+    /* ─── FOOTER ─────────────────────────────────────── */
+    footer { background: var(--navy); padding: 48px 0; border-top: 1px solid rgba(255,255,255,0.06); }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { display: flex; align-items: center; gap: 0; text-decoration: none; }
+    .footer-logo img { width: 40px; height: 40px; object-fit: contain; margin-right: -6px; }
+    .footer-wordmark { margin-left: 10px; font-family: var(--font-body); font-size: 12px; font-weight: 600; letter-spacing: 0.20em; color: rgba(255,255,255,0.55); }
+    .footer-copy { font-family: var(--font-body); font-size: 11px; color: rgba(255,255,255,0.25); letter-spacing: 0.05em; }
+    .footer-back { font-family: var(--font-body); font-size: 11px; color: rgba(255,255,255,0.38); text-decoration: none; letter-spacing: 0.10em; text-transform: uppercase; transition: color 0.2s; }
+    .footer-back:hover { color: rgba(255,255,255,0.65); }
+
+    /* ─── CURSOR ─────────────────────────────────────── */
+    .kp-cursor {
+      position: fixed; z-index: 9999; pointer-events: none;
+      width: 76px; height: 76px; border-radius: 50%;
+      background: rgba(0,0,0,0.18); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border: 0.5px solid rgba(255,255,255,0.10);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transform: translate(-50%,-50%) scale(0.75);
+      transition: opacity 0.2s, transform 0.2s cubic-bezier(0.34,1.4,0.64,1);
+    }
+    .kp-cursor.kp-cursor-visible { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+    .kp-cursor-label { font-family: var(--font-body); font-size: 13px; letter-spacing: 0.04em; color: rgba(255,255,255,0.92); font-weight: 500; }
+  </style>
+</head>
+<body>
+
+<!-- Overlay menu -->
+<div id="menu-overlay" role="dialog" aria-modal="true">
+  <button id="menu-close" aria-label="Close menu">
+    <svg viewBox="0 0 18 18"><line x1="2" y1="2" x2="16" y2="16"/><line x1="16" y1="2" x2="2" y2="16"/></svg>
+  </button>
+  <ul class="menu-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#sectors">Sectors</a></li>
+    <li><a href="index.html#works">Track Record</a></li>
+    <li><a href="index.html#leadership">Leadership</a></li>
+    <li><a href="#contact">Contact Us</a></li>
+  </ul>
+</div>
+
+<nav id="navbar" class="nav-scrolled">
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-wrap">
+      <img src="KP Logo no bg.png" alt="KUNPOL" class="nav-logo-svg">
+      <img src="KP Logo no bg.png" alt="" aria-hidden="true" class="nav-logo-white">
+    </span>
+    <div class="nav-logo-divider"></div>
+    <div class="nav-wordmark">
+      <span class="nav-wordmark-top">Kunpol</span>
+      <span class="nav-wordmark-sub">Group</span>
+    </div>
+  </a>
+  <div class="nav-center">
+    <ul class="nav-links" id="navLinks">
+      <li class="nav-has-drop">
+        <a href="index.html">Home
+          <svg class="nav-drop-chevron" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4"/></svg>
+        </a>
+        <div class="nav-dropdown">
+          <a href="index.html#about" class="nav-drop-item"><span class="nav-drop-name">Group Overview</span></a>
+          <a href="index.html#structure" class="nav-drop-item"><span class="nav-drop-name">Group Structure</span></a>
+          <a href="index.html#governance" class="nav-drop-item"><span class="nav-drop-name">Governance</span></a>
+          <a href="index.html#leadership" class="nav-drop-item"><span class="nav-drop-name">Leadership</span></a>
+          <a href="index.html#works" class="nav-drop-item"><span class="nav-drop-name">Track Record</span></a>
+          <div class="nav-drop-divider"></div>
+          <a href="index.html#contact" class="nav-drop-item"><span class="nav-drop-name">Contact Us</span></a>
+        </div>
+      </li>
+      <li class="nav-has-drop">
+        <a href="index.html#sectors">Sectors
+          <svg class="nav-drop-chevron" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4"/></svg>
+        </a>
+        <div class="nav-dropdown">
+          <a href="oil-stations.html" class="nav-drop-item"><span class="nav-drop-num">01</span><span class="nav-drop-name">Oil Stations</span></a>
+          <a href="agriculture.html" class="nav-drop-item"><span class="nav-drop-num">02</span><span class="nav-drop-name">Agriculture</span></a>
+          <a href="commerce.html" class="nav-drop-item"><span class="nav-drop-num">03</span><span class="nav-drop-name">Commerce</span></a>
+          <a href="construction.html" class="nav-drop-item"><span class="nav-drop-num">04</span><span class="nav-drop-name">Construction</span></a>
+          <a href="services.html" class="nav-drop-item"><span class="nav-drop-num">05</span><span class="nav-drop-name">Services</span></a>
+          <a href="concrete-plant.html" class="nav-drop-item"><span class="nav-drop-num">06</span><span class="nav-drop-name">Concrete Plant</span></a>
+        </div>
+      </li>
+      <li><a href="index.html#leadership">Leadership</a></li>
+    </ul>
+  </div>
+  <div class="nav-right">
+    <button class="nav-lang" id="navLang" title="Switch language">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      <span id="navLangLabel">EN</span><span class="nav-lang-sep">/</span><span>TH</span>
+    </button>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+    <a href="index.html#contact" class="nav-cta">Contact Us</a>
+  </div>
+</nav>
+
+<!-- ─── HERO ──────────────────────────────────────────── -->
+<section class="sh-hero">
+  <div class="sh-hero-text">
+    <nav class="sh-breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="sh-breadcrumb-sep">›</span>
+      <a href="index.html#sectors">Sectors</a>
+      <span class="sh-breadcrumb-sep">›</span>
+      <span class="current">Oil Stations</span>
+    </nav>
+    <h1 class="sh-heading">Oil Stations</h1>
+    <p class="sh-desc">Three PTT-franchised fuel stations operating across Khon Kaen — serving communities, agriculture, and logistics.</p>
+  </div>
+  <div class="sh-visual-outer">
+    <div class="sh-visual">
+      <div class="sh-img">
+        <img src="Inspirations/Oil Station Footage.jpeg" alt="KUNPOL PTT Oil Station">
+      </div>
+      <div class="sh-card">
+        <div class="sh-card-eyebrow">Subsidiaries</div>
+        <div class="sh-card-divider"></div>
+        <ul class="sh-card-list">
+          <li>Kunpol Service Co., Ltd.</li>
+          <li>Kunpol Service Nam Phong Co., Ltd.</li>
+          <li>Kunpol Petroleum Co., Ltd.</li>
+        </ul>
+        <div class="sh-card-divider"></div>
+        <div class="sh-card-stats">
+          <div class="sh-stat"><span class="sh-stat-num">3</span><span class="sh-stat-label">PTT Stations</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sh-scroll">
+    <div class="sh-scroll-line"></div>
+    <span class="sh-scroll-label">Scroll to explore</span>
+  </div>
+</section>
+
+<!-- ─── PTT PARTNERSHIP BANNER ────────────────────────── -->
+<div class="ptt-banner">
+  <div class="container">
+    <div class="ptt-banner-inner" data-reveal>
+      <div class="ptt-banner-text">
+        <div class="ptt-banner-title">PTT Franchise Network</div>
+        <p class="ptt-banner-desc">All three stations operate under the PTT Public Company Limited franchise — Thailand's national energy company — ensuring consistent product quality, safety standards, and service protocols across every location. Fuel products offered include Diesel B7, Gasohol 91, Gasohol 95, E20, and PTT-branded lubricants.</p>
+        <div class="ptt-award">
+          <span class="ptt-award-icon">🏆</span>
+          <span class="ptt-award-text">PTT Platinum Station Award Recipient</span>
+        </div>
+      </div>
+      <div class="ptt-fuels">
+        <span class="ptt-fuels-label">Fuels Available</span>
+        <div class="ptt-fuel-tags">
+          <span class="ptt-fuel-tag">Diesel B7</span>
+          <span class="ptt-fuel-tag">Gasohol 91</span>
+          <span class="ptt-fuel-tag">Gasohol 95</span>
+          <span class="ptt-fuel-tag">E20</span>
+          <span class="ptt-fuel-tag">Lubricants</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ─── SUBSIDIARIES ─────────────────────────────────── -->
+<section class="sec-subsidiaries">
+  <div class="container">
+    <div class="subs-header" data-reveal>
+      <span class="eyebrow">Our Stations</span>
+      <h2 class="section-heading">Three Stations.<br>Three Communities.</h2>
+      <p class="body-text" style="max-width:500px;">Each station is independently operated by a dedicated KUNPOL subsidiary, serving the specific needs of its local district.</p>
+    </div>
+  </div>
+
+  <!-- ── Station 01 ── -->
+  <div class="station-block">
+    <div class="container">
+      <div class="station-num-row">
+        <span class="station-num">Station 01</span>
+        <div class="station-num-line"></div>
+      </div>
+      <div class="station-layout" data-reveal>
+        <div class="station-photos">
+          <div class="station-photos-row cols-1">
+            <div class="station-photo-wrap tall">
+              <img src="Inspirations/Oil Station Footage.jpeg" alt="Kunpol Service Station — Khao Suan Kwang">
+            </div>
+          </div>
+          <div class="station-photos-row cols-2">
+            <div class="station-photo-wrap short">
+              <img src="https://placehold.co/560x360/0a1628/1a3454?text=+" alt="Station interior">
+            </div>
+            <div class="station-photo-wrap short">
+              <img src="https://placehold.co/560x360/0f1e35/1f3a5c?text=+" alt="Fueling bay">
+            </div>
+          </div>
+        </div>
+        <div class="station-info">
+          <h3 class="station-name">Kunpol Service Co., Ltd.</h3>
+          <div class="station-location-row">
+            <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 4.5-7 13-7 13S5 13.5 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            Khao Suan Kwang, Khon Kaen
+          </div>
+          <div class="station-meta-row">
+            <div class="station-meta-item">
+              <div class="station-meta-label">Franchise</div>
+              <div class="station-meta-value">PTT Public Co., Ltd.</div>
+            </div>
+            <div class="station-meta-item">
+              <div class="station-meta-label">Operating Hours</div>
+              <div class="station-meta-value">06:00 – 22:00 Daily</div>
+            </div>
+          </div>
+          <div class="station-services-title">In-Station Services</div>
+          <div class="station-services-list">
+            <div class="service-item">
+              <div class="service-icon">
+                <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              </div>
+              <div>
+                <div class="service-name">Café Amazon</div>
+                <div class="service-desc">PTT's signature coffee chain offering a full menu of beverages and light snacks — a popular stop for commuters and travellers.</div>
+              </div>
+            </div>
+            <div class="service-item">
+              <div class="service-icon">
+                <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+              </div>
+              <div>
+                <div class="service-name">Jiffy Convenience Store</div>
+                <div class="service-desc">24-hour PTT convenience retail offering daily necessities, snacks, beverages, and personal care products.</div>
+              </div>
+            </div>
+            <div class="service-item">
+              <div class="service-icon">
+                <svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1"/></svg>
+              </div>
+              <div>
+                <div class="service-name">Car Wash</div>
+                <div class="service-desc">Automated and manual vehicle washing services available for both personal and commercial vehicles.</div>
+              </div>
+            </div>
+            <div class="service-item">
+              <div class="service-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div>
+                <div class="service-name">Clean Restroom Facilities</div>
+                <div class="service-desc">Maintained restroom areas with hygiene standards aligned with PTT's national franchise requirements.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Station 02 ── -->
+  <div class="station-block">
+    <div class="container">
+      <div class="station-num-row">
+        <span class="station-num">Station 02</span>
+        <div class="station-num-line"></div>
+      </div>
+      <div class="station-layout reverse" data-reveal>
+        <div class="station-photos">
+          <div class="station-photos-row cols-1">
+            <div class="station-photo-wrap tall">
+              <img src="https://placehold.co/800x560/0a1628/1a3454?text=+" alt="Kunpol Service Nam Phong Station">
+            </div>
+          </div>
+          <div class="station-photos-row cols-2">
+            <div class="station-photo-wrap short">
+              <img src="https://placehold.co/560x360/0e1e35/1a3050?text=+" alt="Fleet fueling">
+            </div>
+            <div class="station-photo-wrap short">
+              <img src="https://placehold.co/560x360/0c1a2e/162840?text=+" alt="Station exterior">
+            </div>
+          </div>
+        </div>
+        <div class="station-info">
+          <h3 class="station-name">Kunpol Service Nam Phong Co., Ltd.</h3>
+          <div class="station-location-row">
+            <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 4.5-7 13-7 13S5 13.5 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            Nam Phong, Khon Kaen
+          </div>
+          <div class="station-meta-row">
+            <div class="station-meta-item">
+              <div class="station-meta-label">Franchise</div>
+              <div class="station-meta-value">PTT Public Co., Ltd.</div>
+            </div>
+            <div class="station-meta-item">
+              <div class="station-meta-label">Operating Hours</div>
+              <div class="station-meta-value">05:30 – 21:00 Daily</div>
+            </div>
+          </div>
+          <div class="station-services-title">In-Station Services</div>
+          <div class="station-services-list">
+            <div class="service-item">
+              <div class="service-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              </div>
+              <div>
+                <div class="service-name">Fleet Fueling Accounts</div>
+                <div class="service-desc">Dedicated accounts for agricultural cooperatives, logistics firms, and commercial fleets requiring high-volume fueling with monthly billing.</div>
+              </div>
+            </div>
+            <div class="service-item">
+              <div class="service-icon">
+                <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+              </div>
+              <div>
+                <div class="service-name">Convenience Retail</div>
+                <div class="service-desc">In-station shop carrying everyday essentials, beverages, and agricultural supplies for the local farming community.</div>
+              </div>
+            </div>
+            <div class="service-item">
+              <div class="service-icon">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+              </div>
+              <div>
+                <div class="service-name">Lubricants &amp; Auto Products</div>
+                <div class="service-desc">PTT-branded engine oils, greases, and automotive fluids for vehicle maintenance and heavy machinery upkeep.</div>
+              </div>
+            </div>
+            <div class="service-item">
+              <div class="service-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div>
+                <div class="service-name">Clean Restroom Facilities</div>
+                <div class="service-desc">Well-maintained facilities serving both individual customers and long-haul truck and transport drivers.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Station 03 ── -->
+  <div class="station-block">
+    <div class="container">
+      <div class="station-num-row">
+        <span class="station-num">Station 03</span>
+        <div class="station-num-line"></div>
+      </div>
+      <div class="station-layout" data-reveal>
+        <div class="station-photos">
+          <div class="station-photos-row cols-1">
+            <div class="station-photo-wrap tall">
+              <img src="https://placehold.co/800x560/0c1a30/1a2e4a?text=+" alt="Kunpol Petroleum — Kumphawapi">
+            </div>
+          </div>
+          <div class="station-photos-row cols-1">
+            <div class="station-photo-wrap short">
+              <img src="https://placehold.co/820x420/0a1628/152035?text=+" alt="Station overview">
+            </div>
+          </div>
+        </div>
+        <div class="station-info">
+          <h3 class="station-name">Kunpol Petroleum Co., Ltd.</h3>
+          <div class="station-location-row">
+            <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 4.5-7 13-7 13S5 13.5 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            Kumphawapi (กุมภวาปี), Khon Kaen
+          </div>
+          <div class="station-meta-row">
+            <div class="station-meta-item">
+              <div class="station-meta-label">Franchise</div>
+              <div class="station-meta-value">PTT Public Co., Ltd.</div>
+            </div>
+            <div class="station-meta-item">
+              <div class="station-meta-label">Operating Hours</div>
+              <div class="station-meta-value">06:00 – 21:00 Daily</div>
+            </div>
+          </div>
+          <div class="station-services-title">In-Station Services</div>
+          <div class="station-services-list">
+            <div class="service-item">
+              <div class="service-icon">
+                <svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3m-4 10h6m-3-3v6"/></svg>
+              </div>
+              <div>
+                <div class="service-name">Lubricants &amp; Parts Retail</div>
+                <div class="service-desc">Full selection of PTT lubricants, motor oils, and basic automotive parts catering to the district's farming and transport vehicles.</div>
+              </div>
+            </div>
+            <div class="service-item">
+              <div class="service-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              </div>
+              <div>
+                <div class="service-name">Fleet &amp; Agricultural Fueling</div>
+                <div class="service-desc">Serving agricultural transport vehicles, freight operators, and farming cooperatives in the Kumphawapi district with volume fueling options.</div>
+              </div>
+            </div>
+            <div class="service-item">
+              <div class="service-icon">
+                <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+              </div>
+              <div>
+                <div class="service-name">Convenience Retail</div>
+                <div class="service-desc">Essential goods and beverages available for daily shoppers, field workers, and passers-through on the main route.</div>
+              </div>
+            </div>
+            <div class="service-item">
+              <div class="service-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div>
+                <div class="service-name">Clean Restroom Facilities</div>
+                <div class="service-desc">Hygienic facilities maintained to PTT franchise standards, serving locals and long-distance road users.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── STATION EXPERIENCE ────────────────────────── -->
+<section class="sec-experience">
+  <div class="container">
+    <div class="experience-layout" data-reveal>
+      <div class="exp-img-wrap">
+        <img src="Inspirations/Oil Station Footage.jpeg" alt="Station staff and service quality">
+      </div>
+      <div class="exp-content">
+        <span class="eyebrow">Our Standard</span>
+        <h2 class="section-heading">More Than<br>Just Fuel</h2>
+        <p class="exp-lead">Every KUNPOL station is operated with a commitment to cleanliness, safety, and genuine service. Our staff are trained to maintain PTT's national service standards while caring for each customer with the warmth of a locally run business.</p>
+        <div class="exp-points">
+          <div class="exp-point">
+            <div class="exp-point-icon">
+              <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="exp-point-title">Attentive Staff</div>
+            <div class="exp-point-desc">Friendly, trained attendants ready to assist with fueling and station services.</div>
+          </div>
+          <div class="exp-point">
+            <div class="exp-point-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div class="exp-point-title">Hygiene Standards</div>
+            <div class="exp-point-desc">Clean facilities and fueling areas maintained daily to PTT standards.</div>
+          </div>
+          <div class="exp-point">
+            <div class="exp-point-icon">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="exp-point-title">Consistent Hours</div>
+            <div class="exp-point-desc">Reliable operating schedules across all three stations, every day of the year.</div>
+          </div>
+          <div class="exp-point">
+            <div class="exp-point-icon">
+              <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            <div class="exp-point-title">Community Focused</div>
+            <div class="exp-point-desc">Operating as part of the local fabric — not just a fuel stop, but a community hub.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── GALLERY ────────────────────────────────────── -->
+<section class="sec-gallery">
+  <div class="container">
+    <div class="gallery-head" data-reveal>
+      <span class="eyebrow">Gallery</span>
+      <h2 class="section-heading">Our Stations</h2>
+    </div>
+
+    <!-- Hero wide image -->
+    <div class="gallery-grid-new" data-reveal>
+      <div class="gallery-hero-item">
+        <div class="gallery-photo">
+          <img src="Inspirations/Oil Station Footage.jpeg" alt="PTT Station — Khao Suan Kwang">
+          <div class="gallery-caption">
+            <div class="gallery-caption-location">Khao Suan Kwang · Station 01</div>
+            <div class="gallery-caption-title">Main forecourt — morning operations</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="gallery-photo">
+          <img src="https://placehold.co/800x600/0a1628/1a3454?text=+" alt="Nam Phong Station" class="std">
+          <div class="gallery-caption">
+            <div class="gallery-caption-location">Nam Phong · Station 02</div>
+            <div class="gallery-caption-title">Fleet fueling area</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="gallery-photo">
+          <img src="https://placehold.co/800x600/0c1c32/1a3050?text=+" alt="Kumphawapi Station" class="std">
+          <div class="gallery-caption">
+            <div class="gallery-caption-location">Kumphawapi · Station 03</div>
+            <div class="gallery-caption-title">Station exterior — evening</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Second row -->
+    <div class="gallery-row cols-3" data-reveal>
+      <div class="gallery-photo">
+        <img src="https://placehold.co/700x480/101e34/1e3050?text=+" alt="Café Amazon" class="std">
+        <div class="gallery-caption">
+          <div class="gallery-caption-location">Station 01</div>
+          <div class="gallery-caption-title">Café Amazon — interior</div>
+        </div>
+      </div>
+      <div class="gallery-photo">
+        <img src="https://placehold.co/700x480/0c1830/182840?text=+" alt="Car wash" class="std">
+        <div class="gallery-caption">
+          <div class="gallery-caption-location">Station 01</div>
+          <div class="gallery-caption-title">Car wash facility</div>
+        </div>
+      </div>
+      <div class="gallery-photo">
+        <img src="https://placehold.co/700x480/0a1625/142034?text=+" alt="Convenience store" class="std">
+        <div class="gallery-caption">
+          <div class="gallery-caption-location">Station 02</div>
+          <div class="gallery-caption-title">Jiffy convenience store</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Third row -->
+    <div class="gallery-row cols-2" data-reveal>
+      <div class="gallery-photo">
+        <img src="https://placehold.co/900x520/0b1a2e/162840?text=+" alt="Award ceremony" class="std">
+        <div class="gallery-caption">
+          <div class="gallery-caption-location">PTT Award</div>
+          <div class="gallery-caption-title">Platinum Station Award — recognition of service excellence</div>
+        </div>
+      </div>
+      <div class="gallery-photo">
+        <img src="https://placehold.co/900x520/0d1e36/1a2e48?text=+" alt="Staff team" class="std">
+        <div class="gallery-caption">
+          <div class="gallery-caption-location">All Stations</div>
+          <div class="gallery-caption-title">Our team — dedicated to every customer</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── KEY STATS ─────────────────────────────────── -->
+<section class="sec-stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item" data-reveal>
+        <div class="stat-number">3<span></span></div>
+        <div class="stat-label">PTT Stations<br>Across Khon Kaen</div>
+      </div>
+      <div class="stat-item" data-reveal data-d="1">
+        <div class="stat-number">500<span>K+</span></div>
+        <div class="stat-label">Litres Dispensed<br>Per Month</div>
+      </div>
+      <div class="stat-item" data-reveal data-d="2">
+        <div class="stat-number">1,200<span>+</span></div>
+        <div class="stat-label">Customers Served<br>Daily</div>
+      </div>
+      <div class="stat-item" data-reveal data-d="3">
+        <div class="stat-number">15<span>+</span></div>
+        <div class="stat-label">Years in the<br>Energy Sector</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONTACT ────────────────────────────────────── -->
+<section class="sec-contact" id="contact">
+  <div class="container">
+    <div data-reveal>
+      <span class="eyebrow">Get in Touch</span>
+      <h2 class="section-heading" style="margin-bottom:32px;">Contact Us</h2>
+      <div class="contact-row">
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 3.07 9.81 19.79 19.79 0 0 1 .01 1.19 2 2 0 0 1 2 .01h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L6.09 7.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 14.92z"/></svg>
+          </div>
+          <div>
+            <div class="contact-label">Phone</div>
+            <div class="contact-val">+66 (0)43 000 111</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div>
+            <div class="contact-label">Email</div>
+            <div class="contact-val">kunpol999@hotmail.com</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <a href="index.html" class="footer-logo">
+        <img src="KP Logo no bg.png" alt="KUNPOL">
+        <span class="footer-wordmark">KUNPOL GROUP</span>
+      </a>
+      <span class="footer-copy">© 2024 KUNPOL Group Co., Ltd. All rights reserved.</span>
+      <a href="index.html#sectors" class="footer-back">← Back to All Sectors</a>
+    </div>
+  </div>
+</footer>
+
+<div class="kp-cursor" id="kpCursor"><span class="kp-cursor-label">Scroll</span></div>
+
+<script>
+  var lenis = new Lenis({ duration: 1.25, easing: function(t) { return 1 - Math.pow(1 - t, 3); }, smoothWheel: true, wheelMultiplier: 1.05, smoothTouch: false });
+  function raf(time) { lenis.raf(time); requestAnimationFrame(raf); } requestAnimationFrame(raf);
+  window.__lenis = lenis;
+
+  document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+    a.addEventListener('click', function(e) {
+      var hash = a.getAttribute('href');
+      if (!hash || hash === '#') return;
+      var target = document.querySelector(hash);
+      if (!target) return;
+      e.preventDefault();
+      lenis.scrollTo(target, { duration: 1.0 });
+    });
+  });
+
+  (function () {
+    var overlay = document.getElementById('menu-overlay');
+    var hamburger = document.getElementById('hamburger');
+    var menuClose = document.getElementById('menu-close');
+    hamburger.addEventListener('click', function () { overlay.classList.add('open'); });
+    menuClose.addEventListener('click', function () { overlay.classList.remove('open'); });
+    overlay.querySelectorAll('.menu-links a').forEach(function (a) { a.addEventListener('click', function () { overlay.classList.remove('open'); }); });
+  })();
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); observer.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('[data-reveal]').forEach(function(el) {
+    var rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) { el.classList.add('revealed'); } else { observer.observe(el); }
+  });
+
+  (function() {
+    function animateCounter(el) {
+      var numEl = el.querySelector('.stat-number');
+      if (!numEl) return;
+      var textNode = null;
+      numEl.childNodes.forEach(function(n) { if (n.nodeType === 3 && !textNode) textNode = n; });
+      if (!textNode) return;
+      var raw = textNode.textContent.trim();
+      var target = parseInt(raw.replace(/[^0-9]/g, ''), 10);
+      if (!target) return;
+      var duration = 1600; var start = performance.now();
+      (function tick(now) {
+        var p = Math.min((now - start) / duration, 1);
+        var val = Math.round((1 - Math.pow(1 - p, 3)) * target);
+        textNode.textContent = val >= 1000 ? val.toLocaleString() : String(val);
+        if (p < 1) requestAnimationFrame(tick);
+      })(start);
+    }
+    var statObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { if (e.isIntersecting) { animateCounter(e.target); statObs.unobserve(e.target); } });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.stat-item').forEach(function(el) { statObs.observe(el); });
+  })();
+</script>
+
+<script>
+(function () {
+  var cursor = document.getElementById('kpCursor');
+  if (!cursor) return;
+  var mouseX = 0, mouseY = 0, onPage = false, overInteractive = false;
+  var OFFSET_X = 22, OFFSET_Y = 26;
+  var INTERACTIVE = 'a, button, input, select, textarea, label, [role="button"], summary, [tabindex]';
+  var TEXT = 'p, h1, h2, h3, h4, h5, h6, li, blockquote, figcaption';
+  document.addEventListener('mousemove', function (e) { mouseX = e.clientX; mouseY = e.clientY; onPage = true; if (!overInteractive) cursor.classList.add('kp-cursor-visible'); });
+  document.addEventListener('mouseleave', function () { onPage = false; cursor.classList.remove('kp-cursor-visible'); });
+  function bindHide(el) {
+    if (el._kpBound) return; el._kpBound = true;
+    el.addEventListener('mouseenter', function () { overInteractive = true; cursor.classList.remove('kp-cursor-visible'); });
+    el.addEventListener('mouseleave', function () { overInteractive = false; if (onPage) cursor.classList.add('kp-cursor-visible'); });
+  }
+  function attach() { document.querySelectorAll(INTERACTIVE + ', ' + TEXT).forEach(bindHide); }
+  attach();
+  new MutationObserver(attach).observe(document.body, { childList: true, subtree: true });
+  (function loop() { cursor.style.left = (mouseX + OFFSET_X) + 'px'; cursor.style.top = (mouseY + OFFSET_Y) + 'px'; requestAnimationFrame(loop); })();
+})();
+</script>
+
+<script>
+document.addEventListener('click', function (e) {
+  var a = e.target.closest('a[href]');
+  if (!a) return;
+  var href = a.getAttribute('href');
+  if (href && href !== '#' && !href.startsWith('#')) sessionStorage.setItem('kunpol_nav', '1');
+}, true);
+</script>
+
+
+</body>
+</html>

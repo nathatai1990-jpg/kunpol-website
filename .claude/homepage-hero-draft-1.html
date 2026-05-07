@@ -1,0 +1,576 @@
+<!--
+  HOMEPAGE HERO SECTION — DRAFT 1
+  Saved: 2026-05-07
+  Trigger: "revert back to Homepage Hero Section Draft 1"
+  Scope: All .hn-* CSS + #hero-new CSS (two blocks) + <section id="hero-new"> HTML
+
+  HOW TO REVERT
+  ─────────────
+  1. In index.html <style> block 1, replace everything from:
+       /* ── NEW HERO — SECTOR SHOWCASE ─────────────── */
+     through the closing .acc-bg-concrete { … } block (lines ~348–1010)
+     with the CSS below marked [BLOCK-1].
+
+  2. In index.html <style> block 2, replace everything from:
+       /* ── HOMEPAGE HERO ACCENT POLISH ──── */
+     through the final closing } before </style> (lines ~2546–2737)
+     with the CSS below marked [BLOCK-2].
+
+  3. Replace <section id="hero-new"> … </section> with the HTML
+     below marked [HTML].
+
+  Key values to watch when diffing:
+    .hn-subtitle          margin-top: 18px; margin-bottom: 22px
+    .hn-thumb (inactive)  opacity: 0.52
+    #hero-new height      108vh
+    .hn-content padding   0 96px 100px 10%
+    .hn-tab-bar height    1px
+    timeline fill easing  cubic-bezier(0.37,0,0.63,1) (set in JS)
+-->
+
+
+<!-- ═══════════════════════════════════════════
+     [BLOCK-1]  Main hero CSS  (inside <style> in <head>)
+     Replaces from /* ── NEW HERO */ to end of .acc-bg-concrete
+═══════════════════════════════════════════ -->
+<style id="draft1-block1">
+    /* ── NEW HERO — SECTOR SHOWCASE ─────────────── */
+    #hero-new {
+      position: relative;
+      height: 108vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    /* Stacked slide layers — pure opacity crossfade, no scaling */
+    .hn-bg-track {
+      position: absolute; inset: 0;
+      z-index: 0;
+    }
+    .hn-bg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      will-change: opacity;
+      pointer-events: none;
+    }
+    .hn-bg.hn-bg-active {
+      opacity: 1;
+      transition: opacity 1.6s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .hn-bg.hn-bg-leaving {
+      opacity: 0;
+      transition: opacity 1.5s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .hn-overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background:
+        linear-gradient(to right,
+          rgba(0,0,0,0.78) 0%,
+          rgba(0,0,0,0.55) 35%,
+          rgba(0,0,0,0.18) 60%,
+          rgba(0,0,0,0.04) 100%);
+    }
+    .hn-accent-overlay {
+      position: absolute; inset: 0; z-index: 2;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 88% 82% at 0% 100%,
+          rgba(var(--sector-rgb), 0.28) 0%,
+          rgba(var(--sector-rgb), 0.14) 36%,
+          transparent 68%),
+        radial-gradient(ellipse 58% 52% at 100% 5%,
+          rgba(var(--sector-rgb), 0.10) 0%,
+          transparent 55%);
+    }
+    .hn-white-fade { display: none; }
+    .hn-content {
+      position: absolute; z-index: 3;
+      left: 0; right: 0;
+      top: 0; height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: flex-start; justify-content: center;
+      text-align: left;
+      padding: 0 96px 100px 10%;
+    }
+    .hn-content-inner {
+      display: flex; flex-direction: column; align-items: flex-start;
+      max-width: 580px;
+    }
+    .hn-eyebrow {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 22px;
+    }
+    .hn-eyebrow-line { display: block; width: 24px; height: 1px; background: rgba(201,168,76,0.55); }
+    .hn-eyebrow-label {
+      font-family: var(--font-body);
+      font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+      color: rgba(201,168,76,0.85);
+    }
+
+    /* ── SECTOR BADGE ────────────────────────────── */
+    .hn-badge {
+      display: inline-flex; align-items: center; gap: 9px;
+      padding: 6px 16px 6px 10px;
+      border-radius: 100px;
+      background: rgba(0,0,0,0.20);
+      border: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      margin-bottom: 10px;
+      cursor: none;
+      transform: translateX(0);
+      transition: transform 0.38s cubic-bezier(0.25,0,0,1),
+                  background 0.38s ease;
+    }
+    .hn-badge:hover {
+      transform: translateX(13px);
+      background: rgba(0,0,0,0.28);
+    }
+    .hn-badge-icon {
+      width: 14px; height: 14px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transform: translateX(0);
+      transition: transform 0.38s cubic-bezier(0.25,0,0,1);
+    }
+    .hn-badge:hover .hn-badge-icon { transform: translateX(4px); }
+    .hn-badge-icon svg {
+      width: 13px; height: 13px;
+      stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round;
+      fill: none;
+      filter: drop-shadow(0 0 3px currentColor);
+      transition: filter 0.36s ease;
+    }
+    .hn-badge:hover .hn-badge-icon svg {
+      filter: drop-shadow(0 0 7px currentColor) drop-shadow(0 0 14px currentColor) drop-shadow(0 0 22px currentColor);
+    }
+    .hn-badge-text {
+      font-family: var(--font-body);
+      font-size: 10px; font-weight: 500;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: rgba(255,255,255,0.82);
+      transform: translateX(0);
+      transition: transform 0.38s cubic-bezier(0.25,0,0,1);
+    }
+    .hn-badge:hover .hn-badge-text { transform: translateX(2px); }
+    .hn-badge-char {
+      display: inline-block;
+      text-shadow: none;
+    }
+    .hn-badge:hover .hn-badge-char {
+      text-shadow: 0 0 8px rgba(var(--badge-glow-rgb), 1),
+                   0 0 20px rgba(var(--badge-glow-rgb), 0.72),
+                   0 0 40px rgba(var(--badge-glow-rgb), 0.32);
+    }
+
+    .hn-sector-num {
+      position: absolute;
+      top: 33vh;
+      transform: translateY(-50%);
+      right: 13%;
+      z-index: 2;
+      font-family: var(--font-display);
+      font-size: clamp(72px, 9vw, 110px);
+      font-weight: 700;
+      line-height: 1;
+      color: rgba(255,255,255,0.23);
+      text-shadow: 0 2px 16px rgba(180,180,180,0.22), 0 4px 32px rgba(150,150,150,0.12);
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -0.05em;
+      transition: color 0.5s ease;
+    }
+
+    .hn-title {
+      font-family: var(--font-display);
+      font-size: clamp(54px, 6.8vw, 102px);
+      font-weight: 600; letter-spacing: -0.035em;
+      color: #ffffff; line-height: 0.96;
+      margin-bottom: 2px;
+    }
+    .hn-subtitle {
+      font-family: var(--font-body);
+      font-style: normal;
+      font-size: 16px; font-weight: 500; color: rgba(255,255,255,0.70);
+      line-height: 1.45; max-width: 480px;
+      margin-top: 18px; margin-bottom: 22px;
+    }
+    .hn-ctas { display: flex; flex-direction: row; align-items: center; gap: 32px; margin-left: 3px; }
+    .hn-btn {
+      display: inline-flex; align-items: center; gap: 0;
+      padding: 4px 4px 4px 16px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.50);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.20), 0 1px 4px rgba(0,0,0,0.10);
+      text-decoration: none; cursor: pointer;
+      position: relative; overflow: hidden; isolation: isolate;
+      transition: box-shadow 0.30s ease, transform 0.10s ease,
+                  border-color 0.55s cubic-bezier(0.76,0,0.24,1);
+    }
+    .hn-btn::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(6,13,31,0.88);
+      border-radius: inherit;
+      clip-path: circle(14px at calc(100% - 18px) 50%);
+      transition: clip-path 0.38s cubic-bezier(0.65,0,0.35,1);
+      pointer-events: none; z-index: 0;
+    }
+    .hn-btn:hover::before { clip-path: circle(160% at calc(100% - 18px) 50%); }
+    .hn-btn-label {
+      font-family: var(--font-body);
+      font-size: 14px; font-weight: 600; letter-spacing: 0.03em;
+      color: rgba(6,13,31,0.82);
+      padding-right: 13px; white-space: nowrap;
+      position: relative; z-index: 1;
+      transition: color 0.32s ease;
+    }
+    .hn-btn-icon {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(6,13,31,0.88);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      position: relative; z-index: 1;
+      transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94),
+                  background 0.38s cubic-bezier(0.65,0,0.35,1);
+    }
+    .hn-btn-icon svg { width: 13px; height: 13px; }
+    .hn-btn:hover {
+      box-shadow: 0 8px 28px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.10);
+      border-color: transparent;
+    }
+    .hn-btn:hover .hn-btn-label { color: rgba(255,255,255,0.92); }
+    .hn-btn:hover .hn-btn-icon { transform: translateX(3px); background: transparent; }
+    .hn-btn:active { transform: scale(0.975); transition: transform 0.08s ease; }
+
+    .hn-scroll-btn {
+      position: absolute; z-index: 5;
+      right: calc(10% + 6.667% - 46px); top: calc(100vh - 168px); transform: translateY(-50%);
+      cursor: pointer; text-decoration: none;
+      opacity: 1; transition: opacity 0.5s ease;
+    }
+    .hn-scroll-btn:hover { opacity: 1; }
+    .hn-scroll-btn.hn-scrolled-away { opacity: 0; pointer-events: none; }
+    .hn-scroll-wrap { position: relative; width: 92px; height: 92px; }
+    .hn-scroll-disk {
+      position: absolute; inset: 0; border-radius: 50%;
+      background: rgba(255,255,255,0.80);
+      box-shadow: 0 4px 22px rgba(0,0,0,0.20), 0 1px 6px rgba(0,0,0,0.12);
+      transition: background 0.35s ease, box-shadow 0.35s ease;
+    }
+    .hn-scroll-btn:hover .hn-scroll-disk {
+      background: rgba(255,255,255,0.99);
+      box-shadow: 0 6px 28px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10);
+    }
+    .hn-scroll-btn:active .hn-scroll-disk {
+      background: rgba(255,255,255,0.70);
+      box-shadow: 0 1px 6px rgba(0,0,0,0.12);
+    }
+    .hn-orbit-svg {
+      position: absolute; top: -14px; left: -14px;
+      width: 120px; height: 120px;
+      animation: hn-orbit-spin 14s linear infinite;
+      pointer-events: none; transition: animation-duration 0.4s ease;
+    }
+    .hn-scroll-btn:hover .hn-orbit-svg { animation-duration: 6s; }
+    @keyframes hn-orbit-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .hn-scroll-arrow-svg {
+      position: absolute; left: 50%; top: 14px;
+      transform: translateX(-50%); display: block;
+      overflow: visible; pointer-events: none;
+      animation: hn-arrow-bob 2.2s ease-in-out infinite;
+    }
+    @keyframes hn-arrow-bob {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(5px); }
+    }
+    .hn-scroll-btn.hn-clicking .hn-scroll-arrow-svg {
+      animation: hn-arrow-click 0.55s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+    @keyframes hn-arrow-click {
+      0%   { transform: translateX(-50%) translateY(0); }
+      40%  { transform: translateX(-50%) translateY(14px); }
+      70%  { transform: translateX(-50%) translateY(-4px); }
+      100% { transform: translateX(-50%) translateY(0); }
+    }
+
+    .hn-tabs {
+      position: absolute; z-index: 3;
+      left: 50%; transform: translateX(-50%);
+      width: 80%;
+      top: calc(100vh - 96px);
+      padding: 20px 0 28px;
+      background: transparent;
+    }
+    .hn-timeline {
+      display: flex; align-items: flex-start; gap: 0;
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+      mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+    }
+    .hn-tab { flex: 1; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 0; position: relative; padding-right: 0; }
+    .hn-tab-bar { width: 100%; height: 1px; background: rgba(255,255,255,0.20); position: relative; overflow: hidden; margin-bottom: 10px; border-radius: 0; }
+    .hn-tab-bar-fill { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: rgba(255,255,255,0.90); border-radius: 2px; }
+    .hn-tab.hn-played .hn-tab-bar { background: rgba(255,255,255,0.90); }
+    .hn-tab-label { display: flex; flex-direction: column; align-items: center; gap: 0; }
+    .hn-tab-num { display: none; }
+    .hn-tab-name {
+      font-family: var(--font-body);
+      font-size: 12px; font-weight: 500;
+      color: rgba(255,255,255,0.55); letter-spacing: 0.04em;
+      text-align: center; transition: color 0.3s ease, text-shadow 0.4s ease; text-shadow: none;
+    }
+    .hn-tab.hn-active .hn-tab-name { color: rgba(255,255,255,0.95); font-weight: 600; text-shadow: 0 1px 8px rgba(0,0,0,0.45), 0 0 20px rgba(0,0,0,0.20); }
+    .hn-tab.hn-played .hn-tab-name { color: rgba(255,255,255,0.58); }
+    .hn-tab:hover .hn-tab-name { color: rgba(255,255,255,0.82); }
+
+    /* ── THUMBNAIL NAVIGATOR ── */
+    .hn-thumbs {
+      position: absolute; z-index: 5;
+      right: calc(10% + 8px); top: calc(100vh - 179px);
+      display: flex; flex-direction: column; align-items: flex-end; gap: 13px;
+    }
+    .hn-thumb-arrow {
+      align-self: flex-end; width: 36px; height: 36px; border-radius: 50%;
+      background: #ffffff;
+      box-shadow: inset 0 0 0 100px rgba(var(--sector-rgb), 0.09);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: box-shadow 0.6s ease, transform 0.18s ease;
+    }
+    .hn-thumb-arrow:hover { transform: scale(1.12); }
+    .hn-thumb-arrow:active { transform: scale(0.93); }
+    .hn-thumb-arrow svg { width: 14px; height: 14px; fill: rgba(0,0,0,0.82); stroke: none; margin-left: 2px; }
+    .hn-thumb-row { display: flex; align-items: flex-end; gap: 5px; }
+    .hn-thumb {
+      width: 78px; height: 50px; border-radius: 3px; overflow: hidden;
+      cursor: pointer; position: relative;
+      border: 1px solid rgba(255,255,255,0.14);
+      transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), border-color 0.22s ease, opacity 0.22s ease;
+      opacity: 0.52; flex-shrink: 0;
+    }
+    .hn-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+    .hn-thumb:hover { opacity: 0.78; transform: translateY(-3px) scale(1.05); border-color: rgba(255,255,255,0.38); }
+    .hn-thumb.hn-thumb-active {
+      opacity: 1; border: 1px solid rgba(255,255,255,0.82);
+      transform: translateY(-4px) scale(1.08);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.45), 0 2px 6px rgba(0,0,0,0.25);
+    }
+    @media (max-width: 900px) {
+      .hn-thumbs { right: 20px; }
+      .hn-thumb { width: 48px; height: 32px; border-radius: 4px; }
+    }
+
+    .hn-top-blur {
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 110px; z-index: 4; pointer-events: none;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+      mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+    }
+    .hn-cursor {
+      position: fixed; z-index: 9999; pointer-events: none;
+      width: 76px; height: 76px; border-radius: 50%;
+      background: rgba(0,0,0,0.18); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border: 0.5px solid rgba(255,255,255,0.10);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transform: translate(-50%,-50%) scale(0.75);
+      transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.34,1.4,0.64,1);
+    }
+    .hn-cursor.hn-cursor-visible { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+    .hn-cursor.hn-cursor-hidden { opacity: 0; transform: translate(-50%,-50%) scale(0.75); }
+    .hn-cursor-label { font-family: var(--font-body); font-size: 13px; letter-spacing: 0.04em; color: rgba(255,255,255,0.92); font-weight: 500; }
+</style>
+
+
+<!-- ═══════════════════════════════════════════
+     [BLOCK-2]  Hero accent polish CSS  (inside second <style> block)
+     Replaces from /* ── HOMEPAGE HERO ACCENT POLISH */ to end of block
+═══════════════════════════════════════════ -->
+<style id="draft1-block2">
+  /* ── HOMEPAGE HERO ACCENT POLISH ────────────────────
+     --sector-rgb and --sector-glow-rgb are set per-slide
+     by updateBadge() in JS. Fallbacks keep the gold brand
+     look before the first slide initializes.            */
+  #hero-new {
+    --sector-rgb: 201,168,76;
+    --sector-glow-rgb: 225,208,165;
+  }
+  #hero-new .hn-eyebrow-line { background: rgba(var(--sector-glow-rgb), 0.60); transition: background 0.6s ease; }
+  #hero-new .hn-eyebrow-label { color: rgba(var(--sector-glow-rgb), 0.92); transition: color 0.6s ease; }
+
+  /* ── Title: top-lit dimensional — white crown, warm accent base ── */
+  #hero-new .hn-title {
+    padding-bottom: 0.18em;
+    background: linear-gradient(to bottom right, #ffffff 0%, #ffffff 30%, rgb(var(--sector-rgb)) 120%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 18px rgba(0,0,0,0.55));
+  }
+
+  /* ── Subtitle: plain white ── */
+  #hero-new .hn-subtitle { color: rgba(255,255,255,0.82); -webkit-text-fill-color: rgba(255,255,255,0.82); }
+
+  /* ── Badge icon: significant glow at rest, stronger on hover ── */
+  #hero-new .hn-badge-icon svg {
+    filter: drop-shadow(0 0 5px rgba(var(--badge-accent-rgb), 1))
+            drop-shadow(0 0 12px rgba(var(--badge-accent-rgb), 0.80))
+            drop-shadow(0 0 24px rgba(var(--badge-accent-rgb), 0.55))
+            drop-shadow(0 0 42px rgba(var(--badge-accent-rgb), 0.28));
+    transition: filter 0.6s ease;
+  }
+  #hero-new .hn-badge:hover .hn-badge-icon svg {
+    filter: drop-shadow(0 0 8px rgba(var(--badge-accent-rgb), 1))
+            drop-shadow(0 0 20px rgba(var(--badge-accent-rgb), 0.90))
+            drop-shadow(0 0 40px rgba(var(--badge-accent-rgb), 0.60))
+            drop-shadow(0 0 64px rgba(var(--badge-accent-rgb), 0.35));
+  }
+
+  @keyframes hn-badge-glow {
+    0%   { text-shadow: none; }
+    20%  { text-shadow: 0 0 3px rgba(var(--badge-accent-rgb), 0.40), 0 0 8px rgba(var(--badge-accent-rgb), 0.20); }
+    45%  { text-shadow: 0 0 6px rgba(var(--badge-accent-rgb), 1), 0 0 16px rgba(var(--badge-accent-rgb), 0.80), 0 0 32px rgba(var(--badge-accent-rgb), 0.45); }
+    65%  { text-shadow: 0 0 6px rgba(var(--badge-accent-rgb), 1), 0 0 16px rgba(var(--badge-accent-rgb), 0.80), 0 0 32px rgba(var(--badge-accent-rgb), 0.45); }
+    88%  { text-shadow: 0 0 3px rgba(var(--badge-accent-rgb), 0.35), 0 0 8px rgba(var(--badge-accent-rgb), 0.15); }
+    100% { text-shadow: none; }
+  }
+  #hero-new .hn-badge-char { transition: none; animation: hn-badge-glow 1.8s ease-in-out infinite; }
+  #hero-new .hn-badge:hover .hn-badge-char {
+    animation: none;
+    text-shadow: 0 0 6px rgba(var(--badge-accent-rgb), 1), 0 0 16px rgba(var(--badge-accent-rgb), 0.80), 0 0 32px rgba(var(--badge-accent-rgb), 0.45);
+  }
+
+  #hero-new .hn-sector-num { text-shadow: none; filter: drop-shadow(1px 3px 4px rgba(0,0,0,0.18)); }
+  #hero-new .hn-tab-bar-fill { background: rgba(255,255,255,0.90); box-shadow: none; transition: background 0.6s ease; }
+  #hero-new .hn-tab.hn-played .hn-tab-bar { background: rgba(255,255,255,0.90); transition: background 0.6s ease; }
+  #hero-new .hn-tab.hn-active .hn-tab-name { color: rgba(255,255,255,0.95); font-weight: 600; text-shadow: 0 1px 8px rgba(0,0,0,0.45), 0 0 20px rgba(0,0,0,0.20); transition: color 0.6s ease, text-shadow 0.4s ease; }
+
+  /* View Sector button */
+  #hero-new .hn-btn { background: rgba(255,255,255,0.92); border: none; box-shadow: 0 4px 24px rgba(0,0,0,0.22), 0 1px 5px rgba(0,0,0,0.12); transition: box-shadow 0.30s ease, transform 0.10s ease; }
+  #hero-new .hn-btn::before { background: rgb(var(--sector-rgb)); transition: clip-path 0.38s cubic-bezier(0.65,0,0.35,1), background 0.50s ease; }
+  #hero-new .hn-btn-label { color: rgba(6,13,31,0.82); }
+  #hero-new .hn-btn-icon { background: rgb(var(--sector-rgb)); transition: background 0.38s cubic-bezier(0.65,0,0.35,1), transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94); }
+  #hero-new .hn-btn:hover { box-shadow: 0 10px 32px rgba(0,0,0,0.24), 0 3px 10px rgba(0,0,0,0.12); }
+  #hero-new .hn-btn:hover .hn-btn-label { color: rgba(255,255,255,0.92); }
+  #hero-new .hn-btn:hover .hn-btn-icon { transform: translateX(3px); background: transparent; }
+
+  /* Ghost text link — "Explore group" */
+  .hn-ghost-link { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-body); font-size: 14px; font-weight: 500; letter-spacing: 0.03em; color: rgba(255,255,255,0.90); text-decoration: none; transition: color 0.3s ease, opacity 0.3s ease; }
+  .hn-ghost-text { display: inline; position: relative; }
+  .hn-ghost-text::after { content: ''; position: absolute; left: 0; bottom: -2px; width: 0; height: 1px; background: rgba(255,255,255,0.90); transition: width 0.35s cubic-bezier(0.25,0,0,1); }
+  .hn-ghost-link svg { width: 13px; height: 13px; stroke: rgba(255,255,255,0.45); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; opacity: 0; transform: translateX(-4px); transition: transform 0.35s cubic-bezier(0.25,0,0,1), opacity 0.3s ease; }
+  .hn-ghost-link:hover { color: rgba(255,255,255,0.85); }
+  .hn-ghost-link:hover .hn-ghost-text::after { width: 100%; }
+  .hn-ghost-link:hover svg { opacity: 1; transform: translateX(0); }
+
+  #hero-new .hn-scroll-btn:hover .hn-scroll-disk { box-shadow: 0 6px 28px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10), 0 0 24px rgba(var(--sector-rgb), 0.32); }
+  #hero-new .hn-scroll-arrow-svg line, #hero-new .hn-scroll-arrow-svg polyline { stroke: rgba(var(--sector-rgb), 0.82); transition: stroke 0.6s ease; }
+  #hero-new .hn-scroll-arrow-svg { filter: none; transition: filter 0.4s ease; }
+  #hero-new .hn-scroll-btn:hover .hn-scroll-arrow-svg { filter: drop-shadow(0 0 3px rgba(var(--sector-rgb), 0.90)) drop-shadow(0 0 8px rgba(var(--sector-rgb), 0.60)) drop-shadow(0 0 18px rgba(var(--sector-rgb), 0.35)); }
+</style>
+
+
+<!-- ═══════════════════════════════════════════
+     [HTML]  Hero section HTML
+     Replaces <section id="hero-new"> … </section>
+═══════════════════════════════════════════ -->
+<section id="hero-new">
+
+  <!-- Top edge blur vignette -->
+  <div class="hn-top-blur"></div>
+
+  <!-- Background slide layers — stacked, crossfade + Ken Burns zoom -->
+  <div class="hn-bg-track" id="hnBgTrack">
+    <div class="hn-bg" style="background-image:url('Inspirations/Oil Station Footage.jpeg')"></div>
+    <div class="hn-bg" style="background-image:url('Inspirations/Agriculture Footage .jpeg')"></div>
+    <div class="hn-bg" style="background-image:url('Inspirations/warehouse footage.jpeg')"></div>
+    <div class="hn-bg" style="background-image:url('Inspirations/Construction Footage.jpeg')"></div>
+    <div class="hn-bg" style="background-image:url('Inspirations/A tree and a sky img.jpeg')"></div>
+    <div class="hn-bg" style="background-image:url('Inspirations/Concrete Plant Footage.jpeg')"></div>
+  </div>
+
+  <!-- Accent colour bloom -->
+  <div class="hn-accent-overlay" id="hnAccentOverlay"></div>
+
+  <!-- Overlay -->
+  <div class="hn-overlay"></div>
+
+  <!-- White fade — bottom of hero into page background -->
+  <div class="hn-white-fade"></div>
+
+  <!-- Bottom-left content -->
+  <div class="hn-content">
+    <div class="hn-content-inner" id="hnContentInner">
+      <!-- Sector badge — contextual label, not clickable -->
+      <div class="hn-badge" id="hnBadge">
+        <span class="hn-badge-icon" id="hnBadgeIcon">
+          <!-- Icon injected by JS per sector -->
+        </span>
+        <span class="hn-badge-text" id="hnBadgeText">Energy Operations</span>
+      </div>
+      <h1 class="hn-title" id="hnTitle">Oil Stations</h1>
+      <p class="hn-subtitle" id="hnSubtitle">Operating 3 strategic PT fuel stations across Khon Kaen, powering local logistics, agriculture fleets, and communities with reliable energy.</p>
+      <div class="hn-ctas">
+        <a href="oil-stations.html" class="hn-btn" id="hnExplorBtn">
+          <span class="hn-btn-label">View This Sector</span>
+          <span class="hn-btn-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.95)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7,7 17,7 17,17"/></svg>
+          </span>
+        </a>
+        <a href="#structure" class="hn-ghost-link">
+          <span class="hn-ghost-text">Explore group</span>
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13,6 19,12 13,18"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sector timeline (replaces box tabs) -->
+  <div class="hn-tabs" id="hnTabs">
+    <div class="hn-timeline">
+      <div class="hn-tab hn-active" data-index="0">
+        <div class="hn-tab-bar"><div class="hn-tab-bar-fill"></div></div>
+        <div class="hn-tab-label"><div class="hn-tab-num">01</div><div class="hn-tab-name">Oil Stations</div></div>
+      </div>
+      <div class="hn-tab" data-index="1">
+        <div class="hn-tab-bar"><div class="hn-tab-bar-fill"></div></div>
+        <div class="hn-tab-label"><div class="hn-tab-num">02</div><div class="hn-tab-name">Agriculture</div></div>
+      </div>
+      <div class="hn-tab" data-index="2">
+        <div class="hn-tab-bar"><div class="hn-tab-bar-fill"></div></div>
+        <div class="hn-tab-label"><div class="hn-tab-num">03</div><div class="hn-tab-name">Commerce</div></div>
+      </div>
+      <div class="hn-tab" data-index="3">
+        <div class="hn-tab-bar"><div class="hn-tab-bar-fill"></div></div>
+        <div class="hn-tab-label"><div class="hn-tab-num">04</div><div class="hn-tab-name">Construction</div></div>
+      </div>
+      <div class="hn-tab" data-index="4">
+        <div class="hn-tab-bar"><div class="hn-tab-bar-fill"></div></div>
+        <div class="hn-tab-label"><div class="hn-tab-num">05</div><div class="hn-tab-name">Services</div></div>
+      </div>
+      <div class="hn-tab" data-index="5">
+        <div class="hn-tab-bar"><div class="hn-tab-bar-fill"></div></div>
+        <div class="hn-tab-label"><div class="hn-tab-num">06</div><div class="hn-tab-name">Concrete Plant</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Thumbnail navigator — bottom-right, above timeline -->
+  <div class="hn-thumbs" id="hnThumbs">
+    <div class="hn-thumb-arrow" id="hnThumbArrow">
+      <svg viewBox="0 0 24 24"><polygon points="3,3 22,12 3,21 8,12"/></svg>
+    </div>
+    <div class="hn-thumb-row">
+      <div class="hn-thumb hn-thumb-active" data-index="0"><img src="Inspirations/Oil Station Footage.jpeg" alt="Oil Stations"></div>
+      <div class="hn-thumb" data-index="1"><img src="Inspirations/Agriculture Footage .jpeg" alt="Agriculture"></div>
+      <div class="hn-thumb" data-index="2"><img src="Inspirations/warehouse footage.jpeg" alt="Commerce"></div>
+      <div class="hn-thumb" data-index="3"><img src="Inspirations/Construction Footage.jpeg" alt="Construction"></div>
+      <div class="hn-thumb" data-index="4"><img src="Inspirations/A tree and a sky img.jpeg" alt="Services"></div>
+      <div class="hn-thumb" data-index="5"><img src="Inspirations/Concrete Plant Footage.jpeg" alt="Concrete Plant"></div>
+    </div>
+  </div>
+
+</section>
