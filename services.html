@@ -6,7 +6,7 @@
   <title>Services — KUNPOL Group</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -89,7 +89,7 @@
       box-shadow:
         0 26px 18px -8px rgba(0,0,0,0.18),
         0 10px  6px -3px rgba(0,0,0,0.09);
-      padding: 0 38px;
+      padding: 0 28px;
     }
     #navbar.nav-scrolled .nav-logo-svg { width: 40px; height: 40px; }
     .nav-logo-white {
@@ -108,10 +108,11 @@
     #navbar.nav-scrolled .nav-wordmark { margin-left: 10px; }
     #navbar.nav-scrolled .nav-wordmark-top { font-size: 10px; letter-spacing: 0.20em; }
     #navbar.nav-scrolled .nav-wordmark-sub { font-size: 7px; }
-    #navbar.nav-scrolled .nav-links { gap: 30px; }
+    #navbar.nav-scrolled .nav-links { gap: 22px; }
     #navbar.nav-scrolled .nav-links a { font-size: 12px; }
     #navbar.nav-scrolled .nav-lang { font-size: 10.5px; }
-    #navbar.nav-scrolled .nav-cta { font-size: 11px; padding: 7px 16px; background: #3465B0; box-shadow: 0 2px 14px rgba(52,101,176,0.50), 0 1px 4px rgba(0,0,0,0.18); }
+    #navbar.nav-scrolled .nav-cta { padding: 5px 13px; border-radius: 6px; }
+    #navbar.nav-scrolled .nav-cta-label { font-size: 11px; line-height: 1.7; }
     .nav-logo { display: flex; align-items: center; gap: 0; text-decoration: none; flex-shrink: 0; }
     .nav-logo-wrap {
       position: relative;
@@ -167,8 +168,46 @@
     .nav-lang:hover { color: rgba(255,255,255,0.85); }
     .nav-lang svg { width: 14px; height: 14px; flex-shrink: 0; }
     .nav-lang-sep { color: rgba(255,255,255,0.22); }
-    .nav-cta { font-family: var(--font-body); font-size: 12px; font-weight: 600; letter-spacing: 0.04em; padding: 9px 24px; border-radius: 6px; background: #3465B0; color: #ffffff; text-decoration: none; white-space: nowrap; transition: background 0.2s ease, transform 0.18s ease, box-shadow 0.2s ease, font-size 0.30s cubic-bezier(0.4,0,0.2,1), padding 0.30s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 2px 12px rgba(0,0,0,0.28); }
-    .nav-cta:hover { background: #e8edf5; transform: translateY(-1px); box-shadow: 0 4px 18px rgba(0,0,0,0.32); }
+    /* Contact Us — rounded blue button with periodic gloss */
+    .nav-cta {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 7px 16px;
+      border-radius: 7px;
+      background: linear-gradient(170deg, rgba(55,100,180,1) 0%, rgba(28,68,138,1) 100%);
+      text-decoration: none;
+      white-space: nowrap;
+      position: relative; overflow: hidden; isolation: isolate;
+      box-shadow: 0 3px 14px rgba(28,68,138,0.42), 0 1px 3px rgba(0,0,0,0.18);
+      transition: box-shadow 0.25s ease, transform 0.15s ease, filter 0.25s ease;
+    }
+    @keyframes nav-cta-gloss {
+      0%   { transform: translateX(-220%) skewX(-20deg); opacity: 0; }
+      4%   { opacity: 1; }
+      22%  { transform: translateX(320%) skewX(-20deg); opacity: 0; }
+      100% { transform: translateX(320%) skewX(-20deg); opacity: 0; }
+    }
+    .nav-cta::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 45%; height: 100%;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.22) 50%, transparent 100%);
+      pointer-events: none; z-index: 1;
+      animation: nav-cta-gloss 3.8s ease-in-out infinite;
+    }
+    .nav-cta-label {
+      font-family: var(--font-body);
+      font-size: 12px; font-weight: 600; letter-spacing: 0.04em;
+      color: rgba(255,255,255,0.92);
+      position: relative; z-index: 2;
+    }
+    .nav-cta-icon { display: none; }
+    .nav-cta:hover {
+      box-shadow: 0 6px 22px rgba(28,68,138,0.52), 0 2px 6px rgba(0,0,0,0.22);
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+    }
+    .nav-cta:active { transform: scale(0.975); }
+    .nav-links li:has(.nav-lang) { list-style: none; }
     .nav-cta:active { transform: translateY(0); box-shadow: 0 1px 6px rgba(0,0,0,0.22); }
     .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
     .hamburger span { display: block; width: 22px; height: 1.5px; background: rgba(255,255,255,0.85); transition: transform 0.3s, opacity 0.3s; }
@@ -284,15 +323,13 @@
     .stat-number span { color: var(--accent-light); }
     .stat-label { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.42); line-height: 1.5; }
 
-    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
-    .contact-lead { font-family: var(--font-serif); font-size: clamp(20px, 2.2vw, 28px); font-weight: 300; line-height: 1.5; color: var(--text); margin-bottom: 32px; font-style: italic; }
-    .contact-person-name { font-family: var(--font-display); font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-    .contact-person-role { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 28px; }
-    .contact-details { display: flex; flex-direction: column; gap: 12px; }
-    .contact-detail { display: flex; align-items: center; gap: 14px; font-size: 14px; color: var(--text-muted); }
-    .contact-detail-icon { width: 36px; height: 36px; border-radius: 4px; background: var(--accent-pale); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .contact-detail-icon svg { width: 16px; height: 16px; stroke: var(--accent); fill: none; stroke-width: 1.5; }
-    .contact-form { background: var(--cream); border-radius: 8px; padding: 52px 48px; }
+    .sec-contact { background: #ffffff; padding: 72px 0; }
+    .contact-row { display: flex; align-items: center; gap: 48px; flex-wrap: wrap; }
+    .contact-item { display: flex; align-items: center; gap: 14px; }
+    .contact-icon { width: 40px; height: 40px; border-radius: 8px; background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid var(--gray-200); }
+    .contact-icon svg { width: 16px; height: 16px; stroke: var(--text); fill: none; stroke-width: 1.5; }
+    .contact-label { font-family: var(--font-body); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-light); margin-bottom: 2px; }
+    .contact-val { font-family: var(--font-body); font-size: 14px; font-weight: 500; color: var(--text); }
     .form-group { margin-bottom: 24px; }
     .form-label { display: block; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; font-weight: 500; }
     .form-input, .form-textarea { width: 100%; font-family: var(--font-body); font-size: 14px; color: var(--text); background: #fff; border: 1px solid var(--gray-200); border-radius: 4px; padding: 14px 16px; outline: none; transition: border-color 0.2s; }
@@ -470,8 +507,6 @@
         drop-shadow(2px 3px 0px rgba(0,8,32,0.75))
         drop-shadow(3px 5px 2px rgba(0,8,32,0.35));
     }
-    #navbar:not(.nav-scrolled) .nav-cta { background: #1a3454; color: #fff; }
-    #navbar:not(.nav-scrolled) .nav-cta:hover { background: #243d61; }
     @media (max-width: 900px) {
       .sh-hero-text { padding: 40px 28px 24px; }
       .sh-visual-outer { padding: 0 20px; }
@@ -537,7 +572,6 @@
     <li><a href="index.html#about">About</a></li>
     <li><a href="index.html#sectors">Sectors</a></li>
     <li><a href="index.html#works">Track Record</a></li>
-    <li><a href="index.html#leadership">Leadership</a></li>
     <li><a href="#contact">Contact Us</a></li>
   </ul>
 </div>
@@ -564,7 +598,6 @@
           <a href="index.html#about" class="nav-drop-item"><span class="nav-drop-name">Group Overview</span></a>
           <a href="index.html#structure" class="nav-drop-item"><span class="nav-drop-name">Group Structure</span></a>
           <a href="index.html#governance" class="nav-drop-item"><span class="nav-drop-name">Governance</span></a>
-          <a href="index.html#leadership" class="nav-drop-item"><span class="nav-drop-name">Leadership</span></a>
           <a href="index.html#works" class="nav-drop-item"><span class="nav-drop-name">Track Record</span></a>
           <div class="nav-drop-divider"></div>
           <a href="index.html#contact" class="nav-drop-item"><span class="nav-drop-name">Contact Us</span></a>
@@ -601,23 +634,22 @@
           </a>
         </div>
       </li>
-      <li><a href="index.html#leadership">Leadership</a></li>
+      <li>
+        <button class="nav-lang" id="navLang" title="Switch language">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span id="navLangLabel">EN</span><span class="nav-lang-sep">/</span><span>TH</span>
+        </button>
+      </li>
     </ul>
   </div>
   <div class="nav-right">
-    <button class="nav-lang" id="navLang" title="Switch language">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"/>
-        <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-      </svg>
-      <span id="navLangLabel">EN</span>
-      <span class="nav-lang-sep">/</span>
-      <span>TH</span>
-    </button>
-    <button class="hamburger" id="hamburger" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
-    <a href="index.html#contact" class="nav-cta">Contact Us</a>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+    <a href="index.html#contact" class="nav-cta">
+      <span class="nav-cta-label">Contact Us</span>
+      <span class="nav-cta-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="rgba(10,10,10,0.85)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7,7 17,7 17,17"/></svg>
+      </span>
+    </a>
   </div>
 </nav>
 
@@ -829,22 +861,29 @@
 </section>
 
 <!-- CONTACT -->
-<section class="section" style="background:#fff; padding: 72px 0;" id="contact">
+<section class="sec-contact" id="contact">
   <div class="container">
     <div data-reveal>
       <span class="eyebrow">Get in Touch</span>
-      <div class="contact-details" style="margin-top: 24px;">
-        <div class="contact-detail">
-          <div class="contact-detail-icon">
-            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.19 2 2 0 012 .01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+      <h2 class="section-heading" style="margin-bottom:32px;">Contact Us</h2>
+      <div class="contact-row">
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 3.07 9.81 19.79 19.79 0 0 1 .01 1.19 2 2 0 0 1 2 .01h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L6.09 7.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 14.92z"/></svg>
           </div>
-          +66 (0)43 000 555
+          <div>
+            <div class="contact-label">Phone</div>
+            <div class="contact-val">+66 (0)43 000 555</div>
+          </div>
         </div>
-        <div class="contact-detail">
-          <div class="contact-detail-icon">
+        <div class="contact-item">
+          <div class="contact-icon">
             <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           </div>
-          kunpol999@hotmail.com
+          <div>
+            <div class="contact-label">Email</div>
+            <div class="contact-val">kunpol999@hotmail.com</div>
+          </div>
         </div>
       </div>
     </div>

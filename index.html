@@ -87,7 +87,7 @@
       display: grid;
       grid-template-columns: auto 1fr auto;
       align-items: center;
-      padding: 0 32px;
+      padding: 0 8px;
       height: 68px;
       border-radius: 20px;
       background: transparent;
@@ -132,7 +132,8 @@
     #navbar.nav-scrolled .nav-links { gap: 22px; }
     #navbar.nav-scrolled .nav-links a { font-size: 12px; }
     #navbar.nav-scrolled .nav-lang { font-size: 10.5px; }
-    #navbar.nav-scrolled .nav-cta { font-size: 11px; padding: 7px 16px; background: #3465B0; box-shadow: 0 2px 14px rgba(52,101,176,0.50), 0 1px 4px rgba(0,0,0,0.18); }
+    #navbar.nav-scrolled .nav-cta { padding: 5px 13px; border-radius: 6px; }
+    #navbar.nav-scrolled .nav-cta-label { font-size: 11px; }
     /* Left: logo mark + divider + wordmark */
     .nav-logo {
       display: flex; align-items: center; gap: 0;
@@ -155,7 +156,7 @@
     }
     /* Blue base — extrusion shadows simulate thickness/depth */
     .nav-logo-svg {
-      width: 64px; height: 64px; flex-shrink: 0; object-fit: contain;
+      width: 86px; height: 86px; flex-shrink: 0; object-fit: contain;
       filter:
         brightness(0) saturate(100%) invert(16%) sepia(60%) saturate(700%) hue-rotate(200deg) brightness(0.95)
         drop-shadow(1px 2px 0px rgba(0,8,32,1))
@@ -172,7 +173,7 @@
     /* White overlay — lit face of the 3D logo, gradient left→right */
     .nav-logo-white {
       position: absolute; inset: 0;
-      width: 64px; height: 64px; object-fit: contain;
+      width: 86px; height: 86px; object-fit: contain;
       filter: brightness(0) invert(1);
       -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 20%, black 55%, black 100%);
       mask-image:         linear-gradient(to right, transparent 0%, transparent 20%, black 55%, black 100%);
@@ -184,7 +185,7 @@
     /* Pill: no white overlay */
     #navbar.nav-scrolled .nav-logo-white { opacity: 0; }
     .nav-logo-divider {
-      width: 1px; height: 28px;
+      width: 1px; height: 34px;
       background: rgba(255,255,255,0.22);
       flex-shrink: 0;
       transition: height 0.30s cubic-bezier(0.4,0,0.2,1);
@@ -196,14 +197,14 @@
     }
     .nav-wordmark-top {
       font-family: var(--font-body);
-      font-size: 11.5px; font-weight: 600;
+      font-size: 13px; font-weight: 600;
       letter-spacing: 0.25em; text-transform: uppercase;
       color: rgba(255,255,255,0.92);
       transition: font-size 0.30s cubic-bezier(0.4,0,0.2,1), letter-spacing 0.30s cubic-bezier(0.4,0,0.2,1);
     }
     .nav-wordmark-sub {
       font-family: var(--font-body);
-      font-size: 8px; font-weight: 400;
+      font-size: 9px; font-weight: 400;
       letter-spacing: 0.35em; text-transform: uppercase;
       color: rgba(255,255,255,0.48);
       transition: font-size 0.30s cubic-bezier(0.4,0,0.2,1);
@@ -211,6 +212,7 @@
     /* Centre: nav links */
     .nav-center {
       display: flex; align-items: center; justify-content: center;
+      margin-left: -38px;
     }
     .nav-links {
       display: flex; align-items: center;
@@ -283,7 +285,8 @@
     .nav-drop-item:hover .nav-drop-name { color: rgba(255,255,255,0.95); }
     .nav-drop-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 4px 8px; }
     .nav-links .nav-dropdown a::after { display: none !important; content: none !important; width: 0 !important; }
-    /* Right: lang toggle + Contact */
+    .nav-links li:has(.nav-lang) { list-style: none; }
+    /* Right: hamburger + Contact */
     .nav-right { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
     /* Language toggle */
     .nav-lang {
@@ -296,46 +299,69 @@
     .nav-lang:hover { color: rgba(255,255,255,0.85); }
     .nav-lang svg { width: 14px; height: 14px; flex-shrink: 0; }
     .nav-lang-sep { color: rgba(255,255,255,0.22); }
-    /* Contact Us — brand navy, stands out */
+    /* Contact Us — rounded blue button with periodic gloss */
     .nav-cta {
-      font-family: var(--font-body);
-      font-size: 12px; font-weight: 600;
-      letter-spacing: 0.04em;
-      padding: 9px 24px;
-      border-radius: 6px;
-      background: #3465B0;
-      color: #ffffff;
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 7px 19px;
+      border-radius: 7px;
+      background: linear-gradient(170deg, rgba(55,100,180,1) 0%, rgba(28,68,138,1) 100%);
       text-decoration: none;
       white-space: nowrap;
-      overflow: hidden;
-      position: relative;
-      transition: background 0.2s ease, transform 0.18s ease, box-shadow 0.2s ease,
-                  font-size 0.30s cubic-bezier(0.4,0,0.2,1), padding 0.30s cubic-bezier(0.4,0,0.2,1);
-      box-shadow: 0 2px 14px rgba(26,50,104,0.45), 0 1px 4px rgba(0,0,0,0.22);
+      position: relative; overflow: hidden; isolation: isolate;
+      box-shadow: 0 3px 14px rgba(28,68,138,0.42), 0 1px 3px rgba(0,0,0,0.18);
+      transition: box-shadow 0.25s ease, transform 0.15s ease, filter 0.25s ease;
+    }
+    @keyframes nav-cta-gloss {
+      0%   { transform: translateX(-220%) skewX(-20deg); opacity: 0; }
+      4%   { opacity: 1; }
+      22%  { transform: translateX(320%) skewX(-20deg); opacity: 0; }
+      100% { transform: translateX(320%) skewX(-20deg); opacity: 0; }
     }
     .nav-cta::before {
       content: '';
-      position: absolute;
-      top: 0; left: -120%; width: 65%; height: 100%;
-      background: linear-gradient(105deg,
-        transparent 0%,
-        rgba(255,255,255,0.13) 50%,
-        transparent 100%);
-      animation: nav-shimmer 3.2s ease-in-out infinite;
-      pointer-events: none;
+      position: absolute; top: 0; left: 0;
+      width: 45%; height: 100%;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.22) 50%, transparent 100%);
+      pointer-events: none; z-index: 1;
+      animation: nav-cta-gloss 3.8s ease-in-out infinite;
     }
-    @keyframes nav-shimmer {
-      0%     { left: -120%; }
-      45%, 100% { left: 160%; }
+    .nav-cta-label {
+      font-family: var(--font-body);
+      font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
+      color: rgba(255,255,255,0.92);
+      position: relative; z-index: 2;
     }
+    .nav-cta-icon { display: none; }
     .nav-cta:hover {
-      background: #22428A;
+      box-shadow: 0 6px 22px rgba(28,68,138,0.52), 0 2px 6px rgba(0,0,0,0.22);
       transform: translateY(-1px);
-      box-shadow: 0 6px 22px rgba(26,50,104,0.55), 0 2px 8px rgba(0,0,0,0.22);
+      filter: brightness(1.08);
     }
-    .nav-cta:active { transform: translateY(0); box-shadow: 0 1px 6px rgba(26,50,104,0.30); }
+    .nav-cta:active { transform: scale(0.975); }
     .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
     .hamburger span { display: block; width: 22px; height: 1.5px; background: rgba(255,255,255,0.85); transition: transform 0.3s, opacity 0.3s; }
+
+    /* ── Default (transparent) navbar — dark text for white-fade hero ── */
+    #navbar:not(.nav-scrolled) .nav-wordmark-top { color: rgba(6,13,31,0.85); }
+    #navbar:not(.nav-scrolled) .nav-wordmark-sub { color: rgba(6,13,31,0.50); }
+    #navbar:not(.nav-scrolled) .nav-logo-divider { background: rgba(6,13,31,0.18); }
+    #navbar:not(.nav-scrolled) .nav-links a { color: rgba(6,13,31,0.65); }
+    #navbar:not(.nav-scrolled) .nav-links a:hover { color: rgba(6,13,31,0.95); }
+    #navbar:not(.nav-scrolled) .nav-links a::after { background: rgba(6,13,31,0.50); }
+    #navbar:not(.nav-scrolled) .nav-drop-chevron { stroke: rgba(6,13,31,0.40); }
+    #navbar:not(.nav-scrolled) .nav-has-drop:hover .nav-drop-chevron { stroke: rgba(6,13,31,0.75); }
+    #navbar:not(.nav-scrolled) .nav-lang { color: rgba(6,13,31,0.55); }
+    #navbar:not(.nav-scrolled) .nav-lang-sep { color: rgba(6,13,31,0.22); }
+    #navbar:not(.nav-scrolled) .hamburger span { background: rgba(6,13,31,0.75); }
+    /* Logo: flat blue matching pill — remove extrusion, hide white overlay */
+    #navbar:not(.nav-scrolled) .nav-logo-svg {
+      filter: brightness(0) saturate(100%) invert(16%) sepia(60%) saturate(700%) hue-rotate(200deg) brightness(0.95);
+    }
+    #navbar:not(.nav-scrolled) .nav-logo-white { opacity: 0; }
+    /* Default transparent state: shift all items up */
+    #navbar:not(.nav-scrolled) .nav-logo,
+    #navbar:not(.nav-scrolled) .nav-center,
+    #navbar:not(.nav-scrolled) .nav-right { transform: translateY(-14px); }
 
     @media (max-width: 900px) {
       #navbar { padding: 0 24px; grid-template-columns: auto 1fr auto; }
@@ -345,15 +371,16 @@
       .nav-cta { display: none; }
     }
 
-    /* ── NEW HERO — SECTOR SHOWCASE ─────────────── */
+    /* ── CINEMATIC HERO — DRAFT 2 ───────────────── */
     #hero-new {
       position: relative;
-      height: 108vh;
+      height: 90vh;
       overflow: hidden;
       display: flex;
       flex-direction: column;
     }
-    /* Stacked slide layers — pure opacity crossfade, no scaling */
+
+    /* Background slide layers */
     .hn-bg-track {
       position: absolute; inset: 0;
       z-index: 0;
@@ -364,430 +391,209 @@
       background-size: cover;
       background-position: center;
       opacity: 0;
-      will-change: opacity;
+      transform: scale(1.0);
+      will-change: opacity, transform;
       pointer-events: none;
     }
     .hn-bg.hn-bg-active {
       opacity: 1;
-      transition: opacity 1.6s cubic-bezier(0.32, 0.72, 0, 1);
+      transition: opacity 0.8s cubic-bezier(0.37, 0, 0.63, 1);
+      animation: hn-ken-burns 8s ease-out both;
     }
     .hn-bg.hn-bg-leaving {
       opacity: 0;
-      transition: opacity 1.5s cubic-bezier(0.32, 0.72, 0, 1);
+      transition: opacity 0.7s cubic-bezier(0.37, 0, 0.63, 1);
     }
+    @keyframes hn-ken-burns {
+      from { transform: scale(1.0) translate(0, 0); }
+      to   { transform: scale(1.05) translate(-0.6%, -0.4%); }
+    }
+
+    /* Cinematic dark atmospheric overlay */
     .hn-overlay {
       position: absolute; inset: 0; z-index: 1;
       background:
-        linear-gradient(to right,
-          rgba(0,0,0,0.78) 0%,
-          rgba(0,0,0,0.55) 35%,
-          rgba(0,0,0,0.18) 60%,
-          rgba(0,0,0,0.04) 100%);
-    }
-    /* Accent colour bloom — updates instantly when --sector-rgb changes,
-       masked by the 1.6s image crossfade so the jump is never visible */
-    .hn-accent-overlay {
-      position: absolute; inset: 0; z-index: 2;
-      pointer-events: none;
-      background:
-        radial-gradient(ellipse 88% 82% at 0% 100%,
-          rgba(var(--sector-rgb), 0.28) 0%,
-          rgba(var(--sector-rgb), 0.14) 36%,
-          transparent 68%),
-        radial-gradient(ellipse 58% 52% at 100% 5%,
-          rgba(var(--sector-rgb), 0.10) 0%,
-          transparent 55%);
-    }
-    /* White fade — removed */
-    .hn-white-fade { display: none; }
-    .hn-content {
-      position: absolute; z-index: 3;
-      left: 0; right: 0;
-      top: 0; height: 100vh;
-      display: flex; flex-direction: column;
-      align-items: flex-start; justify-content: center;
-      text-align: left;
-      /* Left aligns with timeline bar start: (100% - 80%) / 2 = 10% */
-      padding: 0 96px 100px 10%;
-    }
-    .hn-content-inner {
-      display: flex; flex-direction: column; align-items: flex-start;
-      max-width: 580px;
-    }
-    .hn-eyebrow {
-      display: flex; align-items: center; gap: 14px;
-      margin-bottom: 22px;
-    }
-    .hn-eyebrow-line { display: block; width: 24px; height: 1px; background: rgba(201,168,76,0.55); }
-    .hn-eyebrow-label {
-      font-family: var(--font-body);
-      font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
-      color: rgba(201,168,76,0.85);
+        radial-gradient(ellipse 68% 42% at 50% 56%, rgba(0,0,0,0.32) 0%, transparent 100%),
+        linear-gradient(to bottom,
+          rgba(0,0,0,0.10) 0%,
+          rgba(0,0,0,0.42) 28%,
+          rgba(0,0,0,0.56) 55%,
+          rgba(0,0,0,0.62) 74%,
+          rgba(0,0,0,0.78) 100%);
     }
 
-    /* ── SECTOR BADGE ────────────────────────────── */
+    /* Top atmospheric gradient — white fade from top edge */
+    .hn-top-blur {
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 350px; z-index: 2; pointer-events: none;
+      background: linear-gradient(to bottom,
+        rgba(255,255,255,1) 0%,
+        rgba(255,255,255,1) 8.6%,
+        rgba(255,255,255,0.28) 62%,
+        transparent 100%);
+    }
+
+    /* Centered content */
+    .hn-content {
+      position: absolute; z-index: 3;
+      inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 0 48px 72px;
+    }
+
+    /* Badge — static welcome pill */
     .hn-badge {
       display: inline-flex; align-items: center; gap: 9px;
-      padding: 6px 16px 6px 10px;
+      padding: 3px 10px 3px 8px;
       border-radius: 100px;
-      background: rgba(0,0,0,0.20);
-      border: 1px solid rgba(255,255,255,0.06);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      margin-bottom: 10px;
-      cursor: none;
-      transform: translateX(0);
-      transition: transform 0.38s cubic-bezier(0.25,0,0,1),
-                  background 0.38s ease;
+      background: rgba(255,255,255,0.11);
+      border: 1.5px solid rgba(255,255,255,0.28);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      margin-bottom: 20px;
+      cursor: default;
+      transition: background 0.35s ease, border-color 0.35s ease,
+                  transform 0.30s cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 0.35s ease;
     }
     .hn-badge:hover {
-      transform: translateX(13px);
-      background: rgba(0,0,0,0.28);
+      background: rgba(255,255,255,0.18);
+      border-color: rgba(255,255,255,0.45);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18), 0 1px 4px rgba(0,0,0,0.10);
     }
-    .hn-badge-icon {
-      width: 14px; height: 14px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      transform: translateX(0);
-      transition: transform 0.38s cubic-bezier(0.25,0,0,1);
+    /* Glowing dot */
+    .hn-badge-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #5bb5f5;
+      flex-shrink: 0;
+      animation: hn-dot-pulse 2.6s ease-in-out infinite;
     }
-    .hn-badge:hover .hn-badge-icon {
-      transform: translateX(4px);
-    }
-    .hn-badge-icon svg {
-      width: 13px; height: 13px;
-      stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round;
-      fill: none;
-      filter: drop-shadow(0 0 3px currentColor);
-      transition: filter 0.36s ease;
-    }
-    .hn-badge:hover .hn-badge-icon svg {
-      filter: drop-shadow(0 0 7px currentColor) drop-shadow(0 0 14px currentColor) drop-shadow(0 0 22px currentColor);
+    @keyframes hn-dot-pulse {
+      0%, 100% { opacity: 0.80; box-shadow: 0 0 0 2px rgba(91,181,245,0.20), 0 0 6px rgba(91,181,245,0.40); }
+      50%       { opacity: 1;    box-shadow: 0 0 0 3px rgba(91,181,245,0.18), 0 0 12px rgba(91,181,245,0.70), 0 0 24px rgba(91,181,245,0.30); }
     }
     .hn-badge-text {
       font-family: var(--font-body);
       font-size: 10px; font-weight: 500;
       letter-spacing: 0.16em; text-transform: uppercase;
-      color: rgba(255,255,255,0.82);
-      transform: translateX(0);
-      transition: transform 0.38s cubic-bezier(0.25,0,0,1);
+      color: rgba(255,255,255,0.95);
     }
-    .hn-badge:hover .hn-badge-text {
-      transform: translateX(2px);
+    .hn-badge-char { display: inline-block; }
+    @keyframes hn-badge-glow {
+      0%, 100% { text-shadow: none; }
+      50%       { text-shadow: 0 0 6px rgba(255,255,255,0.55), 0 0 14px rgba(255,255,255,0.22); }
     }
-    .hn-badge-char {
-      display: inline-block;
-      text-shadow: none;
-    }
+    .hn-badge-char { animation: hn-badge-glow 2.6s ease-in-out infinite; }
     .hn-badge:hover .hn-badge-char {
-      text-shadow: 0 0 8px rgba(var(--badge-glow-rgb), 1),
-                   0 0 20px rgba(var(--badge-glow-rgb), 0.72),
-                   0 0 40px rgba(var(--badge-glow-rgb), 0.32);
+      animation: none;
+      text-shadow: 0 0 7px rgba(255,255,255,0.80), 0 0 18px rgba(255,255,255,0.38);
     }
 
-    /* Ghost sector number — right side, vertically centered at scroll button y */
-    .hn-sector-num {
-      position: absolute;
-      top: 33vh;
-      transform: translateY(-50%);
-      right: 13%;
-      z-index: 2;
+    /* Main headline */
+    .hn-headline {
       font-family: var(--font-display);
-      font-size: clamp(72px, 9vw, 110px);
-      font-weight: 700;
-      line-height: 1;
-      color: rgba(255,255,255,0.23);
-      text-shadow: 0 2px 16px rgba(180,180,180,0.22), 0 4px 32px rgba(150,150,150,0.12);
-      pointer-events: none;
-      user-select: none;
-      letter-spacing: -0.05em;
-      transition: color 0.5s ease;
+      font-size: clamp(25px, 3.6vw, 54px);
+      font-weight: 620;
+      letter-spacing: 0.022em;
+      color: #ffffff;
+      line-height: 1.08;
+      max-width: 880px;
+      margin-bottom: 7.5px;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.55), 0 2px 40px rgba(0,0,0,0.45);
     }
 
-    .hn-title {
-      font-family: var(--font-display);
-      font-size: clamp(54px, 6.8vw, 102px);
-      font-weight: 600; letter-spacing: -0.035em;
-      color: #ffffff; line-height: 0.96;
-      margin-bottom: 2px;
-    }
-    .hn-subtitle {
+    /* Supporting tagline */
+    .hn-tagline {
       font-family: var(--font-body);
-      font-style: normal;
-      font-size: 16px; font-weight: 500; color: rgba(255,255,255,0.70);
-      line-height: 1.45; max-width: 480px;
-      margin-top: 18px; margin-bottom: 22px;
+      font-size: 15.5px;
+      font-weight: 390;
+      letter-spacing: 0.05em;
+      color: rgba(255,255,255,1);
+      max-width: 680px;
+      line-height: 1.42;
+      margin-bottom: 31px;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.60);
     }
-    .hn-ctas { display: flex; flex-direction: row; align-items: center; gap: 32px; margin-left: 3px; }
+
+    /* Explore Services button — white pill, dark circle */
     .hn-btn {
       display: inline-flex; align-items: center; gap: 0;
       padding: 4px 4px 4px 16px;
       border-radius: 100px;
       background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255,255,255,0.50);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.20), 0 1px 4px rgba(0,0,0,0.10);
-      text-decoration: none; cursor: pointer;
+      border: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.22), 0 1px 4px rgba(0,0,0,0.12);
+      text-decoration: none;
       position: relative; overflow: hidden; isolation: isolate;
-      transition: box-shadow 0.30s ease, transform 0.10s ease,
-                  border-color 0.55s cubic-bezier(0.76,0,0.24,1);
+      transition: box-shadow 0.35s ease, transform 0.18s cubic-bezier(0.34,1.56,0.64,1);
     }
-    /* Expanding fill — starts as icon-disc sized circle, floods the pill on hover */
     .hn-btn::before {
       content: '';
       position: absolute; inset: 0;
-      background: rgba(6,13,31,0.88);
+      background: #000000;
       border-radius: inherit;
-      clip-path: circle(14px at calc(100% - 18px) 50%);
-      transition: clip-path 0.38s cubic-bezier(0.65,0,0.35,1);
+      clip-path: circle(16px at calc(100% - 20px) 50%);
+      transition: clip-path 0.40s cubic-bezier(0.65,0,0.35,1);
       pointer-events: none; z-index: 0;
     }
-    .hn-btn:hover::before {
-      clip-path: circle(160% at calc(100% - 18px) 50%);
-    }
+    .hn-btn:hover::before { clip-path: circle(160% at calc(100% - 20px) 50%); }
     .hn-btn-label {
       font-family: var(--font-body);
-      font-size: 14px; font-weight: 600; letter-spacing: 0.03em;
-      color: rgba(6,13,31,0.82);
-      padding-right: 13px; white-space: nowrap;
+      font-size: 16px; font-weight: 580; letter-spacing: 0.03em;
+      color: rgba(6,13,31,0.84);
+      padding-right: 14px; white-space: nowrap;
       position: relative; z-index: 1;
       transition: color 0.32s ease;
     }
     .hn-btn-icon {
-      width: 28px; height: 28px; border-radius: 50%;
-      background: rgba(6,13,31,0.88);
+      width: 33px; height: 33px; border-radius: 50%;
+      background: #000000;
       display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      position: relative; z-index: 1;
-      transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94),
-                  background 0.38s cubic-bezier(0.65,0,0.35,1);
+      flex-shrink: 0; position: relative; z-index: 1;
+      transition: background 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
     }
-    .hn-btn-icon svg { width: 13px; height: 13px; }
+    .hn-btn-icon svg { width: 16px; height: 16px; display: block; }
     .hn-btn:hover {
-      box-shadow: 0 8px 28px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.10);
-      border-color: transparent;
+      box-shadow: 0 14px 36px rgba(0,0,0,0.38), 0 4px 12px rgba(0,0,0,0.20), 0 0 0 2px rgba(255,255,255,0.60);
+      transform: translateY(-2px);
     }
-    .hn-btn:hover .hn-btn-label { color: rgba(255,255,255,0.92); }
-    .hn-btn:hover .hn-btn-icon {
-      transform: translateX(3px);
-      background: transparent;
-    }
-    .hn-btn:active {
-      transform: scale(0.975);
-      transition: transform 0.08s ease;
-    }
-    /* Scroll-down button — right side of hero, circle */
-    /* right: 10% (timeline right edge) + 80%/12 (half last bar width) − 46px (half button width) */
-    .hn-scroll-btn {
-      position: absolute; z-index: 5;
-      right: calc(10% + 6.667% - 46px); top: calc(100vh - 168px); transform: translateY(-50%);
-      cursor: pointer; text-decoration: none;
-      opacity: 1;
-      transition: opacity 0.5s ease;
-    }
-    .hn-scroll-btn:hover { opacity: 1; }
-    .hn-scroll-btn.hn-scrolled-away { opacity: 0; pointer-events: none; }
+    .hn-btn:hover .hn-btn-label { color: rgba(255,255,255,0.94); }
+    .hn-btn:hover .hn-btn-icon { background: transparent; }
+    .hn-btn:active { transform: scale(0.975); }
 
-    /* Wrapper — circle size, allows arrow to overflow below */
-    .hn-scroll-wrap {
-      position: relative;
-      width: 92px; height: 92px;
-    }
-
-    /* White circle backdrop for scroll arrow */
-    .hn-scroll-disk {
-      position: absolute; inset: 0;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.80);
-      box-shadow: 0 4px 22px rgba(0,0,0,0.20), 0 1px 6px rgba(0,0,0,0.12);
-      transition: background 0.35s ease, box-shadow 0.35s ease;
-    }
-    .hn-scroll-btn:hover .hn-scroll-disk {
-      background: rgba(255,255,255,0.99);
-      box-shadow: 0 6px 28px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10);
-    }
-    .hn-scroll-btn:active .hn-scroll-disk {
-      background: rgba(255,255,255,0.70);
-      box-shadow: 0 1px 6px rgba(0,0,0,0.12);
-    }
-
-    /* Orbiting text SVG — sits just outside circle edge */
-    .hn-orbit-svg {
+    /* 6 dot navigation */
+    .hn-dots {
       position: absolute;
-      top: -14px; left: -14px;
-      width: 120px; height: 120px;
-      animation: hn-orbit-spin 14s linear infinite;
-      pointer-events: none;
-      transition: animation-duration 0.4s ease;
-    }
-    .hn-scroll-btn:hover .hn-orbit-svg {
-      animation-duration: 6s;
-    }
-    @keyframes hn-orbit-spin {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
-    }
-
-    /* Single unified arrow SVG — no separate divs, no gap */
-    .hn-scroll-arrow-svg {
-      position: absolute;
-      left: 50%; top: 14px;
+      bottom: 52px;
+      left: 50%;
       transform: translateX(-50%);
-      display: block;
-      overflow: visible;
-      pointer-events: none;
-      animation: hn-arrow-bob 2.2s ease-in-out infinite;
+      display: flex; align-items: center;
+      gap: 11px;
+      z-index: 5;
     }
-    @keyframes hn-arrow-bob {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50%       { transform: translateX(-50%) translateY(5px); }
-    }
-
-    /* Click: arrow pulses down */
-    .hn-scroll-btn.hn-clicking .hn-scroll-arrow-svg {
-      animation: hn-arrow-click 0.55s cubic-bezier(0.4,0,0.2,1) forwards;
-    }
-    @keyframes hn-arrow-click {
-      0%   { transform: translateX(-50%) translateY(0); }
-      40%  { transform: translateX(-50%) translateY(14px); }
-      70%  { transform: translateX(-50%) translateY(-4px); }
-      100% { transform: translateX(-50%) translateY(0); }
-    }
-
-    /* Sector timeline bar — pinned just below content block (viewport bottom) */
-    .hn-tabs {
-      position: absolute; z-index: 3;
-      left: 50%; transform: translateX(-50%);
-      width: 80%;
-      top: calc(100vh - 96px);
-      padding: 20px 0 28px;
-      background: transparent;
-    }
-    .hn-timeline {
-      display: flex; align-items: flex-start;
-      gap: 0;
-      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-      mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-    }
-    .hn-tab {
-      flex: 1; cursor: pointer;
-      display: flex; flex-direction: column;
-      align-items: center;
-      gap: 0;
-      position: relative;
-      padding-right: 0;
-    }
-    /* The progress bar segment — thin, gapless bar per sector */
-    .hn-tab-bar {
-      width: 100%; height: 1px;
-      background: rgba(255,255,255,0.20);
-      position: relative; overflow: hidden;
-      margin-bottom: 10px;
-      border-radius: 0;
-    }
-    .hn-tab-bar-fill {
-      position: absolute; top: 0; left: 0;
-      height: 100%; width: 0%;
-      background: rgba(255,255,255,0.90);
-      border-radius: 2px;
-    }
-    .hn-tab.hn-played .hn-tab-bar { background: rgba(255,255,255,0.90); }
-    .hn-tab-label {
-      display: flex; flex-direction: column; align-items: center; gap: 0;
-    }
-    .hn-tab-num { display: none; }
-    .hn-tab-name {
-      font-family: var(--font-body);
-      font-size: 12px; font-weight: 500;
-      color: rgba(255,255,255,0.55);
-      letter-spacing: 0.04em;
-      text-align: center;
-      transition: color 0.3s ease, text-shadow 0.4s ease;
-      text-shadow: none;
-    }
-    .hn-tab.hn-active .hn-tab-name {
-      color: rgba(255,255,255,0.95); font-weight: 600;
-      text-shadow: 0 1px 8px rgba(0,0,0,0.45), 0 0 20px rgba(0,0,0,0.20);
-    }
-    .hn-tab.hn-played .hn-tab-name { color: rgba(255,255,255,0.58); }
-    .hn-tab:hover .hn-tab-name { color: rgba(255,255,255,0.82); }
-
-    /* ── THUMBNAIL NAVIGATOR ── */
-    .hn-thumbs {
-      position: absolute; z-index: 5;
-      right: calc(10% + 8px);
-      top: calc(100vh - 179px);
-      display: flex; flex-direction: column;
-      align-items: flex-end;
-      gap: 13px;
-    }
-    /* Circular direction arrow above thumbnails */
-    .hn-thumb-arrow {
-      align-self: flex-end;
-      width: 36px; height: 36px;
+    .hn-dot {
+      width: 5px; height: 5px;
       border-radius: 50%;
-      background: #ffffff;
-      box-shadow: inset 0 0 0 100px rgba(var(--sector-rgb), 0.09);
-      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.28);
       cursor: pointer;
-      transition: box-shadow 0.6s ease, transform 0.18s ease;
-    }
-    .hn-thumb-arrow:hover { transform: scale(1.12); }
-    .hn-thumb-arrow:active { transform: scale(0.93); }
-    .hn-thumb-arrow svg {
-      width: 14px; height: 14px;
-      fill: rgba(0,0,0,0.82); stroke: none;
-      margin-left: 2px;
-    }
-    /* Row of thumbnail images */
-    .hn-thumb-row {
-      display: flex; align-items: flex-end;
-      gap: 5px;
-    }
-    .hn-thumb {
-      width: 78px; height: 50px;
-      border-radius: 3px;
-      overflow: hidden;
-      cursor: pointer;
-      position: relative;
-      border: 1px solid rgba(255,255,255,0.14);
-      transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1),
-                  border-color 0.22s ease,
-                  opacity 0.22s ease;
-      opacity: 0.52;
+      transition: background 0.45s ease,
+                  transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
       flex-shrink: 0;
     }
-    .hn-thumb img {
-      width: 100%; height: 100%;
-      object-fit: cover; display: block;
-      pointer-events: none;
+    .hn-dot.hn-dot-active {
+      background: rgba(255,255,255,0.90);
+      transform: scale(1.7);
     }
-    .hn-thumb:hover {
-      opacity: 0.78;
-      transform: translateY(-3px) scale(1.05);
-      border-color: rgba(255,255,255,0.38);
-    }
-    .hn-thumb.hn-thumb-active {
-      opacity: 1;
-      border: 1px solid rgba(255,255,255,0.82);
-      transform: translateY(-4px) scale(1.08);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.45), 0 2px 6px rgba(0,0,0,0.25);
-    }
-    @media (max-width: 900px) {
-      .hn-thumbs { right: 20px; }
-      .hn-thumb { width: 48px; height: 32px; border-radius: 4px; }
+    .hn-dot:hover:not(.hn-dot-active) {
+      background: rgba(255,255,255,0.55);
+      transform: scale(1.25);
     }
 
-    /* Top blur vignette */
-    .hn-top-blur {
-      position: absolute; top: 0; left: 0; right: 0;
-      height: 110px; z-index: 4; pointer-events: none;
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
-      mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
-    }
-
-    /* Scroll circle — frosted blur, works on both dark and light backgrounds */
+    /* Scroll cursor (global) */
     .hn-cursor {
       position: fixed; z-index: 9999;
       pointer-events: none;
@@ -803,18 +609,21 @@
       transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.34,1.4,0.64,1);
     }
     .hn-cursor.hn-cursor-visible {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
+      opacity: 1; transform: translate(-50%, -50%) scale(1);
     }
     .hn-cursor.hn-cursor-hidden {
-      opacity: 0;
-      transform: translate(-50%, -50%) scale(0.75);
+      opacity: 0; transform: translate(-50%, -50%) scale(0.75);
     }
     .hn-cursor-label {
       font-family: var(--font-body);
       font-size: 13px; letter-spacing: 0.04em;
-      color: rgba(255,255,255,0.92);
-      font-weight: 500;
+      color: rgba(255,255,255,0.92); font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+      .hn-headline { font-size: clamp(28px, 8vw, 48px); letter-spacing: -0.02em; }
+      .hn-tagline { font-size: 13px; max-width: 320px; }
+      .hn-eyebrow { margin-bottom: 24px; }
     }
 
     /* ── HERO — EDITORIAL CARD CAROUSEL ─────────── */
@@ -1704,6 +1513,9 @@
       #ffffff;
     padding: 160px 0 90px;
     position: relative;
+    z-index: 2;
+    border-radius: 28px 28px 0 0;
+    margin-top: -28px;
   }
   /* Grain texture overlay */
   #about::before {
@@ -2543,197 +2355,6 @@
   .ft-wordmark { margin-left: 10px; font-family: var(--font-body); font-size: 12px; font-weight: 600; letter-spacing: 0.20em; color: rgba(255,255,255,0.55); }
   .ft-copy { font-family: var(--font-body); font-size: 11px; color: rgba(255,255,255,0.25); letter-spacing: 0.05em; }
 
-  /* ── HOMEPAGE HERO ACCENT POLISH ────────────────────
-     --sector-rgb and --sector-glow-rgb are set per-slide
-     by updateBadge() in JS. Fallbacks keep the gold brand
-     look before the first slide initializes.            */
-  #hero-new {
-    --sector-rgb: 201,168,76;
-    --sector-glow-rgb: 225,208,165;
-  }
-  #hero-new .hn-eyebrow-line {
-    background: rgba(var(--sector-glow-rgb), 0.60);
-    transition: background 0.6s ease;
-  }
-  #hero-new .hn-eyebrow-label {
-    color: rgba(var(--sector-glow-rgb), 0.92);
-    transition: color 0.6s ease;
-  }
-
-  /* ── Title: top-lit dimensional — white crown, warm accent base ── */
-  #hero-new .hn-title {
-    padding-bottom: 0.18em;
-    background: linear-gradient(to bottom right,
-      #ffffff 0%,
-      #ffffff 30%,
-      rgb(var(--sector-rgb)) 120%
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 2px 18px rgba(0,0,0,0.55));
-  }
-
-  /* ── Subtitle: plain white ── */
-  #hero-new .hn-subtitle {
-    color: rgba(255,255,255,0.82);
-    -webkit-text-fill-color: rgba(255,255,255,0.82);
-  }
-
-  /* ── Badge icon: significant glow at rest, stronger on hover ── */
-  #hero-new .hn-badge-icon svg {
-    filter: drop-shadow(0 0 5px rgba(var(--badge-accent-rgb), 1))
-            drop-shadow(0 0 12px rgba(var(--badge-accent-rgb), 0.80))
-            drop-shadow(0 0 24px rgba(var(--badge-accent-rgb), 0.55))
-            drop-shadow(0 0 42px rgba(var(--badge-accent-rgb), 0.28));
-    transition: filter 0.6s ease;
-  }
-  #hero-new .hn-badge:hover .hn-badge-icon svg {
-    filter: drop-shadow(0 0 8px rgba(var(--badge-accent-rgb), 1))
-            drop-shadow(0 0 20px rgba(var(--badge-accent-rgb), 0.90))
-            drop-shadow(0 0 40px rgba(var(--badge-accent-rgb), 0.60))
-            drop-shadow(0 0 64px rgba(var(--badge-accent-rgb), 0.35));
-  }
-
-  /* ── Badge text: slow smooth pulse — builds, holds, fades ── */
-  @keyframes hn-badge-glow {
-    0%   { text-shadow: none; }
-    20%  { text-shadow:
-             0 0 3px rgba(var(--badge-accent-rgb), 0.40),
-             0 0 8px  rgba(var(--badge-accent-rgb), 0.20); }
-    45%  { text-shadow:
-             0 0 6px rgba(var(--badge-accent-rgb), 1),
-             0 0 16px rgba(var(--badge-accent-rgb), 0.80),
-             0 0 32px rgba(var(--badge-accent-rgb), 0.45); }
-    65%  { text-shadow:
-             0 0 6px rgba(var(--badge-accent-rgb), 1),
-             0 0 16px rgba(var(--badge-accent-rgb), 0.80),
-             0 0 32px rgba(var(--badge-accent-rgb), 0.45); }
-    88%  { text-shadow:
-             0 0 3px rgba(var(--badge-accent-rgb), 0.35),
-             0 0 8px  rgba(var(--badge-accent-rgb), 0.15); }
-    100% { text-shadow: none; }
-  }
-  #hero-new .hn-badge-char {
-    transition: none;
-    animation: hn-badge-glow 1.8s ease-in-out infinite;
-  }
-  #hero-new .hn-badge:hover .hn-badge-char {
-    animation: none;
-    text-shadow:
-      0 0 6px rgba(var(--badge-accent-rgb), 1),
-      0 0 16px rgba(var(--badge-accent-rgb), 0.80),
-      0 0 32px rgba(var(--badge-accent-rgb), 0.45);
-  }
-
-  #hero-new .hn-sector-num {
-    text-shadow: none;
-    filter: drop-shadow(1px 3px 4px rgba(0,0,0,0.18));
-  }
-  #hero-new .hn-tab-bar-fill {
-    background: rgba(255,255,255,0.90);
-    box-shadow: none;
-    transition: background 0.6s ease;
-  }
-  #hero-new .hn-tab.hn-played .hn-tab-bar {
-    background: rgba(255,255,255,0.90);
-    transition: background 0.6s ease;
-  }
-  #hero-new .hn-tab.hn-active .hn-tab-name {
-    color: rgba(255,255,255,0.95);
-    font-weight: 600;
-    text-shadow: 0 1px 8px rgba(0,0,0,0.45), 0 0 20px rgba(0,0,0,0.20);
-    transition: color 0.6s ease, text-shadow 0.4s ease;
-  }
-  /* View Sector button: white pill, accent icon disc */
-  #hero-new .hn-btn {
-    background: rgba(255,255,255,0.92);
-    border: none;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.22), 0 1px 5px rgba(0,0,0,0.12);
-    transition: box-shadow 0.30s ease, transform 0.10s ease;
-  }
-  /* Fill layer uses accent color; transitions on sector switch */
-  #hero-new .hn-btn::before {
-    background: rgb(var(--sector-rgb));
-    transition: clip-path 0.38s cubic-bezier(0.65,0,0.35,1),
-                background 0.50s ease;
-  }
-  #hero-new .hn-btn-label { color: rgba(6,13,31,0.82); }
-  #hero-new .hn-btn-icon {
-    background: rgb(var(--sector-rgb));
-    transition: background 0.38s cubic-bezier(0.65,0,0.35,1),
-                transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
-  }
-  #hero-new .hn-btn:hover {
-    box-shadow: 0 10px 32px rgba(0,0,0,0.24), 0 3px 10px rgba(0,0,0,0.12);
-  }
-  #hero-new .hn-btn:hover .hn-btn-label { color: rgba(255,255,255,0.92); }
-  #hero-new .hn-btn:hover .hn-btn-icon {
-    transform: translateX(3px);
-    background: transparent;
-  }
-
-  /* Ghost text link — "Explore group" */
-  .hn-ghost-link {
-    display: inline-flex; align-items: center; gap: 7px;
-    font-family: var(--font-body); font-size: 14px;
-    font-weight: 500; letter-spacing: 0.03em;
-    color: rgba(255,255,255,0.90);
-    text-decoration: none;
-    transition: color 0.3s ease, opacity 0.3s ease;
-  }
-  .hn-ghost-text {
-    display: inline;
-    position: relative;
-  }
-  .hn-ghost-text::after {
-    content: '';
-    position: absolute;
-    left: 0; bottom: -2px;
-    width: 0; height: 1px;
-    background: rgba(255,255,255,0.90);
-    transition: width 0.35s cubic-bezier(0.25,0,0,1);
-  }
-  .hn-ghost-link svg {
-    width: 13px; height: 13px;
-    stroke: rgba(255,255,255,0.45); fill: none; stroke-width: 1.5;
-    stroke-linecap: round; stroke-linejoin: round;
-    flex-shrink: 0;
-    opacity: 0;
-    transform: translateX(-4px);
-    transition: transform 0.35s cubic-bezier(0.25,0,0,1), opacity 0.3s ease;
-  }
-  .hn-ghost-link:hover {
-    color: rgba(255,255,255,0.85);
-  }
-  .hn-ghost-link:hover .hn-ghost-text::after {
-    width: 100%;
-  }
-  .hn-ghost-link:hover svg {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  #hero-new .hn-scroll-btn:hover .hn-scroll-disk {
-    box-shadow:
-      0 6px 28px rgba(0,0,0,0.18),
-      0 2px 8px rgba(0,0,0,0.10),
-      0 0 24px rgba(var(--sector-rgb), 0.32);
-  }
-  /* Scroll-button arrow: lighter stroke + very soft glow */
-  #hero-new .hn-scroll-arrow-svg line,
-  #hero-new .hn-scroll-arrow-svg polyline {
-    stroke: rgba(var(--sector-rgb), 0.82);
-    transition: stroke 0.6s ease;
-  }
-  #hero-new .hn-scroll-arrow-svg {
-    filter: none;
-    transition: filter 0.4s ease;
-  }
-  #hero-new .hn-scroll-btn:hover .hn-scroll-arrow-svg {
-    filter: drop-shadow(0 0 3px rgba(var(--sector-rgb), 0.90))
-            drop-shadow(0 0 8px rgba(var(--sector-rgb), 0.60))
-            drop-shadow(0 0 18px rgba(var(--sector-rgb), 0.35));
-  }
 
 </style>
   <!-- Prevent flash of hero/navbar before preloader completes -->
@@ -2883,9 +2504,6 @@
           <a href="#governance" class="nav-drop-item">
             <span class="nav-drop-name">Governance</span>
           </a>
-          <a href="#leadership" class="nav-drop-item">
-            <span class="nav-drop-name">Leadership</span>
-          </a>
           <a href="#works" class="nav-drop-item">
             <span class="nav-drop-name">Track Record</span>
           </a>
@@ -2926,24 +2544,30 @@
           </a>
         </div>
       </li>
-      <li><a href="#leadership">Leadership</a></li>
+      <li>
+        <button class="nav-lang" id="navLang" title="Switch language">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          <span id="navLangLabel">EN</span>
+          <span class="nav-lang-sep">/</span>
+          <span>TH</span>
+        </button>
+      </li>
     </ul>
   </div>
-  <!-- Right: language + hamburger + contact -->
+  <!-- Right: hamburger + contact -->
   <div class="nav-right">
-    <button class="nav-lang" id="navLang" title="Switch language">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"/>
-        <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-      </svg>
-      <span id="navLangLabel">EN</span>
-      <span class="nav-lang-sep">/</span>
-      <span>TH</span>
-    </button>
     <button class="hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
-    <a href="#contact" class="nav-cta">Contact Us</a>
+    <a href="#contact" class="nav-cta">
+      <span class="nav-cta-label">Contact Us</span>
+      <span class="nav-cta-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="rgba(10,10,10,0.85)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7,7 17,7 17,17"/></svg>
+      </span>
+    </a>
   </div>
 </nav>
 
@@ -2952,10 +2576,10 @@
 ═════════════════════════════════════════════════ -->
 <section id="hero-new">
 
-  <!-- Top edge blur vignette -->
+  <!-- Top atmospheric gradient — cinematic shadow -->
   <div class="hn-top-blur"></div>
 
-  <!-- Background slide layers — stacked, crossfade + Ken Burns zoom -->
+  <!-- Background layers — crossfade + Ken Burns -->
   <div class="hn-bg-track" id="hnBgTrack">
     <div class="hn-bg" style="background-image:url('Inspirations/Oil Station Footage.jpeg')"></div>
     <div class="hn-bg" style="background-image:url('Inspirations/Agriculture Footage .jpeg')"></div>
@@ -2965,104 +2589,29 @@
     <div class="hn-bg" style="background-image:url('Inspirations/Concrete Plant Footage.jpeg')"></div>
   </div>
 
-  <!-- Accent colour bloom -->
-  <div class="hn-accent-overlay" id="hnAccentOverlay"></div>
-
-  <!-- Overlay -->
+  <!-- Cinematic dark overlay -->
   <div class="hn-overlay"></div>
 
-  <!-- White fade — bottom of hero into page background -->
-  <div class="hn-white-fade"></div>
-
-  <!-- Bottom-left content -->
+  <!-- Centered statement -->
   <div class="hn-content">
-    <div class="hn-content-inner" id="hnContentInner">
-      <!-- Sector badge — contextual label, not clickable -->
-      <div class="hn-badge" id="hnBadge">
-        <span class="hn-badge-icon" id="hnBadgeIcon">
-          <!-- Icon injected by JS per sector -->
-        </span>
-        <span class="hn-badge-text" id="hnBadgeText">Energy Operations</span>
-      </div>
-      <h1 class="hn-title" id="hnTitle">Oil Stations</h1>
-      <p class="hn-subtitle" id="hnSubtitle">Operating 3 strategic PT fuel stations across Khon Kaen, powering local logistics, agriculture fleets, and communities with reliable energy.</p>
-      <div class="hn-ctas">
-        <a href="oil-stations.html" class="hn-btn" id="hnExplorBtn">
-          <span class="hn-btn-label">View This Sector</span>
-          <span class="hn-btn-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.95)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7,7 17,7 17,17"/></svg>
-          </span>
-        </a>
-        <a href="#structure" class="hn-ghost-link">
-          <span class="hn-ghost-text">Explore group</span>
-          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13,6 19,12 13,18"/></svg>
-        </a>
-      </div>
-    </div>
+    <h1 class="hn-headline">We Build What Matters<br>and What Lasts</h1>
+    <p class="hn-tagline">We work across six industries that form the<br>foundation of everyday life.</p>
+    <a href="#structure" class="hn-btn" id="hnExploreBtn">
+      <span class="hn-btn-label">Explore Services</span>
+      <span class="hn-btn-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.95)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7,7 17,7 17,17"/></svg>
+      </span>
+    </a>
   </div>
 
-
-  <!-- Sector timeline (replaces box tabs) -->
-  <div class="hn-tabs" id="hnTabs">
-    <div class="hn-timeline">
-      <div class="hn-tab hn-active" data-index="0">
-        <div class="hn-tab-bar"><div class="hn-tab-bar-fill"></div></div>
-        <div class="hn-tab-label">
-          <div class="hn-tab-num">01</div>
-          <div class="hn-tab-name">Oil Stations</div>
-        </div>
-      </div>
-      <div class="hn-tab" data-index="1">
-        <div class="hn-tab-bar"><div class="hn-tab-bar-fill"></div></div>
-        <div class="hn-tab-label">
-          <div class="hn-tab-num">02</div>
-          <div class="hn-tab-name">Agriculture</div>
-        </div>
-      </div>
-      <div class="hn-tab" data-index="2">
-        <div class="hn-tab-bar"><div class="hn-tab-bar-fill"></div></div>
-        <div class="hn-tab-label">
-          <div class="hn-tab-num">03</div>
-          <div class="hn-tab-name">Commerce</div>
-        </div>
-      </div>
-      <div class="hn-tab" data-index="3">
-        <div class="hn-tab-bar"><div class="hn-tab-bar-fill"></div></div>
-        <div class="hn-tab-label">
-          <div class="hn-tab-num">04</div>
-          <div class="hn-tab-name">Construction</div>
-        </div>
-      </div>
-      <div class="hn-tab" data-index="4">
-        <div class="hn-tab-bar"><div class="hn-tab-bar-fill"></div></div>
-        <div class="hn-tab-label">
-          <div class="hn-tab-num">05</div>
-          <div class="hn-tab-name">Services</div>
-        </div>
-      </div>
-      <div class="hn-tab" data-index="5">
-        <div class="hn-tab-bar"><div class="hn-tab-bar-fill"></div></div>
-        <div class="hn-tab-label">
-          <div class="hn-tab-num">06</div>
-          <div class="hn-tab-name">Concrete Plant</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Thumbnail navigator — bottom-right, above timeline -->
-  <div class="hn-thumbs" id="hnThumbs">
-    <div class="hn-thumb-arrow" id="hnThumbArrow">
-      <svg viewBox="0 0 24 24"><polygon points="3,3 22,12 3,21 8,12"/></svg>
-    </div>
-    <div class="hn-thumb-row">
-      <div class="hn-thumb hn-thumb-active" data-index="0"><img src="Inspirations/Oil Station Footage.jpeg" alt="Oil Stations"></div>
-      <div class="hn-thumb" data-index="1"><img src="Inspirations/Agriculture Footage .jpeg" alt="Agriculture"></div>
-      <div class="hn-thumb" data-index="2"><img src="Inspirations/warehouse footage.jpeg" alt="Commerce"></div>
-      <div class="hn-thumb" data-index="3"><img src="Inspirations/Construction Footage.jpeg" alt="Construction"></div>
-      <div class="hn-thumb" data-index="4"><img src="Inspirations/A tree and a sky img.jpeg" alt="Services"></div>
-      <div class="hn-thumb" data-index="5"><img src="Inspirations/Concrete Plant Footage.jpeg" alt="Concrete Plant"></div>
-    </div>
+  <!-- 6-dot navigation -->
+  <div class="hn-dots" id="hnDots">
+    <span class="hn-dot hn-dot-active" data-index="0"></span>
+    <span class="hn-dot" data-index="1"></span>
+    <span class="hn-dot" data-index="2"></span>
+    <span class="hn-dot" data-index="3"></span>
+    <span class="hn-dot" data-index="4"></span>
+    <span class="hn-dot" data-index="5"></span>
   </div>
 
 </section>
@@ -3184,10 +2733,7 @@
 
 </section>
 
-
-<!-- ════════════════════════════════════════════════
-     1. GROUP OVERVIEW — staggered cards
-═════════════════════════════════════════════════ -->
+<!-- ════ GROUP OVERVIEW ════ -->
 <section id="about">
   <div class="sec-wrap">
     <div class="ov-layout">
@@ -3228,15 +2774,8 @@
     </div>
   </div>
 </section>
-<section class="vision-section">
-  <div class="sec-wrap">
-    <span class="vision-eyebrow" data-reveal>Our Philosophy</span>
-    <h2 class="vision-quote" data-reveal data-d="1">
-      We build <em>what matters —</em><br>and what lasts.
-    </h2>
-    <span class="vision-attr" data-reveal data-d="2">KUNPOL Group · Est. 1999</span>
-  </div>
-</section>
+
+<!-- ════ GROUP STRUCTURE ════ -->
 <section id="structure">
   <div class="ci-wrap">
     <div class="ci-layout">
@@ -3426,84 +2965,19 @@
     </div><!-- /ci-layout -->
   </div>
 </section>
-<section class="sec sec-white" id="governance">
+
+<!-- ════ GROUP PHILOSOPHY ════ -->
+<section class="vision-section">
   <div class="sec-wrap">
-    <div class="sec-hdr" data-reveal>
-      <span class="sec-eyebrow">Governance</span>
-      <h2 class="sec-h2">Four principles that guide every decision we make.</h2>
-    </div>
-    <div class="gov-grid">
-      <div class="gov-card" data-reveal>
-        <div class="gov-card-num">01</div>
-        <div class="gov-card-rule"></div>
-        <div class="gov-card-name">Stewardship</div>
-        <div class="gov-card-desc">We manage resources — capital, land, people — as temporary custodians responsible to future generations.</div>
-      </div>
-      <div class="gov-card" data-reveal data-d="1">
-        <div class="gov-card-num">02</div>
-        <div class="gov-card-rule"></div>
-        <div class="gov-card-name">Discipline</div>
-        <div class="gov-card-desc">We decline more opportunities than we accept. Discipline means knowing what we do well and staying within it.</div>
-      </div>
-      <div class="gov-card" data-reveal data-d="2">
-        <div class="gov-card-num">03</div>
-        <div class="gov-card-rule"></div>
-        <div class="gov-card-name">Accountability</div>
-        <div class="gov-card-desc">Every subsidiary has a clear mandate. Every manager is measured. We do not tolerate ambiguity in responsibility.</div>
-      </div>
-      <div class="gov-card" data-reveal data-d="3">
-        <div class="gov-card-num">04</div>
-        <div class="gov-card-rule"></div>
-        <div class="gov-card-name">Consistency</div>
-        <div class="gov-card-desc">We apply the same principles across all sectors, all cycles, and all conditions. Trust is built through repetition.</div>
-      </div>
-    </div>
+    <span class="vision-eyebrow" data-reveal>Our Philosophy</span>
+    <h2 class="vision-quote" data-reveal data-d="1">
+      We build <em>what matters —</em><br>and what lasts.
+    </h2>
+    <span class="vision-attr" data-reveal data-d="2">KUNPOL Group · Est. 1999</span>
   </div>
 </section>
-<section class="sec sec-alt" id="leadership">
-  <div class="sec-wrap">
-    <div class="ld-grid">
-      <div>
-        <div class="ld-badge" data-reveal>Privately Held</div>
-        <h2 class="sec-h1" data-reveal data-d="1">Family ownership.<br>Generational continuity.</h2>
-        <p class="sec-body" data-reveal data-d="2">KUNPOL Group is fully owned and managed by the Temtanakitpaisan family. There are no external shareholders, and no intent to list. Our private structure allows us to make decisions based on long-term principle, not short-term market pressure.</p>
-        <p class="sec-body" data-reveal data-d="3">The family remains actively involved in the governance and strategic direction of every subsidiary — this is not passive ownership, but committed stewardship.</p>
-      </div>
-      <div data-reveal data-d="2">
-        <div class="ld-people">
-          <div class="ld-person">
-            <div>
-              <div class="ld-person-name">Mrs. Yupin Temtanakitpaisan</div>
-              <div class="ld-person-role">Chairman of the Board</div>
-            </div>
-            <div class="ld-person-tag">Founder</div>
-          </div>
-          <div class="ld-person">
-            <div>
-              <div class="ld-person-name">Mr. Thanatit Temtanakitpaisan</div>
-              <div class="ld-person-role">Chief Executive Officer</div>
-            </div>
-            <div class="ld-person-tag">Executive</div>
-          </div>
-          <div class="ld-person">
-            <div>
-              <div class="ld-person-name">Family Member</div>
-              <div class="ld-person-role">Director</div>
-            </div>
-            <div class="ld-person-tag">Board</div>
-          </div>
-          <div class="ld-person">
-            <div>
-              <div class="ld-person-name">Family Member</div>
-              <div class="ld-person-role">Director</div>
-            </div>
-            <div class="ld-person-tag">Board</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+
+<!-- ════ TRACK RECORD ════ -->
 <section class="sec sec-white" id="works">
   <div class="sec-wrap">
     <div class="sec-hdr" data-reveal>
@@ -3626,6 +3100,88 @@
     </div><!-- /.hero-cards-track -->
   </div><!-- /.hero-carousel -->
 </section>
+
+<!-- ════ GOVERNANCE ════ -->
+<section class="sec sec-white" id="governance">
+  <div class="sec-wrap">
+    <div class="sec-hdr" data-reveal>
+      <span class="sec-eyebrow">Governance</span>
+      <h2 class="sec-h2">Four principles that guide every decision we make.</h2>
+    </div>
+    <div class="gov-grid">
+      <div class="gov-card" data-reveal>
+        <div class="gov-card-num">01</div>
+        <div class="gov-card-rule"></div>
+        <div class="gov-card-name">Stewardship</div>
+        <div class="gov-card-desc">We manage resources — capital, land, people — as temporary custodians responsible to future generations.</div>
+      </div>
+      <div class="gov-card" data-reveal data-d="1">
+        <div class="gov-card-num">02</div>
+        <div class="gov-card-rule"></div>
+        <div class="gov-card-name">Discipline</div>
+        <div class="gov-card-desc">We decline more opportunities than we accept. Discipline means knowing what we do well and staying within it.</div>
+      </div>
+      <div class="gov-card" data-reveal data-d="2">
+        <div class="gov-card-num">03</div>
+        <div class="gov-card-rule"></div>
+        <div class="gov-card-name">Accountability</div>
+        <div class="gov-card-desc">Every subsidiary has a clear mandate. Every manager is measured. We do not tolerate ambiguity in responsibility.</div>
+      </div>
+      <div class="gov-card" data-reveal data-d="3">
+        <div class="gov-card-num">04</div>
+        <div class="gov-card-rule"></div>
+        <div class="gov-card-name">Consistency</div>
+        <div class="gov-card-desc">We apply the same principles across all sectors, all cycles, and all conditions. Trust is built through repetition.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ LEADERSHIP ════ -->
+<section class="sec sec-alt" id="leadership">
+  <div class="sec-wrap">
+    <div class="ld-grid">
+      <div>
+        <div class="ld-badge" data-reveal>Privately Held</div>
+        <h2 class="sec-h1" data-reveal data-d="1">Family ownership.<br>Generational continuity.</h2>
+        <p class="sec-body" data-reveal data-d="2">KUNPOL Group is fully owned and managed by the Temtanakitpaisan family. There are no external shareholders, and no intent to list. Our private structure allows us to make decisions based on long-term principle, not short-term market pressure.</p>
+        <p class="sec-body" data-reveal data-d="3">The family remains actively involved in the governance and strategic direction of every subsidiary — this is not passive ownership, but committed stewardship.</p>
+      </div>
+      <div data-reveal data-d="2">
+        <div class="ld-people">
+          <div class="ld-person">
+            <div>
+              <div class="ld-person-name">Mrs. Yupin Temtanakitpaisan</div>
+              <div class="ld-person-role">Chairman of the Board</div>
+            </div>
+            <div class="ld-person-tag">Founder</div>
+          </div>
+          <div class="ld-person">
+            <div>
+              <div class="ld-person-name">Mr. Thanatit Temtanakitpaisan</div>
+              <div class="ld-person-role">Chief Executive Officer</div>
+            </div>
+            <div class="ld-person-tag">Executive</div>
+          </div>
+          <div class="ld-person">
+            <div>
+              <div class="ld-person-name">Family Member</div>
+              <div class="ld-person-role">Director</div>
+            </div>
+            <div class="ld-person-tag">Board</div>
+          </div>
+          <div class="ld-person">
+            <div>
+              <div class="ld-person-name">Family Member</div>
+              <div class="ld-person-role">Director</div>
+            </div>
+            <div class="ld-person-tag">Board</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 <section id="contact">
   <div class="container">
     <div class="ct-intro" data-reveal>
@@ -3720,9 +3276,9 @@ navLinks.querySelectorAll('a').forEach(a => {
 (function () {
   var navbar = document.getElementById('navbar');
   function updateNavbar() {
-    // Trigger: scrolled past the timeline bar (pinned at 100vh - 96px from hero top)
-    var triggerY = window.innerHeight - 96;
-    navbar.classList.toggle('nav-scrolled', window.scrollY > triggerY);
+    var triggerY = window.innerHeight * 0.45;
+    var atPill = window.scrollY > triggerY;
+    navbar.classList.toggle('nav-scrolled', atPill);
   }
   window.addEventListener('scroll', updateNavbar, { passive: true });
   window.addEventListener('resize', updateNavbar);
@@ -3788,189 +3344,89 @@ navLinks.querySelectorAll('a').forEach(a => {
 })();
 
 // ══════════════════════════════════════════════════
-//  NEW HERO — SECTOR SWITCHER
+//  CINEMATIC HERO — CROSSFADE ENGINE (Draft 2)
 // ══════════════════════════════════════════════════
 (function () {
+  var DURATION = 7500;
+  var current  = 0;
+  var autoTimer = null;
+
   var sectors = [
-    { title: 'Oil Stations',   subtitle: 'Operating 3 strategic PT fuel stations across Khon Kaen, powering local logistics, agriculture fleets, and communities.',                    page: 'oil-stations.html',   accent: '#5B9BD5', badge: 'Energy Operations',   subtitleOffset: '7px', icon: '<svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 4-4 8-7 13C9 17 5 13 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>' },
-    { title: 'Agriculture',    subtitle: 'Cultivating cassava and seasonal crops across Northeast — from field preparation through harvest & distribution.',              page: 'agriculture.html',    accent: '#357848', badge: 'Agriculture Sector',  subtitleOffset: '5px', icon: '<svg viewBox="0 0 24 24"><path d="M12 22V12M12 12C12 7 7 4 3 5c1 4 4 7 9 7zM12 12c0-5 5-8 9-7-1 4-4 7-9 7z"/></svg>' },
-    { title: 'Commerce',       subtitle: 'Bringing goods to villages through mobile hawker trucks and retail operations across rural Khon Kaen.',                                   page: 'commerce.html',       accent: '#B87E10', badge: 'Commerce Division',   subtitleOffset: '7px', icon: '<svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>' },
-    { title: 'Construction',   subtitle: 'Delivering roads, civil works, and large-scale infrastructure projects across the region through our experienced teams.',                  page: 'construction.html',   accent: '#6A3A1C', badge: 'Construction Sector', subtitleOffset: '7px', icon: '<svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>' },
-    { title: 'Services',       subtitle: 'A leisure and automotive portfolio — operating Khao Suan Kwang Car Service and Kunpol C&S Co. Ltd. across Khon Kaen.',                   page: 'services.html',       accent: '#5A7A90', badge: 'Service Division',    subtitleOffset: '7px', icon: '<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>' },
-    { title: 'Concrete Plant', subtitle: 'Supplying ready-mix concrete across Khon Kaen with high quality and reliable delivery',  page: 'concrete-plant.html', accent: '#9E8A76', badge: 'Materials Supply',     subtitleOffset: '7px', icon: '<svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>' },
+    { badge: 'Energy Operations',   accent: '#5B9BD5', page: 'oil-stations.html',   icon: '<svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 4-4 8-7 13C9 17 5 13 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>' },
+    { badge: 'Agriculture Sector',  accent: '#357848', page: 'agriculture.html',    icon: '<svg viewBox="0 0 24 24"><path d="M12 22V12M12 12C12 7 7 4 3 5c1 4 4 7 9 7zM12 12c0-5 5-8 9-7-1 4-4 7-9 7z"/></svg>' },
+    { badge: 'Commerce Division',   accent: '#B87E10', page: 'commerce.html',       icon: '<svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>' },
+    { badge: 'Construction Sector', accent: '#8A6A50', page: 'construction.html',   icon: '<svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>' },
+    { badge: 'Service Division',    accent: '#5A7A90', page: 'services.html',       icon: '<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>' },
+    { badge: 'Materials Supply',    accent: '#9E8A76', page: 'concrete-plant.html', icon: '<svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>' },
   ];
 
-  var current   = 0;
-  var autoTimer = null;
-  var DURATION  = 5500;
-
   var track      = document.getElementById('hnBgTrack');
-  var tabs       = document.querySelectorAll('.hn-tab');
-  var thumbs     = document.querySelectorAll('.hn-thumb');
-  var titleEl    = document.getElementById('hnTitle');
-  var subtitleEl = document.getElementById('hnSubtitle');
-  var hero       = document.getElementById('hero-new');
-  var bgs        = track.querySelectorAll('.hn-bg');
+  var dots       = document.querySelectorAll('.hn-dot');
+  var badgeTextEl = document.getElementById('hnBadgeText');
+  var exploreBtn  = document.getElementById('hnExploreBtn');
+  var bgs        = track ? track.querySelectorAll('.hn-bg') : [];
+  var total      = bgs.length;
 
-  // Editorial crossfade with per-slide Ken Burns zoom.
-  // Driven by .hn-bg-active / .hn-bg-leaving class toggles; all easing is in CSS.
+  function hexToRgb(hex) {
+    var r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    return r+','+g+','+b;
+  }
+
+  /* Set badge text once as glowing characters */
+  function initBadge() {
+    if (!badgeTextEl) return;
+    var label = 'Welcome to Kunpol Group';
+    badgeTextEl.innerHTML = label.split('').map(function (ch) {
+      return '<span class="hn-badge-char">' + (ch === ' ' ? '&nbsp;' : ch) + '</span>';
+    }).join('');
+  }
+
   function crossfadeTo(prevIndex, nextIndex) {
-    var prev = bgs[prevIndex];
-    var next = bgs[nextIndex];
-    if (prev === next) return;
-
+    var prev = bgs[prevIndex], next = bgs[nextIndex];
+    if (!prev || !next || prev === next) return;
+    // Freeze current Ken Burns position so it doesn't snap back to scale(1) when the animation is removed
+    prev.style.transform = getComputedStyle(prev).transform;
     prev.classList.remove('hn-bg-active');
     prev.classList.add('hn-bg-leaving');
-    // Strip the leaving class after the fade finishes so the layer returns to
-    // its resting state (opacity:0, scale 1.04) ready for its next turn.
-    (function (leavingEl) {
-      setTimeout(function () { leavingEl.classList.remove('hn-bg-leaving'); }, 1700);
-    })(prev);
-
-    // If `next` happens to still be mid-fade from a prior click, clear its
-    // leaving state and force reflow so the Ken Burns transition restarts
-    // cleanly from the resting scale(1.04).
+    (function (el) { setTimeout(function () { el.classList.remove('hn-bg-leaving'); el.style.transform = ''; }, 3600); })(prev);
     next.classList.remove('hn-bg-leaving');
-    // eslint-disable-next-line no-unused-expressions
     next.getBoundingClientRect();
     next.classList.add('hn-bg-active');
   }
 
-  function resetFills() {
-    tabs.forEach(function (tab) {
-      var fill = tab.querySelector('.hn-tab-bar-fill');
-      fill.style.transition = 'none';
-      fill.style.width = '0%';
-    });
+  function updateDots(index) {
+    dots.forEach(function (dot, i) { dot.classList.toggle('hn-dot-active', i === index); });
   }
 
-  function startFill(index) {
-    var fill = tabs[index].querySelector('.hn-tab-bar-fill');
-    fill.getBoundingClientRect();
-    fill.style.transition = 'width ' + (DURATION / 1000) + 's cubic-bezier(0.37,0,0.63,1)';
-    fill.style.width = '100%';
+  function updateSector(idx) {
+    var s = sectors[idx];
+    if (exploreBtn) exploreBtn.href = s.page;
   }
-
-  function updatePlayed() {
-    tabs.forEach(function (tab, i) { tab.classList.toggle('hn-played', i < current); });
-  }
-
 
   function goTo(index) {
     var prevIndex = current;
-    index = ((index % sectors.length) + sectors.length) % sectors.length;
+    index = ((index % total) + total) % total;
     if (index === current) return;
-
     clearTimeout(autoTimer);
-    resetFills();
-    tabs[current].classList.remove('hn-active');
-    if (thumbs[current]) thumbs[current].classList.remove('hn-thumb-active');
     current = index;
-    tabs[current].classList.add('hn-active');
-    if (thumbs[current]) thumbs[current].classList.add('hn-thumb-active');
-    updatePlayed();
-
-    // Crossfade naturally handles the wrap from last → first, no clone needed.
     crossfadeTo(prevIndex, current);
-
-    gsap.to(titleEl,    { opacity: 0, y: -12, filter: 'blur(10px)', duration: 0.32, ease: 'power2.in' });
-    gsap.to(subtitleEl, { opacity: 0, y: -8,  filter: 'blur(7px)',  duration: 0.28, ease: 'power2.in', delay: 0.06 });
-
-    setTimeout(function () {
-      titleEl.textContent    = sectors[current].title;
-      subtitleEl.textContent = sectors[current].subtitle;
-      subtitleEl.style.marginLeft = sectors[current].subtitleOffset || '7px';
-      var btn = document.getElementById('hnExplorBtn');
-      if (btn) btn.href = sectors[current].page;
-      updateBadge(current);
-      gsap.fromTo(titleEl,
-        { opacity: 0, y: 22, filter: 'blur(14px)' },
-        { opacity: 1, y: 0,  filter: 'blur(0px)', duration: 1.05, ease: 'power3.out', clearProps: 'filter' }
-      );
-      gsap.fromTo(subtitleEl,
-        { opacity: 0, y: 15, filter: 'blur(10px)' },
-        { opacity: 1, y: 0,  filter: 'blur(0px)', duration: 0.95, ease: 'power3.out', delay: 0.28, clearProps: 'filter' }
-      );
-    }, 310);
-
-    startFill(current);
+    updateDots(current);
+    updateSector(current);
     autoTimer = setTimeout(function () { goTo(current + 1); }, DURATION);
   }
 
-  var badgeEl     = document.getElementById('hnBadge');
-  var badgeIconEl = document.getElementById('hnBadgeIcon');
-  var badgeTextEl = document.getElementById('hnBadgeText');
-  var sectorNumEl = document.getElementById('hnSectorNum');
-
-  function hexToRgb(hex) {
-    var r = parseInt(hex.slice(1,3), 16);
-    var g = parseInt(hex.slice(3,5), 16);
-    var b = parseInt(hex.slice(5,7), 16);
-    return r + ',' + g + ',' + b;
-  }
-  // Blends accent color 70% toward white so dark hues glow visibly on dark bg
-  function hexToGlowRgb(hex) {
-    var r = parseInt(hex.slice(1,3), 16);
-    var g = parseInt(hex.slice(3,5), 16);
-    var b = parseInt(hex.slice(5,7), 16);
-    var t = 0.70;
-    return Math.round(r+(255-r)*t)+','+Math.round(g+(255-g)*t)+','+Math.round(b+(255-b)*t);
-  }
-
-  function updateBadge(idx) {
-    var s = sectors[idx];
-    if (!badgeTextEl || !badgeIconEl) return;
-    // Split badge text into per-character spans — animation-delay staggers the wave L→R
-    var chars = s.badge.split('');
-    var html = chars.map(function(ch, i) {
-      var delay = (i * 55) + 'ms'; // 55ms per char = smooth left-to-right ripple
-      var content = ch === ' ' ? '&nbsp;' : ch;
-      return '<span class="hn-badge-char" style="animation-delay:' + delay + '">' + content + '</span>';
-    }).join('');
-    badgeTextEl.innerHTML = html;
-    // Inject accent-colored icon SVG
-    var svgStr = s.icon.replace('<svg ', '<svg stroke="' + s.accent + '" color="' + s.accent + '" style="color:' + s.accent + '" ');
-    badgeIconEl.innerHTML = svgStr;
-    // Set accent RGB for icon; lightened glow RGB for text shadow
-    badgeEl.style.setProperty('--badge-accent-rgb', hexToRgb(s.accent));
-    badgeEl.style.setProperty('--badge-glow-rgb', hexToGlowRgb(s.accent));
-    // Propagate sector accent to entire hero for eyebrow, timeline, sector number,
-    // CTA hover glow, and scroll-disk hover glow.
-    var heroRoot = document.getElementById('hero-new');
-    if (heroRoot) {
-      heroRoot.style.setProperty('--sector-rgb', hexToRgb(s.accent));
-      heroRoot.style.setProperty('--sector-glow-rgb', hexToGlowRgb(s.accent));
-    }
-    // Update ghost sector number
-    if (sectorNumEl) sectorNumEl.textContent = String(idx + 1).padStart(2, '0');
-  }
+  dots.forEach(function (dot) {
+    dot.addEventListener('click', function () { goTo(parseInt(dot.dataset.index, 10)); });
+  });
 
   function init() {
-    resetFills();
-    // Slide 0 becomes visible + kicks off its Ken Burns zoom.
     if (bgs[0]) bgs[0].classList.add('hn-bg-active');
-    startFill(0);
-    var btn = document.getElementById('hnExplorBtn');
-    if (btn) btn.href = sectors[0].page;
-    subtitleEl.style.marginLeft = sectors[0].subtitleOffset || '7px';
-    updateBadge(0);
+    updateDots(0);
+    initBadge();
+    updateSector(0);
     autoTimer = setTimeout(function () { goTo(1); }, DURATION);
   }
 
-  tabs.forEach(function (tab) {
-    tab.addEventListener('click', function () { goTo(parseInt(tab.dataset.index)); });
-  });
-
-  thumbs.forEach(function (thumb) {
-    thumb.addEventListener('click', function () { goTo(parseInt(thumb.dataset.index)); });
-  });
-
-  var thumbArrow = document.getElementById('hnThumbArrow');
-  if (thumbArrow) {
-    thumbArrow.addEventListener('click', function () { goTo((current + 1) % sectors.length); });
-  }
-
-  // Exposed for preloader to call
   window._hnInit = init;
 })();
 
@@ -4236,9 +3692,7 @@ document.addEventListener('click', function (e) {
     document.body.style.overflow = '';
     var hero = document.getElementById('hero-new');
     if (hero) gsap.set(hero, { opacity: 1 });
-    var inner = document.getElementById('hnContentInner');
-    if (inner) gsap.set(inner, { opacity: 1 });
-    gsap.set(['#hnTitle','#hnSubtitle','.hn-ctas','.hn-tabs','#hnScrollBtn'], { opacity: 1, y: 0, x: 0, filter: 'none', clearProps: 'all' });
+    gsap.set(['.hn-badge','.hn-headline','.hn-tagline','.hn-btn','.hn-dots'], { opacity: 1, y: 0, filter: 'none', clearProps: 'all' });
     gsap.set('#navbar', { opacity: 1 });
     if (window._hnInit) window._hnInit();
     if (window._cursorEnable) window._cursorEnable();
@@ -4299,15 +3753,12 @@ document.addEventListener('click', function (e) {
     preloader.remove();
     document.body.style.overflow = '';
     gsap.set('#hero-new', { opacity: 1 });
-    gsap.set('#hnContentInner', { opacity: 1 });
-    gsap.set(['#hnTitle', '#hnSubtitle', '.hn-ctas'], { opacity: 0, y: 36, filter: 'blur(14px)' });
-    gsap.set('.hn-tabs', { opacity: 0, y: 14 });
-    gsap.set('#hnScrollBtn', { opacity: 0, x: 12 });
-    gsap.to('#hnTitle',   { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.85, ease: 'power3.out', delay: 0.15, clearProps: 'transform,opacity,filter' });
-    gsap.to('#hnSubtitle',{ opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.80, ease: 'power3.out', delay: 0.32, clearProps: 'transform,opacity,filter' });
-    gsap.to('.hn-ctas',   { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.72, ease: 'power3.out', delay: 0.48, clearProps: 'transform,opacity,filter' });
-    gsap.to('.hn-tabs',   { opacity: 1, y: 0, duration: 0.65, ease: 'power3.out', delay: 0.58, clearProps: 'transform,opacity' });
-    gsap.to('#hnScrollBtn', { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out', delay: 0.62, clearProps: 'transform,opacity' });
+    gsap.set(['.hn-badge', '.hn-headline', '.hn-tagline', '.hn-btn', '.hn-dots'], { opacity: 0, y: 28, filter: 'blur(10px)' });
+    gsap.to('.hn-badge',    { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.95, ease: 'power3.out', delay: 0.14, clearProps: 'filter' });
+    gsap.to('.hn-headline', { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.1,  ease: 'power3.out', delay: 0.30, clearProps: 'filter' });
+    gsap.to('.hn-tagline',  { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.90, ease: 'power3.out', delay: 0.50, clearProps: 'filter' });
+    gsap.to('.hn-btn',      { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.80, ease: 'power3.out', delay: 0.64, clearProps: 'filter' });
+    gsap.to('.hn-dots',     { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.70, ease: 'power3.out', delay: 0.76, clearProps: 'filter' });
     if (window._hnInit) window._hnInit();
     if (window._cursorEnable) window._cursorEnable();
     if (window._initCinematicScroll) window._initCinematicScroll();
