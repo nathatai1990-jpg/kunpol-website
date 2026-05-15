@@ -145,6 +145,7 @@
     .nav-drop-item { display: flex; align-items: center; gap: 11px; padding: 9px 13px; border-radius: 9px; text-decoration: none; transition: background 0.15s; }
     .nav-drop-item:hover { background: rgba(255,255,255,0.08); }
     .nav-links .nav-dropdown a::after { display: none !important; }
+    .nav-has-drop > a::after { display: none !important; }
     .nav-drop-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 4px 8px; }
     .nav-drop-num { font-family: var(--font-body); font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.30); letter-spacing: 0.06em; min-width: 18px; flex-shrink: 0; }
     .nav-drop-name { font-size: 13px; font-weight: 400; color: rgba(255,255,255,0.68); transition: color 0.15s; }
@@ -232,16 +233,14 @@
     .divider { height: 1px; background: var(--gray-200); }
 
     .eyebrow {
-      display: inline-flex; align-items: center; gap: 10px;
-      font-family: var(--font-body); font-size: 11px; font-weight: 600;
-      letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink);
+      display: inline-flex; align-items: center;
+      padding: 5px 16px; border-radius: 100px;
+      border: 1px solid rgba(58,58,58,0.32);
+      font-family: var(--font-body); font-size: 10.5px; font-weight: 520;
+      letter-spacing: 0.16em; text-transform: uppercase; color: #3a3a3a;
       margin-bottom: 18px;
     }
-    .eyebrow::before {
-      content: ''; display: block; width: 8px; height: 8px; border-radius: 50%;
-      background: var(--accent); flex-shrink: 0;
-      box-shadow: 0 0 0 3px rgba(110,181,236,0.18), 0 0 10px rgba(110,181,236,0.40);
-    }
+    .eyebrow::before { display: none; }
     h2.section-heading {
       font-family: var(--font-display); font-size: clamp(26px, 3.2vw, 42px);
       font-weight: 600; letter-spacing: -0.025em; color: var(--text); line-height: 1.12;
@@ -474,53 +473,146 @@
     .exp-point-desc { font-family: var(--font-body); font-size: 12.5px; line-height: 1.65; color: var(--text-muted); }
 
     /* ─── GALLERY ────────────────────────────────────── */
-    .sec-gallery { background: #fff; padding: 100px 0; }
-    .gallery-head { margin-bottom: 48px; }
+    /* ── OIL GALLERY — editorial collage grid ──────── */
+    .sec-gallery { background: #ffffff; padding: 100px 0 120px; }
+    .gal-head { margin-bottom: 56px; }
 
-    /* Gallery grid: 1 large hero image + smaller below */
-    .gallery-grid-new {
+    /* 12-column editorial grid — 3 explicit row heights */
+    .og-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: auto auto;
-      gap: 12px;
-    }
-    .gallery-hero-item {
-      grid-column: 1 / -1;
-    }
-    .gallery-photo {
-      position: relative; overflow: hidden; border-radius: var(--radius);
-      background: var(--gray-100); display: block;
-    }
-    .gallery-photo img {
-      width: 100%; display: block; object-fit: cover;
-      transition: transform 0.55s ease;
-    }
-    .gallery-photo:hover img { transform: scale(1.03); }
-    .gallery-hero-item .gallery-photo img { aspect-ratio: 16/7; }
-    .gallery-photo img.std { aspect-ratio: 4/3; }
-    /* Caption overlay — bottom left */
-    .gallery-caption {
-      position: absolute; bottom: 0; left: 0;
-      padding: 28px 22px 18px;
-      background: linear-gradient(to top, rgba(6,13,31,0.72) 0%, transparent 100%);
-      width: 100%;
-    }
-    .gallery-caption-location {
-      font-family: var(--font-body); font-size: 10px; font-weight: 600;
-      letter-spacing: 0.20em; text-transform: uppercase;
-      color: rgba(255,255,255,0.58); margin-bottom: 3px;
-    }
-    .gallery-caption-title {
-      font-family: var(--font-body); font-size: 13px; font-weight: 500;
-      color: rgba(255,255,255,0.90); line-height: 1.35;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: 358px 248px 210px;
+      gap: 13px;
     }
 
-    /* Extra gallery rows */
-    .gallery-row {
-      display: grid; gap: 12px; margin-top: 12px;
+    /* ── Cell placements ── */
+    .og-b { grid-column: 1 / 9;  grid-row: 1 / 2; } /* anchor landscape — dominant */
+    .og-c { grid-column: 9 / 13; grid-row: 1 / 2; } /* right top */
+    .og-d { grid-column: 1 / 5;  grid-row: 2 / 3; } /* fleet fueling + jiffy — narrow left */
+    .og-f { grid-column: 5 / 13; grid-row: 2 / 3; } /* platinum award — wide right */
+    .og-g { grid-column: 1 / 5;  grid-row: 3 / 4; } /* bottom left */
+    .og-h { grid-column: 5 / 9;  grid-row: 3 / 4; } /* car wash + lubricants combined */
+    .og-j { grid-column: 9 / 13; grid-row: 3 / 4; } /* 20+ CTA */
+
+    /* Floating block base */
+    .og-block {
+      position: relative; border-radius: 16px; overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07), 0 1px 5px rgba(0,0,0,0.04);
+      transition: box-shadow 0.38s ease;
+      cursor: pointer;
     }
-    .gallery-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
-    .gallery-row.cols-2 { grid-template-columns: 1fr 1fr; }
+    .og-block:hover {
+      box-shadow: 0 20px 52px rgba(0,0,0,0.13), 0 4px 14px rgba(0,0,0,0.07);
+    }
+    .og-block img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: filter 0.38s ease;
+    }
+    .og-block:not(.og-cta-block):hover img { filter: brightness(0.90); }
+
+    /* Description pill — agriculture style: frosted glass, bottom-right */
+    .og-desc {
+      position: absolute; bottom: 16px; right: 16px; z-index: 2;
+      background: rgba(255,255,255,0.11);
+      backdrop-filter: blur(22px) saturate(130%);
+      -webkit-backdrop-filter: blur(22px) saturate(130%);
+      border-radius: 12px; padding: 13px 16px; max-width: 230px;
+      pointer-events: none;
+    }
+    .og-desc-loc {
+      font-family: var(--font-body); font-size: 9px; font-weight: 600;
+      letter-spacing: 0.20em; text-transform: uppercase;
+      color: rgba(255,255,255,0.55); margin-bottom: 4px;
+    }
+    .og-desc-title {
+      font-family: var(--font-display); font-size: 14px; font-weight: 700;
+      color: rgba(255,255,255,0.96); line-height: 1.3;
+    }
+    .og-desc-sub {
+      font-family: var(--font-body); font-size: 11px;
+      color: rgba(255,255,255,0.70); line-height: 1.55; margin-top: 5px;
+    }
+
+    /* 20+ CTA block */
+    .og-cta-block {
+      background: var(--navy);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 5px;
+    }
+    .og-cta-num {
+      font-family: var(--font-display); font-size: clamp(32px, 3.5vw, 48px);
+      font-weight: 700; color: rgba(255,255,255,0.90); line-height: 1;
+      letter-spacing: -0.03em;
+    }
+    .og-cta-lbl {
+      font-family: var(--font-body); font-size: 10px; font-weight: 500;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(255,255,255,0.38);
+    }
+    .og-cta-ring {
+      margin-top: 14px; width: 36px; height: 36px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.18);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.22s, border-color 0.22s;
+    }
+    .og-cta-block:hover .og-cta-ring { background: rgba(255,255,255,0.10); border-color: rgba(255,255,255,0.40); }
+    .og-cta-ring svg { width: 14px; height: 14px; stroke: rgba(255,255,255,0.65); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ── LIGHTBOX ─────────────────────────────────── */
+    .og-lightbox {
+      position: fixed; inset: 0; z-index: 9000;
+      background: rgba(4,8,20,0.96);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.28s ease;
+    }
+    .og-lightbox.og-lb-open { opacity: 1; pointer-events: all; }
+    .og-lb-inner {
+      position: relative; width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .og-lb-img {
+      max-width: 88vw; max-height: 80vh;
+      width: auto; height: auto; display: block;
+      border-radius: 10px; object-fit: contain;
+      transition: opacity 0.20s ease;
+    }
+    .og-lb-img.og-lb-fade { opacity: 0; }
+    .og-lb-close {
+      position: absolute; top: 24px; right: 28px;
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 50%; width: 40px; height: 40px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: rgba(255,255,255,0.65);
+      transition: background 0.2s, color 0.2s; padding: 0;
+    }
+    .og-lb-close:hover { background: rgba(255,255,255,0.14); color: #fff; }
+    .og-lb-close svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; }
+    .og-lb-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.13);
+      border-radius: 50%; width: 50px; height: 50px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background 0.2s; user-select: none; padding: 0;
+    }
+    .og-lb-arrow:hover { background: rgba(255,255,255,0.16); }
+    .og-lb-arrow svg { width: 20px; height: 20px; stroke: rgba(255,255,255,0.75); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .og-lb-prev { left: 28px; }
+    .og-lb-next { right: 28px; }
+    .og-lb-meta {
+      position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      text-align: center;
+    }
+    .og-lb-counter {
+      font-family: var(--font-body); font-size: 11px; font-weight: 500;
+      letter-spacing: 0.16em; color: rgba(255,255,255,0.35);
+    }
+    .og-lb-caption {
+      font-family: var(--font-body); font-size: 13px;
+      color: rgba(255,255,255,0.58); line-height: 1.45;
+    }
 
     /* ─── KEY STATS ──────────────────────────────────── */
     .sec-stats { background: var(--navy); padding: 88px 0; }
@@ -603,6 +695,7 @@
           <a href="index.html#structure" class="nav-drop-item"><span class="nav-drop-name">Group Structure</span></a>
           <a href="index.html#governance" class="nav-drop-item"><span class="nav-drop-name">Governance</span></a>
           <a href="index.html#works" class="nav-drop-item"><span class="nav-drop-name">Track Record</span></a>
+          <a href="index.html#leadership" class="nav-drop-item"><span class="nav-drop-name">Leadership</span></a>
           <div class="nav-drop-divider"></div>
           <a href="index.html#contact" class="nav-drop-item"><span class="nav-drop-name">Contact Us</span></a>
         </div>
@@ -1012,86 +1105,99 @@
 <!-- ─── GALLERY ────────────────────────────────────── -->
 <section class="sec-gallery">
   <div class="container">
-    <div class="gallery-head" data-reveal>
+    <div class="gal-head" data-reveal>
       <span class="eyebrow">Gallery</span>
       <h2 class="section-heading">Our Stations</h2>
     </div>
 
-    <!-- Hero wide image -->
-    <div class="gallery-grid-new" data-reveal>
-      <div class="gallery-hero-item">
-        <div class="gallery-photo">
-          <img src="Inspirations/Oil Station Footage.jpeg" alt="PTT Station — Khao Suan Kwang">
-          <div class="gallery-caption">
-            <div class="gallery-caption-location">Khao Suan Kwang · Station 01</div>
-            <div class="gallery-caption-title">Main forecourt — morning operations</div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="gallery-photo">
-          <img src="https://placehold.co/800x600/0a1628/1a3454?text=+" alt="Nam Phong Station" class="std">
-          <div class="gallery-caption">
-            <div class="gallery-caption-location">Nam Phong · Station 02</div>
-            <div class="gallery-caption-title">Fleet fueling area</div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="gallery-photo">
-          <img src="https://placehold.co/800x600/0c1c32/1a3050?text=+" alt="Kumphawapi Station" class="std">
-          <div class="gallery-caption">
-            <div class="gallery-caption-location">Kumphawapi · Station 03</div>
-            <div class="gallery-caption-title">Station exterior — evening</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="og-grid" data-reveal>
 
-    <!-- Second row -->
-    <div class="gallery-row cols-3" data-reveal>
-      <div class="gallery-photo">
-        <img src="https://placehold.co/700x480/101e34/1e3050?text=+" alt="Café Amazon" class="std">
-        <div class="gallery-caption">
-          <div class="gallery-caption-location">Station 01</div>
-          <div class="gallery-caption-title">Café Amazon — interior</div>
+      <!-- B: dominant anchor landscape (row 1, cols 1–8) -->
+      <div class="og-block og-b" onclick="openLb(0)">
+        <img src="Inspirations/Oil Station Footage.jpeg" alt="Station overview — Khao Suan Kwang">
+        <div class="og-desc">
+          <div class="og-desc-loc">Station 01 · Overview</div>
+          <div class="og-desc-title">Forecourt & Canopy</div>
         </div>
       </div>
-      <div class="gallery-photo">
-        <img src="https://placehold.co/700x480/0c1830/182840?text=+" alt="Car wash" class="std">
-        <div class="gallery-caption">
-          <div class="gallery-caption-location">Station 01</div>
-          <div class="gallery-caption-title">Car wash facility</div>
-        </div>
-      </div>
-      <div class="gallery-photo">
-        <img src="https://placehold.co/700x480/0a1625/142034?text=+" alt="Convenience store" class="std">
-        <div class="gallery-caption">
-          <div class="gallery-caption-location">Station 02</div>
-          <div class="gallery-caption-title">Jiffy convenience store</div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Third row -->
-    <div class="gallery-row cols-2" data-reveal>
-      <div class="gallery-photo">
-        <img src="https://placehold.co/900x520/0b1a2e/162840?text=+" alt="Award ceremony" class="std">
-        <div class="gallery-caption">
-          <div class="gallery-caption-location">PTT Award</div>
-          <div class="gallery-caption-title">Platinum Station Award — recognition of service excellence</div>
+      <!-- C: right top (row 1, cols 10–12) -->
+      <div class="og-block og-c" onclick="openLb(2)">
+        <img src="https://placehold.co/500x440/0b1e38/16304a?text=+" alt="Café Amazon">
+        <div class="og-desc">
+          <div class="og-desc-loc">Station 01</div>
+          <div class="og-desc-title">Café Amazon</div>
         </div>
       </div>
-      <div class="gallery-photo">
-        <img src="https://placehold.co/900x520/0d1e36/1a2e48?text=+" alt="Staff team" class="std">
-        <div class="gallery-caption">
-          <div class="gallery-caption-location">All Stations</div>
-          <div class="gallery-caption-title">Our team — dedicated to every customer</div>
+
+      <!-- D: fleet fueling + jiffy combined (row 2, cols 1–8) -->
+      <div class="og-block og-d" onclick="openLb(3)">
+        <img src="https://placehold.co/900x300/0c1e36/182e4a?text=+" alt="Fleet fueling and in-station services">
+        <div class="og-desc">
+          <div class="og-desc-loc">Station 02 · Nam Phong</div>
+          <div class="og-desc-title">Fleet Fueling & Jiffy Store</div>
         </div>
       </div>
+
+      <!-- F: right column bottom (row 2, cols 10–12) -->
+      <div class="og-block og-f" onclick="openLb(5)">
+        <img src="https://placehold.co/500x300/0e1e36/1a3050?text=+" alt="PTT Platinum Award">
+        <div class="og-desc">
+          <div class="og-desc-loc">PTT Recognition</div>
+          <div class="og-desc-title">Platinum Award</div>
+        </div>
+      </div>
+
+      <!-- G: bottom wide (row 3, cols 1–4) -->
+      <div class="og-block og-g" onclick="openLb(6)">
+        <img src="https://placehold.co/700x240/0a1826/122032?text=+" alt="Kumphawapi Station — Kunpol Petroleum">
+        <div class="og-desc">
+          <div class="og-desc-loc">Station 03 · Kumphawapi</div>
+          <div class="og-desc-title">Kunpol Petroleum</div>
+        </div>
+      </div>
+
+      <!-- H: car wash + lubricants combined (row 3, cols 5–8) -->
+      <div class="og-block og-h" onclick="openLb(7)">
+        <img src="https://placehold.co/700x240/0f1e34/1c3050?text=+" alt="Car wash and lubricant services">
+        <div class="og-desc">
+          <div class="og-desc-loc">Station 01 · All Stations</div>
+          <div class="og-desc-title">Car Wash & Lubricants</div>
+        </div>
+      </div>
+
+      <!-- J: 20+ Photos CTA (row 3, cols 10–12) -->
+      <div class="og-block og-j og-cta-block" role="button" tabindex="0" aria-label="View all 20+ photos" onclick="openLb(0)" onkeydown="if(event.key==='Enter'||event.key===' ')openLb(0)">
+        <span class="og-cta-num">20+</span>
+        <span class="og-cta-lbl">Photos</span>
+        <div class="og-cta-ring">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
+
+<!-- ── LIGHTBOX ──────────────────────────────────── -->
+<div class="og-lightbox" id="ogLightbox" role="dialog" aria-modal="true" aria-label="Photo gallery">
+  <div class="og-lb-inner">
+    <button class="og-lb-close" id="ogLbClose" aria-label="Close gallery">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <button class="og-lb-arrow og-lb-prev" id="ogLbPrev" aria-label="Previous photo">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <img class="og-lb-img" id="ogLbImg" src="" alt="">
+    <button class="og-lb-arrow og-lb-next" id="ogLbNext" aria-label="Next photo">
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="og-lb-meta">
+      <div class="og-lb-counter" id="ogLbCounter">1 / 20</div>
+      <div class="og-lb-caption" id="ogLbCaption"></div>
+    </div>
+  </div>
+</div>
 
 <!-- ─── CONTACT ────────────────────────────────────── -->
 <section class="sec-contact" id="contact">
@@ -1220,6 +1326,73 @@
 </script>
 
 <script>
+/* ── Gallery Lightbox ─────────────────────────── */
+(function() {
+  var IMGS = [
+    { src: 'Inspirations/Oil Station Footage.jpeg',        loc: 'Station 01 · Khao Suan Kwang', title: 'Main forecourt — morning operations' },
+    { src: 'https://placehold.co/1400x900/0a1628/1a3454?text=Station+02', loc: 'Station 02 · Nam Phong',          title: 'Fleet fueling area' },
+    { src: 'https://placehold.co/1400x900/0c1c32/1a3050?text=Station+03', loc: 'Station 03 · Kumphawapi',         title: 'Station exterior — evening' },
+    { src: 'https://placehold.co/1400x900/101e34/1e3050?text=Cafe+Amazon',loc: 'Station 01',                      title: 'Café Amazon — interior seating' },
+    { src: 'https://placehold.co/1400x900/0c1830/182840?text=Car+Wash',   loc: 'Station 01',                      title: 'Car wash facility' },
+    { src: 'https://placehold.co/1400x900/0a1625/142034?text=Jiffy',      loc: 'Station 02',                      title: 'Jiffy convenience store' },
+    { src: 'https://placehold.co/1400x900/0b1a2e/162840?text=Award',      loc: 'PTT Recognition',                 title: 'Platinum Station Award — service excellence' },
+    { src: 'https://placehold.co/1400x900/0d1e36/1a2e48?text=Team',       loc: 'All Stations',                    title: 'Our dedicated station team' },
+    { src: 'https://placehold.co/1400x900/081422/112030?text=Pump+Area',  loc: 'Station 02',                      title: 'Pump canopy — night lighting' },
+    { src: 'https://placehold.co/1400x900/091624/101e2e?text=Forecourt',  loc: 'Station 03',                      title: 'Forecourt — weekend traffic' },
+    { src: 'https://placehold.co/1400x900/0a1830/14243c?text=Signage',    loc: 'Station 01',                      title: 'PTT branding and signage' },
+    { src: 'https://placehold.co/1400x900/091520/10202e?text=Store',      loc: 'Station 03',                      title: 'Convenience store — interior' },
+    { src: 'https://placehold.co/1400x900/0b1c30/162840?text=Canopy',     loc: 'Station 02',                      title: 'Station canopy — aerial view' },
+    { src: 'https://placehold.co/1400x900/0c1e34/182e48?text=Landscape',  loc: 'Station 01',                      title: 'Khon Kaen landscape backdrop' },
+    { src: 'https://placehold.co/1400x900/091828/14243a?text=Fuel+Types', loc: 'Station 03',                      title: 'Multi-grade fuel dispensers' }
+  ];
+
+  var lb      = document.getElementById('ogLightbox');
+  var lbImg   = document.getElementById('ogLbImg');
+  var lbCnt   = document.getElementById('ogLbCounter');
+  var lbCap   = document.getElementById('ogLbCaption');
+  var lbClose = document.getElementById('ogLbClose');
+  var lbPrev  = document.getElementById('ogLbPrev');
+  var lbNext  = document.getElementById('ogLbNext');
+  var moreBtn = document.getElementById('ogMoreBtn');
+  var cur     = 0;
+
+  function show(idx) {
+    cur = (idx + IMGS.length) % IMGS.length;
+    var item = IMGS[cur];
+    lbImg.classList.add('og-lb-fade');
+    setTimeout(function() {
+      lbImg.src = item.src;
+      lbImg.alt = item.title || '';
+      lbCnt.textContent = (cur + 1) + ' / ' + IMGS.length;
+      lbCap.textContent = (item.loc ? item.loc + ' — ' : '') + (item.title || '');
+      lbImg.classList.remove('og-lb-fade');
+    }, 200);
+  }
+
+  function open(idx) {
+    show(idx);
+    lb.classList.add('og-lb-open');
+    document.body.style.overflow = 'hidden';
+  }
+  window.openLb = open;
+
+  function close() {
+    lb.classList.remove('og-lb-open');
+    document.body.style.overflow = '';
+  }
+
+  lbClose.addEventListener('click', close);
+  lbPrev.addEventListener('click',  function() { show(cur - 1); });
+  lbNext.addEventListener('click',  function() { show(cur + 1); });
+  lb.addEventListener('click', function(e) { if (e.target === lb) close(); });
+  document.addEventListener('keydown', function(e) {
+    if (!lb.classList.contains('og-lb-open')) return;
+    if (e.key === 'Escape')     close();
+    if (e.key === 'ArrowLeft')  show(cur - 1);
+    if (e.key === 'ArrowRight') show(cur + 1);
+  });
+})();
+
 document.addEventListener('click', function (e) {
   var a = e.target.closest('a[href]');
   if (!a) return;

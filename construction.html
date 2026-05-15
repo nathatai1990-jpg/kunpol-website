@@ -159,6 +159,7 @@
     .nav-drop-item { display: flex; align-items: center; gap: 11px; padding: 9px 13px; border-radius: 9px; text-decoration: none; transition: background 0.15s ease; }
     .nav-drop-item:hover { background: rgba(255,255,255,0.08); }
     .nav-links .nav-dropdown a::after { display: none !important; content: none !important; width: 0 !important; }
+    .nav-has-drop > a::after { display: none !important; }
     .nav-drop-num { font-family: var(--font-body); font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.30); letter-spacing: 0.06em; min-width: 18px; flex-shrink: 0; }
     .nav-drop-icon svg { width: 13px; height: 13px; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
     .nav-drop-name { font-size: 13px; font-weight: 400; color: rgba(255,255,255,0.68); transition: color 0.15s ease; }
@@ -244,8 +245,8 @@
     .section { padding: 128px 0; }
     .section-lg { padding: 160px 0; }
     .divider { height: 1px; background: var(--gray-200); }
-    .eyebrow { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: #1e3a5a; margin-bottom: 20px; }
-    .eyebrow::before { content: ''; display: block; width: 10px; height: 10px; border-radius: 50%; background: #5bb5f5; flex-shrink: 0; box-shadow: 0 0 0 3px rgba(91,181,245,0.18), 0 0 12px rgba(91,181,245,0.50), 0 0 24px rgba(91,181,245,0.22); }
+    .eyebrow { display: inline-flex; align-items: center; padding: 5px 16px; border-radius: 100px; border: 1px solid rgba(58,58,58,0.32); font-family: var(--font-body); font-size: 10.5px; font-weight: 520; letter-spacing: 0.16em; text-transform: uppercase; color: #3a3a3a; margin-bottom: 20px; }
+    .eyebrow::before { display: none; }
     h2.section-heading { font-family: var(--font-display); font-size: clamp(28px, 3.5vw, 46px); font-weight: 600; letter-spacing: -0.025em; color: var(--text); line-height: 1.1; margin-bottom: 24px; }
     .body-text { font-size: 15px; line-height: 1.85; color: var(--text-muted); }
     /* ─── HERO ENTRY ────────────────────────────────── */
@@ -564,6 +565,33 @@
     font-size: 13px; letter-spacing: 0.04em;
     color: rgba(255,255,255,0.92); font-weight: 500;
   }
+
+    /* ── Our Work Carousel ── */
+    .works-section { padding: 120px 0 0; background: #ffffff; overflow: hidden; }
+    .works-hdr-wrap { text-align: center; padding: 0 64px 8px; }
+    .works-hdr { display: flex; flex-direction: column; align-items: center; text-align: center; padding-bottom: 20px; gap: 10px; }
+    .works-hdr .eyebrow { margin-bottom: 0; }
+    .tr-heading { font-family: var(--font-display); font-size: clamp(27px, 3.6vw, 52px); font-weight: 635; color: #0d2147; letter-spacing: -0.035em; line-height: 1.08; margin: 4px 0 0; }
+    .tr-carousel-wrap { position: relative; width: 100%; overflow: hidden; padding: 16px 0 0; }
+    .tr-track { display: flex; align-items: center; gap: 0; will-change: transform; transition: transform 0.72s cubic-bezier(0.25, 0, 0.25, 1); user-select: none; }
+    .tr-track.tr-no-transition, .tr-track.tr-no-transition .tr-slide { transition: none !important; }
+    .tr-slide { flex: 0 0 920px; margin: 0 -33px; aspect-ratio: 17 / 8; border-radius: 20px; overflow: hidden; position: relative; cursor: pointer; transform: scale(0.735); transition: transform 0.72s cubic-bezier(0.25, 0, 0.25, 1); z-index: 1; }
+    .tr-slide.tr-active { cursor: default; transform: scale(1); z-index: 2; }
+    .tr-slide-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.70s cubic-bezier(0.25, 0, 0.25, 1); pointer-events: none; }
+    .tr-slide.tr-active:hover .tr-slide-img { transform: scale(1.04); }
+    .tr-slide-overlay { position: absolute; inset: 0; z-index: 1; background: rgba(0,0,0,0.40); transition: background 0.55s ease; }
+    .tr-slide.tr-active .tr-slide-overlay { background: linear-gradient(180deg, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0.0) 35%, rgba(0,0,0,0.70) 100%); }
+    .tr-slide-cat { position: absolute; top: 20px; left: 20px; z-index: 2; background: rgba(255,255,255,0.80); border: none; padding: 7px 16px; border-radius: 100px; font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 0.01em; text-transform: none; color: #3a3a3a; }
+    .tr-slide-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 28px 24px; z-index: 2; }
+    .tr-slide-year { font-family: var(--font-body); font-size: 10px; font-weight: 600; letter-spacing: 0.20em; text-transform: uppercase; color: rgba(255,255,255,0.52); margin-bottom: 7px; }
+    .tr-slide-title { font-family: var(--font-display); font-size: clamp(16px, 1.5vw, 21px); font-weight: 700; color: #ffffff; letter-spacing: -0.02em; line-height: 1.2; }
+    .tr-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border-radius: 50%; background: #d8d8d8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.10); transition: background 0.20s ease, transform 0.26s cubic-bezier(0.34,1.2,0.64,1); z-index: 20; }
+    .tr-arrow:hover { background: #c4c4c4; transform: translateY(-50%) scale(1.10); }
+    .tr-prev { left: calc(50% - 504px); }
+    .tr-next { right: calc(50% - 504px); }
+    .tr-dots-wrap { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 25px 0 0; }
+    .tr-dot { width: 8px; height: 8px; border-radius: 100px; background: rgba(0,0,0,0.20); transition: width 0.35s cubic-bezier(0.25,0,0,1), background 0.35s ease; cursor: pointer; border: none; padding: 0; }
+    .tr-dot.tr-dot-active { width: 34px; background: #0d1a2a; }
 </style>
 </head>
 <body>
@@ -604,6 +632,7 @@
           <a href="index.html#structure" class="nav-drop-item"><span class="nav-drop-name">Group Structure</span></a>
           <a href="index.html#governance" class="nav-drop-item"><span class="nav-drop-name">Governance</span></a>
           <a href="index.html#works" class="nav-drop-item"><span class="nav-drop-name">Track Record</span></a>
+          <a href="index.html#leadership" class="nav-drop-item"><span class="nav-drop-name">Leadership</span></a>
           <div class="nav-drop-divider"></div>
           <a href="index.html#contact" class="nav-drop-item"><span class="nav-drop-name">Contact Us</span></a>
         </div>
@@ -791,69 +820,76 @@
 
 <div class="divider"></div>
 
-<!-- TRACK RECORD — timeline -->
-<section class="section" style="background: var(--cream);">
-  <div class="container">
-    <div data-reveal>
-      <span class="eyebrow">Track Record</span>
-      <h2 class="section-heading">Projects &amp; Milestones</h2>
-    </div>
-    <div class="tr-timeline">
-      <div class="tr-row" data-reveal>
-        <div class="tr-year">2007</div>
-        <div class="tr-content">
-          <div class="tr-title">First Government Road Contract Awarded</div>
-          <p class="tr-desc">KP Civil Engineering was awarded its first provincial road construction contract in Khon Kaen — a 12-kilometre rural road project connecting three sub-districts. Delivered on time and within budget, establishing the Group's credibility as a public works contractor.</p>
-        </div>
-      </div>
-      <div class="tr-row" data-reveal>
-        <div class="tr-year">2013</div>
-        <div class="tr-content">
-          <div class="tr-title">Heavy Equipment Fleet Expanded</div>
-          <p class="tr-desc">KP Machinery Rental was formally incorporated following significant investment in a modern heavy equipment fleet. The fleet was made available to third-party contractors, creating a new revenue stream for the Construction Division.</p>
-        </div>
-      </div>
-      <div class="tr-row" data-reveal>
-        <div class="tr-year">2018</div>
-        <div class="tr-content">
-          <div class="tr-title">20+ Projects Completed Milestone</div>
-          <p class="tr-desc">The Construction Division surpassed 20 completed infrastructure projects across Khon Kaen and neighbouring provinces, encompassing roads, drainage systems, and commercial structures with a combined contract value exceeding 500 million baht.</p>
-        </div>
-      </div>
-      <div class="tr-row" data-reveal>
-        <div class="tr-year">2023</div>
-        <div class="tr-content">
-          <div class="tr-title">KP Building Works Established</div>
-          <p class="tr-desc">Following growing demand from the private sector, KUNPOL incorporated KP Building Works to address commercial and industrial building construction — separating this scope from civil infrastructure and allowing for more focused project delivery.</p>
-        </div>
-      </div>
+<!-- OUR WORK CAROUSEL -->
+<section class="works-section" id="works">
+  <div class="works-hdr-wrap">
+    <div class="works-hdr" data-reveal>
+      <span class="eyebrow">Our Work</span>
+      <h2 class="tr-heading">What We've Built</h2>
     </div>
   </div>
-</section>
+  <div class="tr-carousel-wrap" id="trCarouselWrap">
+    <div class="tr-track" id="trTrack">
 
-<!-- GALLERY -->
-<section class="section" style="background:#fff;">
-  <div class="container">
-    <div data-reveal><span class="eyebrow">Gallery</span><h2 class="section-heading">Our Work</h2></div>
-    <div class="gallery-grid">
-      <div class="gallery-item" data-reveal><img src="Inspirations/Construction Footage.jpeg" alt="Construction site"></div>
-      <div class="gallery-item" data-reveal data-d="1"><img src="https://placehold.co/480x800/1C110A/3D220E?text=+" alt="Civil works"></div>
-      <div class="gallery-item" data-reveal data-d="2"><img src="https://placehold.co/600x400/1C110A/3D220E?text=+" alt="Road project"></div>
-      <div class="gallery-item" data-reveal data-d="3"><img src="https://placehold.co/600x400/160E07/2C1A0E?text=+" alt="Earthworks"></div>
-    </div>
-  </div>
-</section>
+      <div class="tr-slide" data-index="0">
+        <img class="tr-slide-img" src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=960&h=480&fit=crop&q=80&auto=format" alt="Construction">
+        <div class="tr-slide-overlay"></div>
+        <div class="tr-slide-cat">Construction</div>
+        <div class="tr-slide-content">
+          <div class="tr-slide-year">2021 — Completed</div>
+          <div class="tr-slide-title">Regional Road Infrastructure,<br>Khon Kaen</div>
+        </div>
+      </div>
 
-<!-- KEY STATS -->
-<section class="key-stats">
-  <div class="container">
-    <div class="stats-grid">
-      <div class="stat-item" data-reveal><div class="stat-number">20<span>+</span></div><div class="stat-label">Infrastructure<br>Projects Completed</div></div>
-      <div class="stat-item" data-reveal data-d="1"><div class="stat-number">4<span></span></div><div class="stat-label">Specialised<br>Subsidiaries</div></div>
-      <div class="stat-item" data-reveal data-d="2"><div class="stat-number">500<span>M+</span></div><div class="stat-label">Baht in Contract<br>Value Delivered</div></div>
-      <div class="stat-item" data-reveal data-d="3"><div class="stat-number">15<span>+</span></div><div class="stat-label">Years of<br>Regional Experience</div></div>
+      <div class="tr-slide" data-index="1">
+        <img class="tr-slide-img" src="https://images.unsplash.com/photo-1590644365607-6ba2a16f8c41?w=960&h=480&fit=crop&q=80&auto=format" alt="Construction">
+        <div class="tr-slide-overlay"></div>
+        <div class="tr-slide-cat">Construction</div>
+        <div class="tr-slide-content">
+          <div class="tr-slide-year">2022 — Completed</div>
+          <div class="tr-slide-title">PTT Station Complex,<br>Khao Suan Kwang</div>
+        </div>
+      </div>
+
+      <div class="tr-slide" data-index="2">
+        <img class="tr-slide-img" src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=960&h=480&fit=crop&q=80&auto=format" alt="Construction">
+        <div class="tr-slide-overlay"></div>
+        <div class="tr-slide-cat">Construction</div>
+        <div class="tr-slide-content">
+          <div class="tr-slide-year">2020 — Completed</div>
+          <div class="tr-slide-title">Commercial Facility Development,<br>Nam Phong</div>
+        </div>
+      </div>
+
+      <div class="tr-slide" data-index="3">
+        <img class="tr-slide-img" src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=960&h=480&fit=crop&q=80&auto=format" alt="Construction">
+        <div class="tr-slide-overlay"></div>
+        <div class="tr-slide-cat">Construction</div>
+        <div class="tr-slide-content">
+          <div class="tr-slide-year">2019 — Completed</div>
+          <div class="tr-slide-title">Structural Works,<br>Kumphawapi District</div>
+        </div>
+      </div>
+
+      <div class="tr-slide" data-index="4">
+        <img class="tr-slide-img" src="https://images.unsplash.com/photo-1565117783953-ac4e6b02ac67?w=960&h=480&fit=crop&q=80&auto=format" alt="Civil Works">
+        <div class="tr-slide-overlay"></div>
+        <div class="tr-slide-cat">Civil Works</div>
+        <div class="tr-slide-content">
+          <div class="tr-slide-year">2018 — Completed</div>
+          <div class="tr-slide-title">Civil Engineering Project,<br>Mueang District</div>
+        </div>
+      </div>
+
     </div>
+    <button class="tr-arrow tr-prev" id="trPrev" aria-label="Previous">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11 4L6 9L11 14" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="tr-arrow tr-next" id="trNext" aria-label="Next">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M7 4L12 9L7 14" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
   </div>
+  <div class="tr-dots-wrap" id="trDots"></div>
 </section>
 
 <!-- CONTACT -->
@@ -1053,6 +1089,135 @@ document.addEventListener('click', function (e) {
     sessionStorage.setItem('kunpol_nav', '1');
   }
 }, true);
+</script>
+
+<script>
+/* ── Our Work Carousel — infinite loop, 2 clones each side ── */
+(function() {
+  var wrap     = document.getElementById('trCarouselWrap');
+  var track    = document.getElementById('trTrack');
+  var dotsWrap = document.getElementById('trDots');
+  var prevBtn  = document.getElementById('trPrev');
+  var nextBtn  = document.getElementById('trNext');
+  if (!track) return;
+
+  var CARD_W     = 920;
+  var MARGIN_ABS = 33;
+  var STEP       = CARD_W - 2 * MARGIN_ABS;
+  var CLONES     = 2;
+
+  var realSlides = Array.from(track.querySelectorAll('.tr-slide'));
+  var COUNT      = realSlides.length;
+
+  for (var ci = COUNT - CLONES; ci < COUNT; ci++) {
+    var hc = realSlides[ci].cloneNode(true);
+    hc.classList.add('tr-clone');
+    track.insertBefore(hc, realSlides[0]);
+  }
+  for (var ci = 0; ci < CLONES; ci++) {
+    var tc = realSlides[ci].cloneNode(true);
+    tc.classList.add('tr-clone');
+    track.appendChild(tc);
+  }
+
+  var allSlides  = Array.from(track.querySelectorAll('.tr-slide'));
+  var current    = CLONES;
+  var isAnimating = false;
+
+  realSlides.forEach(function(_, i) {
+    var d = document.createElement('button');
+    d.className = 'tr-dot' + (i === 0 ? ' tr-dot-active' : '');
+    d.setAttribute('aria-label', 'Slide ' + (i + 1));
+    d.addEventListener('click', function() { goTo(i + CLONES); });
+    dotsWrap.appendChild(d);
+  });
+
+  function setPosition(animate) {
+    if (!animate) track.classList.add('tr-no-transition');
+    var offset = (window.innerWidth - CARD_W) / 2 + MARGIN_ABS - current * STEP;
+    track.style.transform = 'translateX(' + offset + 'px)';
+    allSlides.forEach(function(s, i) {
+      s.classList.toggle('tr-active', i === current);
+    });
+    var realIdx = ((current - CLONES) % COUNT + COUNT) % COUNT;
+    dotsWrap.querySelectorAll('.tr-dot').forEach(function(d, i) {
+      d.classList.toggle('tr-dot-active', i === realIdx);
+    });
+    if (!animate) {
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          track.classList.remove('tr-no-transition');
+        });
+      });
+    }
+  }
+
+  function goTo(idx) {
+    if (isAnimating) return;
+    isAnimating = true;
+    current = idx;
+    setPosition(true);
+    function onEnd(e) {
+      if (e.target !== track || e.propertyName !== 'transform') return;
+      track.removeEventListener('transitionend', onEnd);
+      if (current < CLONES)               { current += COUNT; setPosition(false); }
+      else if (current >= CLONES + COUNT) { current -= COUNT; setPosition(false); }
+      isAnimating = false;
+    }
+    track.addEventListener('transitionend', onEnd);
+  }
+
+  prevBtn.addEventListener('click', function() { goTo(current - 1); });
+  nextBtn.addEventListener('click', function() { goTo(current + 1); });
+
+  var didDrag = false;
+  allSlides.forEach(function(s, i) {
+    s.addEventListener('click', function() {
+      if (!didDrag && i !== current) goTo(i);
+    });
+  });
+
+  var isDrag = false, startX = 0;
+  wrap.addEventListener('mousedown', function(e) {
+    if (isAnimating) return;
+    isDrag = true; didDrag = false; startX = e.clientX;
+    track.classList.add('tr-no-transition');
+  });
+  window.addEventListener('mousemove', function(e) {
+    if (!isDrag) return;
+    if (Math.abs(e.clientX - startX) > 4) didDrag = true;
+    var base = (window.innerWidth - CARD_W) / 2 + MARGIN_ABS - current * STEP;
+    track.style.transform = 'translateX(' + (base + e.clientX - startX) + 'px)';
+  });
+  window.addEventListener('mouseup', function(e) {
+    if (!isDrag) return;
+    isDrag = false;
+    track.classList.remove('tr-no-transition');
+    var dx = e.clientX - startX;
+    if (Math.abs(dx) > 60) goTo(current + (dx < 0 ? 1 : -1));
+    else setPosition(true);
+  });
+
+  wrap.addEventListener('touchstart', function(e) {
+    if (isAnimating) return;
+    startX = e.touches[0].clientX; didDrag = false;
+    track.classList.add('tr-no-transition');
+  }, { passive: true });
+  wrap.addEventListener('touchmove', function(e) {
+    didDrag = true;
+    var base = (window.innerWidth - CARD_W) / 2 + MARGIN_ABS - current * STEP;
+    track.style.transform = 'translateX(' + (base + e.touches[0].clientX - startX) + 'px)';
+  }, { passive: true });
+  wrap.addEventListener('touchend', function(e) {
+    track.classList.remove('tr-no-transition');
+    var dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 60) goTo(current + (dx < 0 ? 1 : -1));
+    else setPosition(true);
+  });
+
+  window.addEventListener('resize', function() { setPosition(false); });
+  setPosition(false);
+})();
 </script>
 
 </body>
